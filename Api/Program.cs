@@ -3,6 +3,9 @@ using Api.Context;
 using Api.models.entities;
 using Api.Repositories.Interfaces;
 using Api.Repositories.Provider;
+using Api.Services.Interfaces;
+using Api.Services.Providers;
+using Api.Utils.Facades;
 using Api.Utils.Uow.Interfaces;
 using Api.Utils.Uow.Provider;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -183,8 +186,13 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 WebApplication? app = builder.Build();
 
