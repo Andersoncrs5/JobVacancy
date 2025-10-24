@@ -8,7 +8,7 @@ public interface IUserRepository
     Task<UserEntity?> GetById(string id);
     Task<UserEntity?> GetByEmail(string email);
     Task<UserEntity?> GetByUsername(string username);
-    Task Delete(UserEntity user);
+    Task<IdentityResult> Delete(UserEntity user);
     Task<IdentityResult> Insert(UserEntity user);
     Task<IdentityResult> Update(UserEntity user);
 }
