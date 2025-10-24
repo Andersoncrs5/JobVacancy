@@ -7,23 +7,19 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Api.Utils.Uow.Provider;
 
-public class UnitOfWork: IUnitOfWork
+public class UnitOfWork(AppDbContext context, UserManager<UserEntity> userManager) : IUnitOfWork, IDisposable
 {
-    private readonly AppDbContext _context;
-    private readonly UserManager<UserEntity> _userManager;
-    private UserRepository _userRepository;
+    private UserRepository? _userRepository;
 
     public IUserRepository UserRepository
-        => _userRepository ??= new UserRepository(_context, _userManager);
-    
+        => _userRepository ??= new UserRepository(context, userManager);
+
     public async Task Commit()
-    {
-        await _context.SaveChangesAsync();
-    }
-    
+        => await context.SaveChangesAsync();
+
     public void Dispose()
     {
-        _context.Dispose();
-        GC.SuppressFinalize(this); 
+        context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
