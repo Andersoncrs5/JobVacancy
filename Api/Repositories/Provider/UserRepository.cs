@@ -23,9 +23,9 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
         return await userManager.FindByNameAsync(username);
     }
 
-    public async Task Delete(UserEntity user)
+    public async Task<IdentityResult> Delete(UserEntity user)
     {
-        await userManager.DeleteAsync(user);
+        return await userManager.DeleteAsync(user);
     }
 
     public async Task<IdentityResult> Insert(UserEntity user)
