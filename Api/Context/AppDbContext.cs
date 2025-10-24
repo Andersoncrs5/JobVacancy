@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Context;
 
-public class AppDbContext: IdentityDbContext<UserEntity>
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
-    
+public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbContext<UserEntity, RoleEntity, string>(options)
+{ 
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<RoleEntity> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -20,5 +19,4 @@ public class AppDbContext: IdentityDbContext<UserEntity>
     {
         base.OnModelCreating(modelBuilder);
     }
-    
 }
