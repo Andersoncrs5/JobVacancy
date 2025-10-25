@@ -1,9 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using AutoMapper;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Services.Interfaces;
 using JobVacancy.API.Utils.Res;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -17,9 +19,124 @@ public class AuthController(
     ITokenService tokenService,
     IUserService userService,
     IRolesService rolesService,
-    IConfiguration configuration
+    IConfiguration configuration,
+    IMapper mapper
     ) : Controller
 {
+
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("DeleteItemPolicy")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> DeleteUser()
+    {
+        try
+        {
+            string? id = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (id == null) return Unauthorized();
+
+            UserEntity? user = await userService.GetUserBySid(id);
+            if (user == null)
+            {
+                return StatusCode(404, new ResponseHttp<object>
+                {
+                    Code = 404,
+                    Message = "User not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
+            await userService.DeleteUser(user);
+            
+            return Ok(new ResponseHttp<object>
+            {
+                Data = null,
+                Message = "User successfully deleted",
+                Code = 200,
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("GetItemPolicy")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> GetUser()
+    {
+        try
+        {
+            string? id = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (id == null) return Unauthorized();
+
+            UserEntity? user = await userService.GetUserBySid(id);
+            if (user == null)
+            {
+                return StatusCode(404, new ResponseHttp<object>
+                {
+                    Code = 404,
+                    Message = "User not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
+            UserDto dto = mapper.Map<UserDto>(user);
+            
+            return Ok(new ResponseHttp<UserDto>
+            {
+                Data = dto,
+                Code = 200,
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +167,7 @@ public class AuthController(
                     Message = "Username already exists.",
                     TraceId = HttpContext.TraceIdentifier,
                     Version = 1,
-                    Status = true,
+                    Status = false,
                     Timestamp = DateTimeOffset.UtcNow,
                 });
             }
@@ -159,10 +276,10 @@ public class AuthController(
                 ExpiredAtRefreshToken = user.RefreshTokenExpiryTime
             };
             
-            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<ResponseTokens>
+            return StatusCode(StatusCodes.Status201Created, new ResponseHttp<ResponseTokens>
             {
                 Data = tokens,
-                Code = StatusCodes.Status200OK,
+                Code = StatusCodes.Status201Created,
                 Message = "Welcome",
                 TraceId = HttpContext.TraceIdentifier,
                 Version = 1,
@@ -184,12 +301,6 @@ public class AuthController(
                 Timestamp = DateTimeOffset.UtcNow,
             });
         }
-    }
-
-    [HttpGet]
-    public IActionResult Index()
-    {
-        return Ok("Hello World!");
     }
     
 }
