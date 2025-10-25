@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Api.models.dtos.Users;
 using Api.models.entities;
 using Api.Services.Interfaces;
@@ -15,6 +17,7 @@ public class AuthController(
     ITokenService tokenService,
     IUserService userService,
     IRolesService rolesService,
+    IConfiguration configuration
     ) : Controller
 {
     [HttpPost]
@@ -32,12 +35,12 @@ public class AuthController(
                 return BadRequest(ModelState);
 
             string email = dto.Email.Trim();
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(dto.Password))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
             {
                 return BadRequest("Email and Password must be provided.");
             }
 
-            bool checkName = await userService.ExistsByUsername(dto.Name);
+            bool checkName = await userService.ExistsByUsername(dto.Username);
             if (checkName == true)
             {
                 return StatusCode(StatusCodes.Status409Conflict, new ResponseHttp<object>
@@ -112,13 +115,74 @@ public class AuthController(
                 });
             }
 
+            UserResult addRoleResult = await userService.AddRoleToUser(user, role);
+            if (!addRoleResult.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<IEnumerable<string>>
+                {
+                    Message = "Error adding roles",
+                    Data = addRoleResult.Errors,
+                    Code = 500,
+                    Timestamp = DateTimeOffset.Now,
+                    Status = false,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1,
+                });
+            }
+
+            IList<string> userRoles = await userService.GetRolesAsync(user);
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Sid, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName!)
+            };
+
+            foreach (string userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            JwtSecurityToken token = tokenService.GenerateAccessToken(claims, configuration);
+            string refreshToken = tokenService.GenerateRefreshToken();
+            _ = int.TryParse(configuration["jwt:RefreshTokenValidityInMinutes"], out int refreshTokenLifetime);
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(refreshTokenLifetime);
+            await userService.UpdateSimple(user);
+
+            ResponseTokens tokens = new ResponseTokens
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                ExpiredAt = token.ValidTo,
+                ExpiredAtRefreshToken = user.RefreshTokenExpiryTime
+            };
             
-            
+            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<ResponseTokens>
+            {
+                Data = tokens,
+                Code = StatusCodes.Status200OK,
+                Message = "Welcome",
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
         }
     }
 }
