@@ -15,5 +15,7 @@ public interface IUserRepository
     Task<bool> ExistsByUsername(string username);
     Task<IdentityResult> AddRoleToUser(UserEntity user, RoleEntity role);
     Task<IList<string>> GetRolesAsync(UserEntity user);
+    Task<bool> CheckPassword(UserEntity user, string password);
+    Task<UserEntity?> GetByRefreshToken(string refreshToken);
 
 }

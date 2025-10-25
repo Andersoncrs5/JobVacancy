@@ -13,10 +13,27 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
     {
         return await userManager.FindByIdAsync(id);
     }
+
+    public async Task<bool> CheckPassword(UserEntity user, string password)
+    {
+        return await userManager.CheckPasswordAsync(user, password);
+    }
     
     public async Task<UserEntity?> GetByEmail(string email)
     {
         return await userManager.FindByEmailAsync(email);
+    }
+    
+    public async Task<UserEntity?> GetByRefreshToken(string refreshToken)
+    {
+        UserEntity? user = await context.Users.
+            Where(u => 
+                u.RefreshToken == refreshToken&& 
+                u.RefreshTokenExpiryTime > DateTime.UtcNow
+                ).
+            FirstOrDefaultAsync();
+        
+        return user;
     }
 
     public async Task<bool> ExistsByEmail(string email)
