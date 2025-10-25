@@ -42,6 +42,11 @@ public class UserService(
     {
         return await uow.UserRepository.GetById(sid);
     }
+
+    public async Task<bool> CheckPassword(UserEntity user, string password)
+    {
+        return await uow.UserRepository.CheckPassword(user, password);
+    }
     
     public async Task<UserResult> DeleteUser(UserEntity user)
     {
@@ -60,6 +65,11 @@ public class UserService(
     public async Task<UserEntity?> GetUserByUsername(string username)
     {
         return await uow.UserRepository.GetByUsername(username);
+    }
+    
+    public async Task<UserEntity?> GetUserByRefreshToken(string refreshToken)
+    {
+        return await uow.UserRepository.GetByRefreshToken(refreshToken);
     }
 
     public async Task<UserResult> CreateAsync(CreateUserDto dto)
