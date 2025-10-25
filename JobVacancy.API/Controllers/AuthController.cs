@@ -82,7 +82,7 @@ public class AuthController(
     }
     
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<UserDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -138,13 +138,13 @@ public class AuthController(
     }
     
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ResponseHttp<ResponseTokens>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("authSystemPolicy")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] CreateUserDto dto )
+    public async Task<IActionResult> Register([FromBody] CreateUserDto dto)
     {
         try
         {
@@ -248,34 +248,9 @@ public class AuthController(
             }
 
             IList<string> userRoles = await userService.GetRolesAsync(user);
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Sid, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName!)
-            };
-
-            foreach (string userRole in userRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            JwtSecurityToken token = tokenService.GenerateAccessToken(claims, configuration);
-            string refreshToken = tokenService.GenerateRefreshToken();
-            _ = int.TryParse(configuration["jwt:RefreshTokenValidityInMinutes"], out int refreshTokenLifetime);
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(refreshTokenLifetime);
+            ResponseTokens tokens = tokenService.CreateTokens(user, userRoles, configuration);
             await userService.UpdateSimple(user);
 
-            ResponseTokens tokens = new ResponseTokens
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                ExpiredAt = token.ValidTo,
-                ExpiredAtRefreshToken = user.RefreshTokenExpiryTime
-            };
-            
             return StatusCode(StatusCodes.Status201Created, new ResponseHttp<ResponseTokens>
             {
                 Data = tokens,
@@ -302,5 +277,122 @@ public class AuthController(
             });
         }
     }
+    
+    [HttpPost("Login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<ResponseTokens>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    [EnableRateLimiting("authSystemPolicy")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            UserEntity? user = await userService.GetUserByEmail(dto.Email!);
+            if (user == null) 
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, new ResponseHttp<object>
+                {
+                    Data = null,
+                    Code = StatusCodes.Status401Unauthorized,
+                    Message = "Login failed.",
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1,
+                    Status = true,
+                    Timestamp = DateTimeOffset.UtcNow,
+                });
+            }
+
+            if (!await userService.CheckPassword(user, dto.Password!)) 
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, new ResponseHttp<object>
+                {
+                    Data = null,
+                    Code = StatusCodes.Status401Unauthorized,
+                    Message = "Login failed.",
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1,
+                    Status = true,
+                    Timestamp = DateTimeOffset.UtcNow,
+                });
+            }
+
+            IList<string> rolesAsync = await userService.GetRolesAsync(user);
+
+            ResponseTokens responseTokens = tokenService.CreateTokens(user, rolesAsync, configuration);
+            await userService.UpdateSimple(user);
+            
+            return Ok(new ResponseHttp<ResponseTokens>
+            {
+                Data = responseTokens,
+                Code = StatusCodes.Status200OK,
+                Message = "Login succeeded",
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
+
+    /*
+    [HttpGet("RefreshToken/{refreshToken}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<ResponseTokens>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken)
+    {
+        UserEntity? user = await userService.GetUserByRefreshToken(refreshToken);
+        if (user == null)
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized, new ResponseHttp<object>
+            {
+                Data = null,
+                Code = StatusCodes.Status401Unauthorized,
+                Message = "Refresh token failed.",
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+
+            });
+        }
+        
+        IList<string> rolesAsync = await userService.GetRolesAsync(user);
+
+        ResponseTokens responseTokens = tokenService.CreateTokens(user, rolesAsync, configuration);
+        await userService.UpdateSimple(user);
+            
+        return Ok(new ResponseHttp<ResponseTokens>
+        {
+            Data = responseTokens,
+            Code = StatusCodes.Status200OK,
+            Message = "Tokens created succeeded!",
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1,
+            Status = true,
+            Timestamp = DateTimeOffset.UtcNow,
+        });
+    }
+    */
+    
+    
     
 }
