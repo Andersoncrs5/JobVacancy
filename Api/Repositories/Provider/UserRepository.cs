@@ -21,21 +21,14 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
 
     public async Task<bool> ExistsByEmail(string email)
     {
-        var result = await context.Users
-            .Where(u => u.Email == email)
-            .Select(u => u.Id)
-            .FirstOrDefaultAsync();
-        
-        return result != null;
+        var user = await userManager.FindByEmailAsync(email);
+        return user != null;
     }
 
     public async Task<bool> ExistsByUsername(string username)
     {
-        var result = await context.Users
-            .Where(u => u.UserName == username)
-            .Select(u => u.Id)
-            .SingleOrDefaultAsync();
-        return result != null;
+        var user = await userManager.FindByNameAsync(username);
+        return user != null;
     }
     
     public async Task<UserEntity?> GetByUsername(string username)
@@ -50,12 +43,23 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
 
     public async Task<IdentityResult> Insert(UserEntity user)
     {
-        return await userManager.CreateAsync(user);
+        return await userManager.CreateAsync(user, user.PasswordHash!);
     }
 
     public async Task<IdentityResult> Update(UserEntity user)
     {
         return await userManager.UpdateAsync(user);
+    }
+
+    public async Task<IdentityResult> AddRoleToUser(UserEntity user, RoleEntity role)
+    {
+        return await userManager.AddToRoleAsync(user, role.Name!);
+    }
+
+    public async Task<IList<string>> GetRolesAsync(UserEntity user)
+    {
+        IList<string> rolesAsync = await userManager.GetRolesAsync(user);
+        return rolesAsync;
     }
     
 }

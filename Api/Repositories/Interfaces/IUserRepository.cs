@@ -13,5 +13,7 @@ public interface IUserRepository
     Task<IdentityResult> Update(UserEntity user);
     Task<bool> ExistsByEmail(string email);
     Task<bool> ExistsByUsername(string username);
+    Task<IdentityResult> AddRoleToUser(UserEntity user, RoleEntity role);
+    Task<IList<string>> GetRolesAsync(UserEntity user);
 
 }
