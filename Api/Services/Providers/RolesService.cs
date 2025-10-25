@@ -3,14 +3,14 @@ using Api.models.dtos.Users;
 using Api.models.entities;
 using Api.Repositories.Provider;
 using Api.Services.Interfaces;
+using Api.Utils.Uow.Interfaces;
 using Api.Utils.Uow.Provider;
 using Microsoft.AspNetCore.Identity;
 
 namespace Api.Services.Providers;
 
-public class RolesService(UnitOfWork uow): IRolesService
+public class RolesService(IUnitOfWork uow): IRolesService
 {
-    
     private RoleResult ReturnResult(IdentityResult result)
     {
         if (result.Succeeded)
