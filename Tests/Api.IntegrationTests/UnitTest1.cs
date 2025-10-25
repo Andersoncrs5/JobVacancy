@@ -18,6 +18,113 @@ public class UnitTest1: IClassFixture<CustomWebApplicationFactory>
         _helper = new Helper(_client); 
     }
 
+    /*
+    [Fact]
+    public async Task CreateRefreshToken()
+    {
+        UserResultTest result = await _helper.CreateAndGetUser();
+        result.Should().NotBeNull();
+        result.Tokens.Should().NotBeNull();
+        result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
+        string refreshToken =  result.Tokens.RefreshToken;
+        
+        HttpResponseMessage? response = await _client.GetAsync($"/api/v1/Auth/RefreshToken/{refreshToken}");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<ResponseTokens>? content = await response.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
+        
+        content.Should().NotBeNull();
+        content.Data.Should().NotBeNull();
+        content.Data.Token.Should().NotBeNullOrWhiteSpace();
+        content.Data.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().Be("Tokens created succeeded!");
+    }
+    */
+    
+    [Fact]
+    public async Task Login()
+    {
+        UserResultTest result = await _helper.CreateAndGetUser();
+        result.Should().NotBeNull();
+        result.CreateUser.Should().NotBeNull();
+
+        LoginDto dto = new LoginDto
+        {
+            Email = result.CreateUser.Email,
+            Password = result.CreateUser.PasswordHash
+        };
+        
+        HttpResponseMessage getResponse = await _client.PostAsJsonAsync($"/api/v1/Auth/Login", dto);
+        
+        getResponse.Should().NotBeNull();
+        getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<ResponseTokens>? content = await getResponse.Content.ReadFromJsonAsync<ResponseHttp<ResponseTokens>>();
+        content.Should().NotBeNull();
+        
+        content.Should().NotBeNull();
+        content.Data.Should().NotBeNull();
+        content.Data.Token.Should().NotBeNullOrWhiteSpace();
+        content.Data.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().Be("Login succeeded");
+    }
+    
+    [Fact]
+    public async Task LoginReturnLoginInvalidByReasonPassword()
+    {
+        UserResultTest result = await _helper.CreateAndGetUser();
+        result.Should().NotBeNull();
+        result.CreateUser.Should().NotBeNull();
+
+        LoginDto dto = new LoginDto
+        {
+            Email = result.CreateUser.Email,
+            Password = "14566367367357"
+        };
+        
+        HttpResponseMessage getResponse = await _client.PostAsJsonAsync($"/api/v1/Auth/Login", dto);
+        
+        getResponse.Should().NotBeNull();
+        getResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        ResponseHttp<object>? content = await getResponse.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        content.Should().NotBeNull();
+        
+        content.Should().NotBeNull();
+        content.Data.Should().BeNull();
+        content.Message.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().Be("Login failed.");
+    }
+    
+    [Fact]
+    public async Task LoginReturnLoginInvalidByReasonEmail()
+    {
+        UserResultTest result = await _helper.CreateAndGetUser();
+        result.Should().NotBeNull();
+        result.CreateUser.Should().NotBeNull();
+
+        LoginDto dto = new LoginDto
+        {
+            Email = "user@gmail.com",
+            Password = result.CreateUser.PasswordHash
+        };
+        
+        HttpResponseMessage getResponse = await _client.PostAsJsonAsync($"/api/v1/Auth/Login", dto);
+        
+        getResponse.Should().NotBeNull();
+        getResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        ResponseHttp<object>? content = await getResponse.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        content.Should().NotBeNull();
+        
+        content.Should().NotBeNull();
+        content.Data.Should().BeNull();
+        content.Message.Should().NotBeNullOrWhiteSpace();
+        content.Message.Should().Be("Login failed.");
+    }
+    
     [Fact]
     public async Task DeleteUserReturnUnauthorized()
     {
