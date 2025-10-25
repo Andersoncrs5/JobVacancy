@@ -3,6 +3,7 @@ using Api.Context;
 using Api.models.entities;
 using Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Repositories.Provider;
 
@@ -18,6 +19,25 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
         return await userManager.FindByEmailAsync(email);
     }
 
+    public async Task<bool> ExistsByEmail(string email)
+    {
+        var result = await context.Users
+            .Where(u => u.Email == email)
+            .Select(u => u.Id)
+            .FirstOrDefaultAsync();
+        
+        return result != null;
+    }
+
+    public async Task<bool> ExistsByUsername(string username)
+    {
+        var result = await context.Users
+            .Where(u => u.UserName == username)
+            .Select(u => u.Id)
+            .SingleOrDefaultAsync();
+        return result != null;
+    }
+    
     public async Task<UserEntity?> GetByUsername(string username)
     {
         return await userManager.FindByNameAsync(username);
