@@ -190,6 +190,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddAutoMapper(typeof(Program));
