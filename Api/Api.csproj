@@ -31,8 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Configs\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Utils\Res\" />
   </ItemGroup>
 
 </Project>
