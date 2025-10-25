@@ -9,6 +9,7 @@ public interface IUserService
     Task<UserEntity?> GetUserByUsername(string username);
     Task<UserResult> CreateAsync(CreateUserDto dto);
     Task<UserResult> DeleteUser(UserEntity user);
+    Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto);
 
 
 }

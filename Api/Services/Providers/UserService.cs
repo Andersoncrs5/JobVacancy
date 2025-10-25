@@ -10,14 +10,16 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Api.Services.Providers;
 
-public class UserService(IUnitOfWork uow, IMapper mapper): IUserService
+public class UserService(
+    IUnitOfWork uow,
+    IPasswordHasher<UserEntity> passwordHasher,
+    IMapper mapper): IUserService
 {
-    private async Task<UserResult> ReturnResult(IdentityResult result)
+    private UserResult ReturnResult(IdentityResult result)
     {
         if (result.Succeeded)
         {
-            await uow.Commit();
-
+            
             return new UserResult
             {
                 Succeeded = true,
@@ -39,7 +41,10 @@ public class UserService(IUnitOfWork uow, IMapper mapper): IUserService
     public async Task<UserResult> DeleteUser(UserEntity user)
     {
          var result = await uow.UserRepository.Delete(user);
-         return await ReturnResult(result);
+         if (result.Succeeded)
+             await uow.Commit(); 
+         
+         return ReturnResult(result);
     }
     
     public async Task<UserEntity?> GetUserByEmail(string email)
@@ -55,10 +60,32 @@ public class UserService(IUnitOfWork uow, IMapper mapper): IUserService
     public async Task<UserResult> CreateAsync(CreateUserDto dto)
     {
         UserEntity user = mapper.Map<UserEntity>(dto);
+        user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
 
         var result = await uow.UserRepository.Insert(user);
+        if (result.Succeeded)
+            await uow.Commit(); 
+        
+        return ReturnResult(result);
+    }
 
-        return await ReturnResult(result);
+    public async Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto)
+    {
+        mapper.Map(dto, user); 
+
+        if (!string.IsNullOrEmpty(dto.Password))
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
+        }
+        
+        var result = await uow.UserRepository.Update(user);
+        
+        if (result.Succeeded)
+        {
+            await uow.Commit(); 
+        }
+
+        return ReturnResult(result);
     }
     
 }
