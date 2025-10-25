@@ -24,10 +24,20 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("JWT is not configured");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString).UseLazyLoadingProxies()
-);
+{
+    options.UseLazyLoadingProxies(); 
+    options.UseNpgsql(
+        connectionString,
+        npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorCodesToAdd: null);
+        });
+});
 
-IConfigurationSection? jwtSettings = builder.Configuration.GetSection("jwt");
+IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
 string? secretKey = jwtSettings.GetSection("SecretKey").Value;
 
 if (string.IsNullOrEmpty(secretKey))
@@ -53,7 +63,7 @@ builder.Services.AddAuthentication(options =>
         }
     );
 
-builder.Services.AddIdentity<UserEntity, IdentityRole>(options =>
+builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -172,11 +182,10 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.AddVersionedApiExplorer(options =>
-    {
-        options.GroupNameFormat = "'v'VVV";
-        options.SubstituteApiVersionInUrl = true;
-    }
-);
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 
 builder.Services.AddControllers();
@@ -191,20 +200,127 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRolesService, RolesService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-
 builder.Services.AddOpenApi();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 WebApplication? app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    var context = services.GetRequiredService<AppDbContext>();
+    context.Database.Migrate(); 
+
+    var userManager = services.GetRequiredService<UserManager<UserEntity>>();
+    var roleManager = services.GetRequiredService<RoleManager<RoleEntity>>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    
+    var datasSystemSection = configuration.GetSection("DataSystem");
+    
+    string systemUserName = datasSystemSection["SystemName"] ?? throw new InvalidOperationException("System user name configuration is missing.");
+    string systemUserEmail = datasSystemSection["systemUserEmail"] ?? throw new InvalidOperationException("System user email configuration is missing.");
+    string systemUserPassword = datasSystemSection["SystemUserPassword"] ?? throw new InvalidOperationException("System user password configuration is missing.");
+
+    var datasRoles = configuration.GetSection("Roles");
+    string masterRole = datasRoles["MasterRole"] ?? throw new InvalidOperationException("Master role configuration is missing.");
+    string userRole = datasRoles["UserRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
+
+    string[] roles = { userRole, masterRole };
+    
+    foreach (string roleName in roles)
+    {
+        if (!roleManager.RoleExistsAsync(roleName).Result)
+        {
+            var role = new RoleEntity();
+            role.Name = roleName;
+            await roleManager.CreateAsync(role);
+            Console.WriteLine($"Role '{roleName}' created.");
+        }
+        else
+        {
+            Console.WriteLine($"Role '{roleName}' already exists.");
+        }
+    }
+    
+    UserEntity? checkName = await userManager.FindByNameAsync(systemUserName);
+    UserEntity? checkEmail = await userManager.FindByEmailAsync(systemUserEmail);
+    UserEntity? systemUser = null;
+    if (checkName == null &&  checkEmail == null)
+    {
+        try
+        {
+            systemUser = new UserEntity()
+            {
+                UserName = systemUserName,
+                Email = systemUserEmail,
+                EmailConfirmed = true,
+            };
+        
+            var userCreated = await userManager.CreateAsync(systemUser, systemUserPassword);
+
+            if (userCreated.Succeeded)
+            {
+                await context.SaveChangesAsync();
+
+                var addRoleResult = await userManager.AddToRoleAsync(systemUser, masterRole);
+                if (addRoleResult.Succeeded)
+                {
+                    await context.SaveChangesAsync();
+                    Console.WriteLine($"User '{systemUserName}' added to role '{masterRole}'.");
+                }
+                else
+                {
+                    Console.WriteLine($"Error adding user '{systemUserName}' to role '{masterRole}': {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error creating user '{systemUserName}'.");
+                foreach (var error in userCreated.Errors)
+                {
+                    Console.WriteLine($"Error creating user '{systemUserName}': {error.Description}");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    else
+    {
+        var getUserCreated = await userManager.FindByNameAsync(systemUserName) ?? throw new InvalidOperationException("User creation failed.");
+        
+        if (!await userManager.IsInRoleAsync(getUserCreated, masterRole))
+        {
+            var addRoleResult = await userManager.AddToRoleAsync(getUserCreated, masterRole);
+            if (addRoleResult.Succeeded)
+            {
+                await context.SaveChangesAsync();
+                Console.WriteLine($"User '{systemUserName}' added to role '{masterRole}'.");
+            }
+            else
+            {
+                Console.WriteLine($"Error adding existing user '{systemUserName}' to role '{masterRole}': {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
+            }
+        }
+    }
+}
+
 
 if (app.Environment.IsDevelopment())
 {
