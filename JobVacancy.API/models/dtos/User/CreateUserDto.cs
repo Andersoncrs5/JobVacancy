@@ -7,6 +7,9 @@ public class CreateUserDto
     [Required(ErrorMessage = "Field is required")]
     [StringLength(100, ErrorMessage = "Max size of 100")]
     public string Username { get; set; } = string.Empty; 
+    
+    [StringLength(200, ErrorMessage = "Max size of 200")]
+    public string? FullName { get; set; }
 
     [Required(ErrorMessage = "Field is required")]
     [EmailAddress(ErrorMessage = "Invalid Email")]
