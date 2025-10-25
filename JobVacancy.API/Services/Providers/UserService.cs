@@ -37,6 +37,11 @@ public class UserService(
             };
         }
     }
+
+    public async Task<UserEntity?> GetUserBySid(string sid)
+    {
+        return await uow.UserRepository.GetById(sid);
+    }
     
     public async Task<UserResult> DeleteUser(UserEntity user)
     {

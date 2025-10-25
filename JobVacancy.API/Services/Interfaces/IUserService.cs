@@ -6,6 +6,7 @@ namespace JobVacancy.API.Services.Interfaces;
 public interface IUserService
 {
     Task<UserEntity?> GetUserByEmail(string email);
+    Task<UserEntity?> GetUserBySid(string sid);
     Task<UserEntity?> GetUserByUsername(string username);
     Task<UserResult> CreateAsync(CreateUserDto dto);
     Task<UserResult> DeleteUser(UserEntity user);
