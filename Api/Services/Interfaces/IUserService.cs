@@ -12,6 +12,9 @@ public interface IUserService
     Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto);
     Task<bool> ExistsByEmail(string email);
     Task<bool> ExistsByUsername(string username);
+    Task<UserResult> AddRoleToUser(UserEntity user, RoleEntity role);
+    Task<IList<string>> GetRolesAsync(UserEntity user);
+    Task<UserResult> UpdateSimple(UserEntity user);
 
 
 }

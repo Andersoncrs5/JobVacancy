@@ -60,7 +60,6 @@ public class UserService(
     public async Task<UserResult> CreateAsync(CreateUserDto dto)
     {
         UserEntity user = mapper.Map<UserEntity>(dto);
-        user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
 
         var result = await uow.UserRepository.Insert(user);
         if (result.Succeeded)
@@ -96,6 +95,29 @@ public class UserService(
     public async Task<bool> ExistsByUsername(string username)
     {
         return await uow.UserRepository.ExistsByUsername(username);
+    }
+
+    public async Task<UserResult> AddRoleToUser(UserEntity user, RoleEntity role)
+    {
+        var result = await uow.UserRepository.AddRoleToUser(user, role);
+        if (result.Succeeded)
+            await uow.Commit();
+        
+        return ReturnResult(result);
+    }
+
+    public async Task<IList<string>> GetRolesAsync(UserEntity user)
+    {
+        return await uow.UserRepository.GetRolesAsync(user);
+    }
+
+    public async Task<UserResult> UpdateSimple(UserEntity user)
+    {
+        IdentityResult result = await uow.UserRepository.Update(user);
+        if (result.Succeeded)
+            await uow.Commit();
+        
+        return ReturnResult(result);
     }
     
 }
