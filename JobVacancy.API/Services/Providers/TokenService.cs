@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using JobVacancy.API.models.entities;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Res;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JobVacancy.API.Services.Providers;
@@ -14,7 +16,7 @@ public class TokenService: ITokenService
         string key = config.GetSection("jwt").GetValue<string>("SecretKey") ?? 
                       throw new InvalidOperationException();
 
-        var exp = config.GetSection("JWT").GetValue<double>("TokenValidityInMinutes");
+        var exp = config.GetSection("jwt").GetValue<double>("TokenValidityInMinutes");
         
         byte[] privateKey = Encoding.UTF8.GetBytes(key);
 
@@ -39,7 +41,7 @@ public class TokenService: ITokenService
     
     public string GenerateRefreshToken()
     {
-        byte[] secureRandomBytes = new byte[(128 * 2)];
+        byte[] secureRandomBytes = new byte[(300)];
 
         using RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
        
@@ -75,6 +77,36 @@ public class TokenService: ITokenService
         }
 
         return main;
+    }
+
+    public ResponseTokens CreateTokens(UserEntity user, IList<string> userRoles, IConfiguration configuration)
+    {
+        List<Claim> claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Sid, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName!)
+        };
+
+        foreach (string userRole in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
+        JwtSecurityToken token = GenerateAccessToken(claims, configuration);
+        string refreshToken = GenerateRefreshToken();
+        _ = int.TryParse(configuration["jwt:RefreshTokenValidityInMinutes"], out int refreshTokenLifetime);
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(refreshTokenLifetime);
+        
+        return new ResponseTokens
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(token),
+            RefreshToken = refreshToken,
+            ExpiredAt = token.ValidTo,
+            ExpiredAtRefreshToken = user.RefreshTokenExpiryTime
+        };
     }
     
 }
