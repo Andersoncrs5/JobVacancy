@@ -87,5 +87,15 @@ public class UserService(
 
         return ReturnResult(result);
     }
+
+    public async Task<bool> ExistsByEmail(string email)
+    {
+        return await uow.UserRepository.ExistsByEmail(email);
+    }
+    
+    public async Task<bool> ExistsByUsername(string username)
+    {
+        return await uow.UserRepository.ExistsByUsername(username);
+    }
     
 }

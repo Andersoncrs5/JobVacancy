@@ -10,6 +10,8 @@ public interface IUserService
     Task<UserResult> CreateAsync(CreateUserDto dto);
     Task<UserResult> DeleteUser(UserEntity user);
     Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto);
+    Task<bool> ExistsByEmail(string email);
+    Task<bool> ExistsByUsername(string username);
 
 
 }
