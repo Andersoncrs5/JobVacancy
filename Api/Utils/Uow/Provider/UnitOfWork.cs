@@ -14,9 +14,13 @@ public class UnitOfWork(
     ) : IUnitOfWork, IDisposable
 {
     private UserRepository? _userRepository;
+    private RoleRepository? _roleRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
+
+    public IRoleRepository RoleRepository
+        => _roleRepository ??= new RoleRepository(roleManager);
 
     public async Task Commit() => await context.SaveChangesAsync();
 
