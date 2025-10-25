@@ -44,24 +44,23 @@ if (string.IsNullOrEmpty(secretKey))
     throw new InvalidOperationException("JWT is not configured");
 
 builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["ValidIssuer"],
-                ValidAudience = jwtSettings["ValidAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-            };
-        }
-    );
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["ValidIssuer"],
+        ValidAudience = jwtSettings["ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
 
 builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
 {
@@ -170,6 +169,12 @@ builder.Services.AddRateLimiter(options =>
         limit.Window = TimeSpan.FromSeconds(10);
         limit.QueueLimit = 0;
     });
+    options.AddFixedWindowLimiter("GetItemPolicy", limit =>
+    {
+        limit.PermitLimit = 60;
+        limit.Window = TimeSpan.FromSeconds(10);
+        limit.QueueLimit = 0;
+    });
 
 });
 
@@ -186,7 +191,6 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
-
 
 builder.Services.AddControllers();
 
