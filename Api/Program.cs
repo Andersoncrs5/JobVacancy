@@ -126,30 +126,37 @@ builder.Services.AddRateLimiter(options =>
         await context.HttpContext.Response.WriteAsync($"Too Many Requests: {token}");
     };
     
-    options.AddFixedWindowLimiter("CreateItemPolicy", limit =>
+    options.AddFixedWindowLimiter("authSystemPolicy", limit =>
     {
         limit.PermitLimit = 30;
+        limit.Window = TimeSpan.FromSeconds(5);
+        limit.QueueLimit = 0;
+    });
+
+    options.AddFixedWindowLimiter("CreateItemPolicy", limit =>
+    {
+        limit.PermitLimit = 40;
         limit.Window = TimeSpan.FromSeconds(5);
         limit.QueueLimit = 0;
     });
 
     options.AddFixedWindowLimiter("UpdateItemPolicy", limit =>
     {
-        limit.PermitLimit = 20;
+        limit.PermitLimit = 30;
         limit.Window = TimeSpan.FromSeconds(5);
         limit.QueueLimit = 0;
     });
 
     options.AddFixedWindowLimiter("DeleteItemPolicy", limit =>
     {
-        limit.PermitLimit = 30;
+        limit.PermitLimit = 40;
         limit.Window = TimeSpan.FromSeconds(5);
         limit.QueueLimit = 0;
     });
 
     options.AddFixedWindowLimiter("ListItemPolicy", limit =>
     {
-        limit.PermitLimit = 50;
+        limit.PermitLimit = 60;
         limit.Window = TimeSpan.FromSeconds(10);
         limit.QueueLimit = 0;
     });
