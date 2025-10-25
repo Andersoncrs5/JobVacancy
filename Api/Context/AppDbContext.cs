@@ -7,8 +7,8 @@ namespace Api.Context;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbContext<UserEntity, RoleEntity, string>(options)
 { 
-    public DbSet<UserEntity> Users { get; set; }
-    public DbSet<RoleEntity> Roles { get; set; }
+    public new DbSet<UserEntity> Users { get; set; }
+    public new DbSet<RoleEntity> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -21,7 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<UserEntity>().ToTable("app_users");
-        modelBuilder.Entity<IdentityRole>().ToTable("app_roles");
+        modelBuilder.Entity<RoleEntity>().ToTable("app_roles");
         modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("app_user_claims");
         modelBuilder.Entity<IdentityUserRole<string>>().ToTable("app_user_roles");
         modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("app_user_logins");
