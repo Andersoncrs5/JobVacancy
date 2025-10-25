@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using FluentAssertions;
 
-namespace Api.IntegrationTests;
+namespace JobVacancy.API.IntegrationTests;
 
 public class UnitTest1: IClassFixture<CustomWebApplicationFactory>
 {

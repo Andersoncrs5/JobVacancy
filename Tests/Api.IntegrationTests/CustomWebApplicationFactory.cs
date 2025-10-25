@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Api;
-using Api.Context;
+using JobVacancy.API;
+using JobVacancy.API.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
