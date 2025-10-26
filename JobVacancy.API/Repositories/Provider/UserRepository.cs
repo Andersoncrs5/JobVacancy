@@ -60,11 +60,13 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
 
     public async Task<IdentityResult> Insert(UserEntity user)
     {
+        user.CreatedAt = DateTime.UtcNow;
         return await userManager.CreateAsync(user, user.PasswordHash!);
     }
 
     public async Task<IdentityResult> Update(UserEntity user)
     {
+        user.UpdatedAt = DateTime.UtcNow;
         return await userManager.UpdateAsync(user);
     }
 
@@ -77,6 +79,11 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
     {
         IList<string> rolesAsync = await userManager.GetRolesAsync(user);
         return rolesAsync;
+    }
+
+    public IQueryable<UserEntity> GetIQueryable()
+    {
+        return context.Users.AsQueryable();
     }
     
 }

@@ -6,6 +6,8 @@ namespace JobVacancy.API.Repositories.Interfaces;
 public interface IUserRepository
 {
     Task<UserEntity?> GetById(string id);
+
+    IQueryable<UserEntity> GetIQueryable();
     Task<UserEntity?> GetByEmail(string email);
     Task<UserEntity?> GetByUsername(string username);
     Task<IdentityResult> Delete(UserEntity user);
