@@ -15,7 +15,7 @@ public class UserService(
     IPasswordHasher<UserEntity> passwordHasher,
     IMapper mapper): IUserService
 {
-    private UserResult ReturnResult(IdentityResult result)
+    private UserResult ReturnResult(IdentityResult result, UserEntity? user)
     {
         if (result.Succeeded)
         {
@@ -23,7 +23,7 @@ public class UserService(
             return new UserResult
             {
                 Succeeded = true,
-                User = null,
+                User = user,
                 Errors = null
             };
         }
@@ -32,7 +32,7 @@ public class UserService(
             return new UserResult
             {
                 Succeeded = false,
-                User = null,
+                User = user,
                 Errors = result.Errors.Select(e => e.Description).ToList()
             };
         }
@@ -54,7 +54,7 @@ public class UserService(
          if (result.Succeeded)
              await uow.Commit(); 
          
-         return ReturnResult(result);
+         return ReturnResult(result, null);
     }
     
     public async Task<UserEntity?> GetUserByEmail(string email)
@@ -78,28 +78,34 @@ public class UserService(
 
         var result = await uow.UserRepository.Insert(user);
         if (result.Succeeded)
-            await uow.Commit(); 
-        
-        return ReturnResult(result);
+            await uow.Commit();
+
+        var userCreated = await GetUserByEmail(dto.Email);
+        return ReturnResult(result, userCreated);
     }
 
     public async Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto)
     {
-        mapper.Map(dto, user); 
-
+        if (dto.FullName != null)
+            user.FullName = dto.FullName;
+        
+        user.UserName = dto.Name;
+        
         if (!string.IsNullOrEmpty(dto.Password))
         {
             user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
         }
         
-        var result = await uow.UserRepository.Update(user);
+        IdentityResult result = await uow.UserRepository.Update(user);
         
         if (result.Succeeded)
         {
             await uow.Commit(); 
         }
 
-        return ReturnResult(result);
+        var userChanged = await GetUserByEmail(user.Email!);
+
+        return ReturnResult(result,userChanged);
     }
 
     public async Task<bool> ExistsByEmail(string email)
@@ -118,7 +124,9 @@ public class UserService(
         if (result.Succeeded)
             await uow.Commit();
         
-        return ReturnResult(result);
+        var userChanged = await GetUserByEmail(user.Email!);
+        
+        return ReturnResult(result, userChanged);
     }
 
     public async Task<IList<string>> GetRolesAsync(UserEntity user)
@@ -132,7 +140,8 @@ public class UserService(
         if (result.Succeeded)
             await uow.Commit();
         
-        return ReturnResult(result);
+        var userChanged = await GetUserByEmail(user.Email!);
+        return ReturnResult(result, userChanged);
     }
     
 }
