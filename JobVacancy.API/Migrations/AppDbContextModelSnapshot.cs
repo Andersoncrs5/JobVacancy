@@ -25,7 +25,7 @@ namespace JobVacancy.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Api.models.entities.RoleEntity", b =>
+            modelBuilder.Entity("JobVacancy.API.models.entities.RoleEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -54,7 +54,7 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_roles", (string)null);
                 });
 
-            modelBuilder.Entity("Api.models.entities.UserEntity", b =>
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -65,6 +65,9 @@ namespace JobVacancy.API.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -110,6 +113,9 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -235,7 +241,7 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Api.models.entities.RoleEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -244,7 +250,7 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Api.models.entities.UserEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,7 +259,7 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Api.models.entities.UserEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -262,13 +268,13 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Api.models.entities.RoleEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Api.models.entities.UserEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -277,7 +283,7 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Api.models.entities.UserEntity", null)
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
