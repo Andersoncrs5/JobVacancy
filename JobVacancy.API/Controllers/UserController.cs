@@ -98,7 +98,7 @@ public class UserController(
     }
     
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<UserDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<UserDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -118,10 +118,10 @@ public class UserController(
                 pageIndex: filter.PageNumber,
                 pageSize: filter.PageSize    
             );
-            
-            PaginatedList<UserDto> paginatedDtos = PaginatedList<UserEntity>.MapTo<UserEntity, UserDto>(list, mapper);
 
-            return Ok(paginatedDtos);
+            Page<UserDto> finalResponse = mapper.Map<Page<UserDto>>(list);
+
+            return Ok(finalResponse);
         }
         catch (Exception e)
         {
