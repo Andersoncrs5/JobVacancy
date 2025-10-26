@@ -6,6 +6,7 @@ using JobVacancy.API.Utils.Facades;
 using JobVacancy.API.Utils.Mappers;
 using JobVacancy.API.Utils.Uow.Interfaces;
 using AutoMapper;
+using JobVacancy.API.Utils.Page;
 using Microsoft.AspNetCore.Identity;
 
 namespace JobVacancy.API.Services.Providers;
@@ -43,6 +44,11 @@ public class UserService(
         return await uow.UserRepository.GetById(sid);
     }
 
+    public IQueryable<UserEntity> GetIQueryable()
+    {
+        return uow.UserRepository.GetIQueryable();
+    }
+    
     public async Task<bool> CheckPassword(UserEntity user, string password)
     {
         return await uow.UserRepository.CheckPassword(user, password);

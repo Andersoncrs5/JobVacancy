@@ -5,6 +5,7 @@ namespace JobVacancy.API.Services.Interfaces;
 
 public interface IUserService
 {
+    IQueryable<UserEntity> GetIQueryable();
     Task<UserEntity?> GetUserByEmail(string email);
     Task<UserEntity?> GetUserByRefreshToken(string refreshToken);
     Task<UserEntity?> GetUserBySid(string sid);
