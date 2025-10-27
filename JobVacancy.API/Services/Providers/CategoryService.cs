@@ -19,7 +19,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
         await uow.Commit();
     }
 
-    public async Task<CategoryEntity?> CreateAsync(CategoryEntity category)
+    public async Task<CategoryEntity> CreateAsync(CategoryEntity category)
     {
         CategoryEntity categoryCreated = await uow.CategoryRepository.AddAsync(category); 
         await uow.Commit();
