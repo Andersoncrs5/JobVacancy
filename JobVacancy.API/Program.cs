@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -210,6 +211,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
@@ -242,8 +244,9 @@ using (var scope = app.Services.CreateScope())
     var datasRoles = configuration.GetSection("Roles");
     string masterRole = datasRoles["MasterRole"] ?? throw new InvalidOperationException("Master role configuration is missing.");
     string userRole = datasRoles["UserRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
+    string superAdmRole = datasRoles["SuperAdmRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
 
-    string[] roles = { userRole, masterRole };
+    string[] roles = { userRole, masterRole, superAdmRole };
     
     foreach (string roleName in roles)
     {
@@ -346,6 +349,9 @@ app.UseRateLimiter();
 // app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
+
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
