@@ -35,7 +35,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
         return update;
     }
 
-    public IQueryable GetIQueryable()
+    public  IQueryable<CategoryEntity> GetIQueryable()
     {
         return uow.CategoryRepository.ReturnIQueryable();
     }

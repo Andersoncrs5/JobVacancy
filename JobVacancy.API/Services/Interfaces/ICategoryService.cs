@@ -9,7 +9,7 @@ public interface ICategoryService
     Task DeleteAsync(CategoryEntity category);
     Task<CategoryEntity> CreateAsync(CategoryEntity category);
     Task<CategoryEntity> UpdateAsync(CategoryEntity category, UpdateCategoryDto dto);
-    IQueryable GetIQueryable();
+    IQueryable<CategoryEntity> GetIQueryable();
     Task<bool> ExistsByName(string name);
     Task<bool> ExistsById(string id);
 }

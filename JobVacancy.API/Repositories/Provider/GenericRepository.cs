@@ -28,7 +28,7 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
         return await this._dbSet.ToListAsync();
     }
     
-    public IQueryable ReturnIQueryable()
+    public IQueryable<T> ReturnIQueryable()
     {
         return this._dbSet;
     }
