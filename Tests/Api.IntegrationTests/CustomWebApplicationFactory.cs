@@ -3,11 +3,13 @@ using JobVacancy.API;
 using JobVacancy.API.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public IConfiguration Configuration { get; private set; }
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
@@ -29,5 +31,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 }
             }
         });
+        
+        builder.ConfigureAppConfiguration((context, conf) =>
+        {
+            Configuration = context.Configuration; 
+        });
+        
+        base.ConfigureWebHost(builder);
     }
 }
