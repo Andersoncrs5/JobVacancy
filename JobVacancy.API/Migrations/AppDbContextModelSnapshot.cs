@@ -51,7 +51,7 @@ namespace JobVacancy.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CategoryEntity");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.RoleEntity", b =>
