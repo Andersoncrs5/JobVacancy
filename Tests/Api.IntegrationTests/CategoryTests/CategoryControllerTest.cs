@@ -44,6 +44,172 @@ public class CategoryControllerTest: IClassFixture<CustomWebApplicationFactory>
     }
     
     [Fact]
+    public async Task Update()
+    {
+        int num = Random.Shared.Next(1, 100000000);
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        UpdateCategoryDto dto = new UpdateCategoryDto
+        {
+            Description = "Updated Description",
+            Name = $"Updated Name {num}",
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(_URL+"/"+categoryDto.Id, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        ResponseHttp<CategoryDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CategoryDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(categoryDto.Id);
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Description.Should().Be(dto.Description);
+    }
+    
+    [Fact]
+    public async Task UpdateJustName()
+    {
+        int num = Random.Shared.Next(1, 100000000);
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        UpdateCategoryDto dto = new UpdateCategoryDto
+        {
+            Name = $"Updated Name {num}",
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(_URL+"/"+categoryDto.Id, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        ResponseHttp<CategoryDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CategoryDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(categoryDto.Id);
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Description.Should().Be(categoryDto.Description);
+    }
+    
+    [Fact]
+    public async Task UpdateJustDescription()
+    {
+        int num = Random.Shared.Next(1, 100000000);
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        UpdateCategoryDto dto = new UpdateCategoryDto
+        {
+            Description = "Any " + num
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(_URL+"/"+categoryDto.Id, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        ResponseHttp<CategoryDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CategoryDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(categoryDto.Id);
+        http.Data.Name.Should().Be(categoryDto.Name);
+        http.Data.Description.Should().Be(dto.Description);
+    }
+    
+    [Fact]
+    public async Task UpdateThrowForb()
+    {
+        int num = Random.Shared.Next(1, 100000000);
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        UserResultTest user = await _helper.CreateAndGetUser();
+
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        UpdateCategoryDto dto = new UpdateCategoryDto
+        {
+            Description = "Updated Description",
+            Name = $"Updated Name {num}",
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(_URL+"/"+categoryDto.Id, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task UpdateThrowConflict()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+        CategoryDto categoryDtoB = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        UpdateCategoryDto dto = new UpdateCategoryDto
+        {
+            Description = "Updated Description",
+            Name = categoryDtoB.Name,
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(_URL+"/"+categoryDto.Id, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        http.Code.Should().Be(409);
+        http.Message.Should().NotBeNull();
+        http.Message.Should().Be("Category name already exists");
+    }
+    
+    [Fact]
+    public async Task ExistsByName()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        HttpResponseMessage message = await _client.GetAsync(_URL+"/"+categoryDto.Name+"/exists/name");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        ResponseHttp<bool>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<bool>>();
+        http.Should().NotBeNull();
+        http.Data.Should().Be(true);
+    }
+    
+    [Fact]
+    public async Task ExistsByNameReturnFalse()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        HttpResponseMessage message = await _client.GetAsync(_URL+"/anyname/exists/name");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        ResponseHttp<bool>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<bool>>();
+        http.Should().NotBeNull();
+        http.Data.Should().Be(false);
+    }
+    
+    [Fact]
     public async Task GetAll()
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
