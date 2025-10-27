@@ -200,5 +200,109 @@ public class CategoryController(
         return Ok(dtos);
     }
     
+    [HttpGet("{name:required}/exists/name")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<bool>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    [Authorize(Roles = "MASTER_ROLE, SUPER_ADM_ROLE")]
+    public async Task<IActionResult> ExistsByName(string name)
+    {
+        try
+        {
+            bool category = await categoryService.ExistsByName(name);
+            
+            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<bool>
+            {
+                Code = 200,
+                Data = category,
+                Message = category ?  "Category exists with success." : "Category not exists",
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
+    
+    [HttpPatch("{id:required}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<CategoryDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    [Authorize(Roles = "MASTER_ROLE, SUPER_ADM_ROLE")]
+    public async Task<IActionResult> Update(string id, [FromBody] UpdateCategoryDto udto)
+    {
+        try
+        {
+            CategoryEntity? category = await categoryService.GetByIdAsync(id);
+            if (category is null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Message = "Category not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+            
+            if (udto.Name != category.Name && await categoryService.ExistsByName(udto.Name))
+            {
+                return StatusCode(StatusCodes.Status409Conflict, new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status409Conflict,
+                    Data = null,
+                    Message = "Category name already exists",
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+            
+            var categoryUpdated = await categoryService.UpdateAsync(category, udto);
+
+            CategoryDto dto = mapper.Map<CategoryDto>(categoryUpdated);
+            
+            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<CategoryDto>
+            {
+                Code = 200,
+                Data = dto,
+                Message = "Category updated with success.",
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
     
 }
