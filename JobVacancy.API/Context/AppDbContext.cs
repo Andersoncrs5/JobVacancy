@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
 { 
     public new DbSet<UserEntity> Users { get; set; }
     public new DbSet<RoleEntity> Roles { get; set; }
+    public new DbSet<CategoryEntity> Categories { get; set; }
 
     public override int SaveChanges()
     {
