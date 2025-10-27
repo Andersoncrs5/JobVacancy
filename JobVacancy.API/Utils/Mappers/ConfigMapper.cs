@@ -11,9 +11,15 @@ public class ConfigMapper: Profile
 {
     public ConfigMapper()
     {
+        // User
         CreateMap<CreateUserDto, UserEntity>();
         CreateMap<UserEntity, UserDto>();
+        
         CreateMap(typeof(PaginatedList<>), typeof(Page<>));
+        
+        // Category
+        CreateMap<CreateCategoryDto, CategoryEntity>();
+        CreateMap<CategoryEntity, CategoryDto>();
         CreateMap<UpdateCategoryDto, CategoryEntity>()
            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
