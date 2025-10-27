@@ -20,6 +20,7 @@ public class ConfigMapper: Profile
         // Category
         CreateMap<CreateCategoryDto, CategoryEntity>();
         CreateMap<CategoryEntity, CategoryDto>();
+        CreateMap<CategoryDto, CategoryEntity>();
         CreateMap<UpdateCategoryDto, CategoryEntity>()
            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
