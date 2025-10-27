@@ -3,3 +3,5 @@ dotnet ef migrations add InitMigration --project Api/Api.csproj --startup-projec
 dotnet ef database update --project Api/Api.csproj --startup-project Api/Api.csproj
 
 k port-forward service/postgres-headless 5432:5432
+
+ sudo systemctl start k3s
