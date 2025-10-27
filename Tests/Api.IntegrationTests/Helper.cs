@@ -96,7 +96,7 @@ public class Helper(
 
     public async Task<CategoryDto> CreateCategory(ResponseTokens master)
     {
-        int num = Random.Shared.Next(1, 1000000);
+        int num = Random.Shared.Next(1, 10000000);
         
         string token = master.Token!;
         client.DefaultRequestHeaders.Authorization = 
