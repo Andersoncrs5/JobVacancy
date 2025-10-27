@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
+using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -91,5 +92,32 @@ public class Helper(
             Tokens = content.Data,
             User = user.Data
         };
+    }
+
+    public async Task<CategoryDto> CreateCategory(ResponseTokens master)
+    {
+        int num = Random.Shared.Next(1, 1000000);
+        
+        string token = master.Token!;
+        client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        CreateCategoryDto dto = new CreateCategoryDto
+        {
+            IsActive = true,
+            Name = $"Test{num}",
+            Description = $"Test description {num}",
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/Category", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<CategoryDto>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<CategoryDto>>();
+        
+        Assert.NotNull(response);
+        Assert.NotNull(response.Data);
+        Assert.NotNull(response.Data.Id);
+        
+        return response.Data;
     }
 }
