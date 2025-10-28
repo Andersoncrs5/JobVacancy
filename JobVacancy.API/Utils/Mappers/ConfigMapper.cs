@@ -3,6 +3,7 @@ using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities;
 using AutoMapper;
 using JobVacancy.API.models.dtos.Category;
+using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.Utils.Page;
 
 namespace JobVacancy.API.Utils.Mappers;
@@ -23,5 +24,11 @@ public class ConfigMapper: Profile
         CreateMap<CategoryDto, CategoryEntity>();
         CreateMap<UpdateCategoryDto, CategoryEntity>()
            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        
+        // Industry
+        CreateMap<UpdateIndustryDto, IndustryEntity>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<CreateIndustryDto, IndustryEntity>();
+        CreateMap<IndustryEntity, IndustryDto>();
     }
 }
