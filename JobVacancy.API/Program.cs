@@ -210,11 +210,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IIndustryRepository, IndustryRepository>();
+builder.Services.AddScoped<IEnterpriseRepository, EnterpriseRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IIndustryService, IndustryService>();
+builder.Services.AddScoped<IEnterpriseService, EnterpriseService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
@@ -247,8 +249,9 @@ using (var scope = app.Services.CreateScope())
     string masterRole = datasRoles["MasterRole"] ?? throw new InvalidOperationException("Master role configuration is missing.");
     string userRole = datasRoles["UserRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
     string superAdmRole = datasRoles["SuperAdmRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
+    string enterpriseRole = datasRoles["EnterpriseRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
 
-    string[] roles = { userRole, masterRole, superAdmRole };
+    string[] roles = { userRole, masterRole, superAdmRole, enterpriseRole };
     
     foreach (string roleName in roles)
     {
