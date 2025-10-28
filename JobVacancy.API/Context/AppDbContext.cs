@@ -86,6 +86,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
                 .HasForeignKey<EnterpriseEntity>(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.Entity<EnterpriseIndustryEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.IsPrimary);
+            entity.Property(e => e.IsPrimary).HasDefaultValue(false);
+            
+            entity.HasOne(ei => ei.Enterprise)
+                .WithMany(e => e.IndustryLinks) 
+                .HasForeignKey(ei => ei.EnterpriseId);
+
+            entity.HasOne(ei => ei.Industry)
+                .WithMany(i => i.EnterpriseLinks) 
+                .HasForeignKey(ei => ei.IndustryId);
+        });
         
         modelBuilder.Entity<IndustryEntity>(entity =>
         {
