@@ -1,0 +1,7 @@
+ongoing
+table Industry, Enterprise, EnterpriseIndustry
+impled Industry service
+
+next
+impl config Enterprise, EnterpriseIndustry
+table PostUser, PostEnterprise, Area, FavoritePostUser And Enterprise, Enterprise
