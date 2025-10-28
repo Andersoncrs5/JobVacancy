@@ -6,6 +6,6 @@ public class IndustryEntity: BaseEntity
     public string? Description { get; set; }
     public string? IconUrl { get; set; }
     public bool IsActive { get; set; }
-    public virtual ICollection<EnterpriseIndustryEntity> EnterpriseLinks { get; set; } = new List<EnterpriseIndustryEntity>();
+    // public virtual ICollection<EnterpriseIndustryEntity> EnterpriseLinks { get; set; } = new List<EnterpriseIndustryEntity>();
 
 }

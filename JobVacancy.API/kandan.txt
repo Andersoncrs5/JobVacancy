@@ -1,6 +1,6 @@
 ongoing
-table Industry, Enterprise, EnterpriseIndustry
-impled Industry service
+table Enterprise, EnterpriseIndustry
+controller and test
 
 next
 impl config Enterprise, EnterpriseIndustry

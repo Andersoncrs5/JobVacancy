@@ -51,7 +51,50 @@ namespace JobVacancy.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("WebSiteUrl")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Enterprises");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
@@ -82,6 +125,9 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Industries");
                 });
@@ -300,6 +346,17 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithOne("Enterprise")
+                        .HasForeignKey("JobVacancy.API.models.entities.EnterpriseEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
@@ -349,6 +406,11 @@ namespace JobVacancy.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
+                {
+                    b.Navigation("Enterprise");
                 });
 #pragma warning restore 612, 618
         }
