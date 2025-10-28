@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
+using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -117,6 +118,36 @@ public class Helper(
         Assert.NotNull(response);
         Assert.NotNull(response.Data);
         Assert.NotNull(response.Data.Id);
+        
+        return response.Data;
+    }
+    public async Task<IndustryDto> CreateIndustry(ResponseTokens master)
+    {
+        long num = Random.Shared.NextInt64(1, 10000000000000);
+        
+        string token = master.Token!;
+        client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        CreateIndustryDto dto = new CreateIndustryDto
+        {
+            IsActive = true,
+            Name = $"Test{num}",
+            Description = $"Test description {num}",
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/Industry", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<IndustryDto>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<IndustryDto>>();
+        
+        Assert.NotNull(response);
+        Assert.NotNull(response.Data);
+        Assert.NotNull(response.Data.Id);
+        
+        response.Data.Name.Should().Be(dto.Name);
+        response.Data.Description.Should().Be(dto.Description);
+        response.Data.IsActive.Should().Be(dto.IsActive);
         
         return response.Data;
     }
