@@ -74,6 +74,11 @@ public class UserRepository(AppDbContext context, UserManager<UserEntity> userMa
     {
         return await userManager.AddToRoleAsync(user, role.Name!);
     }
+    
+    public async Task<IdentityResult> RemoveRoleToUser(UserEntity user, string roleName)
+    {
+        return await userManager.RemoveFromRoleAsync(user, roleName);
+    }
 
     public async Task<IList<string>> GetRolesAsync(UserEntity user)
     {

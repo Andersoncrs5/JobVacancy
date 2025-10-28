@@ -19,5 +19,6 @@ public interface IUserRepository
     Task<IList<string>> GetRolesAsync(UserEntity user);
     Task<bool> CheckPassword(UserEntity user, string password);
     Task<UserEntity?> GetByRefreshToken(string refreshToken);
+    Task<IdentityResult> RemoveRoleToUser(UserEntity user, string roleName);
 
 }
