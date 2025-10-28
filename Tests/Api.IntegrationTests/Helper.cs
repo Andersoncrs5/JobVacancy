@@ -3,8 +3,10 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
+using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Users;
+using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 
@@ -121,6 +123,38 @@ public class Helper(
         
         return response.Data;
     }
+
+    public async Task<EnterpriseDto> CreateEnterprise(UserResultTest user, IndustryDto industryDto)
+    {
+        string token = user.Tokens!.Token!;
+        client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        CreateEnterpriseDto dto = new CreateEnterpriseDto
+        {
+            Description = "New description",
+            Name = "New name" + Guid.NewGuid(),
+            Type = EnterpriseTypeEnum.MediumBusiness,
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/Enterprise", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        
+        ResponseHttp<EnterpriseDto>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<EnterpriseDto>>();
+        response.Should().NotBeNull();
+        response.Code.Should().Be(201);
+        response.Status.Should().BeTrue();
+        
+        response.Data.Should().NotBeNull();
+        response.Data.Id.Should().NotBeEmpty();
+        response.Data.Description.Should().Be(dto.Description);
+        response.Data.Name.Should().Be(dto.Name);
+        response.Data.Type.Should().Be(dto.Type);
+        response.Data.UserId.Should().Be(user.User!.Id);
+        
+        return response.Data;
+    }
+    
     public async Task<IndustryDto> CreateIndustry(ResponseTokens master)
     {
         long num = Random.Shared.NextInt64(1, 10000000000000);
