@@ -214,6 +214,7 @@ builder.Services.AddScoped<IIndustryRepository, IndustryRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
+builder.Services.AddScoped<IIndustryService, IndustryService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
