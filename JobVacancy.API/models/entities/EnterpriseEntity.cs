@@ -11,5 +11,5 @@ public class EnterpriseEntity: BaseEntity
     public EnterpriseTypeEnum Type { get; set; }
     public string UserId { get; set; }
     public virtual UserEntity? User { get; set; }
-    // public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
+    public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
 }
