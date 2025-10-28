@@ -41,7 +41,6 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
     public async Task<T> AddAsync(T entity)
     {
         EntityEntry<T> data = await _dbSet.AddAsync(entity);
-        await Context.SaveChangesAsync();
         return data.Entity;
     }
 
