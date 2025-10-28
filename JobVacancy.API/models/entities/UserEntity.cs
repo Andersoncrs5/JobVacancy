@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 namespace JobVacancy.API.models.entities;
@@ -10,4 +11,5 @@ public class UserEntity: IdentityUser
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     
+    public virtual EnterpriseEntity? Enterprise { get; set; }
 }
