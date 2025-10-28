@@ -1,3 +1,5 @@
+using JobVacancy.API.models.entities.Enums;
+
 namespace JobVacancy.API.models.entities;
 
 public class EnterpriseEntity: BaseEntity
@@ -6,6 +8,7 @@ public class EnterpriseEntity: BaseEntity
     public string? Description { get; set; }
     public string? WebSiteUrl { get; set; }
     public string? LogoUrl { get; set; }
+    public EnterpriseTypeEnum Type { get; set; } = EnterpriseTypeEnum.Undefined;
     public string UserId { get; set; } = string.Empty;
     public virtual UserEntity? User { get; set; }
     // public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
