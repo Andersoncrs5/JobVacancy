@@ -134,6 +134,17 @@ public class UserService(
         
         return ReturnResult(result, userChanged);
     }
+    
+    public async Task<UserResult> RemoveRoleToUser(UserEntity user, string roleName)
+    {
+        var result = await uow.UserRepository.RemoveRoleToUser(user, roleName);
+        if (result.Succeeded)
+            await uow.Commit();
+        
+        var userChanged = await GetUserByEmail(user.Email!);
+        
+        return ReturnResult(result, userChanged);
+    }
 
     public async Task<IList<string>> GetRolesAsync(UserEntity user)
     {
