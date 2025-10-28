@@ -11,7 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<UserEntity> Users { get; set; }
     public new DbSet<RoleEntity> Roles { get; set; }
     public new DbSet<IndustryEntity> Industries { get; set; }
-    public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
+    // public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
     public new DbSet<EnterpriseEntity> Enterprises { get; set; }
     public new DbSet<CategoryEntity> Categories { get; set; }
 
@@ -54,9 +54,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<UserEntity>(entity =>
+        {
+            entity.HasOne(e => e.Enterprise)
+                .WithOne(e => e.User);
+        });
+        
+        modelBuilder.Entity<EnterpriseEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(250).IsRequired();
+            entity.HasIndex(e => e.Name).IsUnique();
+            entity.Property(e => e.Description).IsRequired(false).HasColumnType("TEXT");
+            entity.Property(e => e.WebSiteUrl).IsRequired(false).HasColumnType("TEXT");
+            entity.Property(e => e.LogoUrl).IsRequired(false).HasColumnType("TEXT");
+
+            entity.HasOne(e => e.User)          
+                .WithOne(u => u.Enterprise)    
+                .HasForeignKey<EnterpriseEntity>(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<IndustryEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
             entity.Property(e => e.Description).HasColumnType("TEXT").IsRequired(false);
             entity.Property(e => e.IconUrl).HasColumnType("TEXT").IsRequired(false);
@@ -66,6 +88,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
             entity.Property(e => e.Description).HasColumnType("TEXT");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
