@@ -1,8 +1,10 @@
 using JobVacancy.API.models.entities;
+using JobVacancy.API.models.entities.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobVacancy.API.Context;
 
@@ -68,6 +70,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             entity.Property(e => e.Description).IsRequired(false).HasColumnType("TEXT");
             entity.Property(e => e.WebSiteUrl).IsRequired(false).HasColumnType("TEXT");
             entity.Property(e => e.LogoUrl).IsRequired(false).HasColumnType("TEXT");
+
+            var converter = new EnumToStringConverter<EnterpriseTypeEnum>();
+            
+            modelBuilder.Entity<EnterpriseEntity>()
+                .Property(e => e.Type)
+                .HasConversion(converter);
+            
+            modelBuilder.Entity<EnterpriseEntity>()
+                .Property(e => e.Type)
+                .HasMaxLength(60);
 
             entity.HasOne(e => e.User)          
                 .WithOne(u => u.Enterprise)    
