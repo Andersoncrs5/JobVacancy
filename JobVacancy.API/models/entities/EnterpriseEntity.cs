@@ -8,6 +8,5 @@ public class EnterpriseEntity: BaseEntity
     public string? LogoUrl { get; set; }
     public string UserId { get; set; } = string.Empty;
     public virtual UserEntity? User { get; set; }
-    public virtual ICollection<EnterpriseIndustryEntity> IndustryLinks { get; set; } = new List<EnterpriseIndustryEntity>();
-    
+    // public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
 }
