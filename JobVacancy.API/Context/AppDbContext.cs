@@ -13,7 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<UserEntity> Users { get; set; }
     public new DbSet<RoleEntity> Roles { get; set; }
     public new DbSet<IndustryEntity> Industries { get; set; }
-    // public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
+    public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
     public new DbSet<EnterpriseEntity> Enterprises { get; set; }
     public new DbSet<CategoryEntity> Categories { get; set; }
 
