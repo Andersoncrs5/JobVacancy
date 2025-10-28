@@ -10,7 +10,7 @@ public class IndustryRepository(AppDbContext context)
 {
     public async Task<bool> ExistsByName(string name)
     {
-        return await Context.Categories
+        return await Context.Industries
             .AnyAsync(c => c.Name == name);
     }
 }
