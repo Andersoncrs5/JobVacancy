@@ -9,6 +9,7 @@ public interface IUnitOfWork: IDisposable
     IRoleRepository RoleRepository { get; }
     ICategoryRepository CategoryRepository { get; }
     IIndustryRepository IndustryRepository { get; }
+    IEnterpriseRepository EnterpriseRepository { get; }
     
 
     Task Commit();
