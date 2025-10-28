@@ -102,6 +102,41 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Enterprises");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseIndustryEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IndustryId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("IndustryId");
+
+                    b.HasIndex("IsPrimary");
+
+                    b.ToTable("EnterpriseIndustryEntity");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -362,6 +397,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseIndustryEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("IndustryLinks")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.IndustryEntity", "Industry")
+                        .WithMany("EnterpriseLinks")
+                        .HasForeignKey("IndustryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("Industry");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
@@ -411,6 +465,16 @@ namespace JobVacancy.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
+                {
+                    b.Navigation("IndustryLinks");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
+                {
+                    b.Navigation("EnterpriseLinks");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
