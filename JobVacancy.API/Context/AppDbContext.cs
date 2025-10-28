@@ -10,6 +10,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
 { 
     public new DbSet<UserEntity> Users { get; set; }
     public new DbSet<RoleEntity> Roles { get; set; }
+    public new DbSet<IndustryEntity> Industries { get; set; }
+    public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
+    public new DbSet<EnterpriseEntity> Enterprises { get; set; }
     public new DbSet<CategoryEntity> Categories { get; set; }
 
     public override int SaveChanges()
@@ -51,6 +54,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<IndustryEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+            entity.Property(e => e.Description).HasColumnType("TEXT").IsRequired(false);
+            entity.Property(e => e.IconUrl).HasColumnType("TEXT").IsRequired(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+        });
+        
         modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
