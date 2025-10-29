@@ -19,6 +19,7 @@ public class UnitOfWork(
     private CategoryRepository? _categoryRepository;
     private IndustryRepository? _industryRepository;
     private EnterpriseRepository? _enterpriseRepository;
+    private EnterpriseIndustryRepository? _enterpriseIndustryRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -34,6 +35,8 @@ public class UnitOfWork(
     
     public IEnterpriseRepository EnterpriseRepository
         => _enterpriseRepository ??= new EnterpriseRepository(context);
+    public IEnterpriseIndustryRepository EnterpriseIndustryRepository
+        => _enterpriseIndustryRepository ??= new EnterpriseIndustryRepository(context);
 
     public async Task Commit() => await context.SaveChangesAsync();
     

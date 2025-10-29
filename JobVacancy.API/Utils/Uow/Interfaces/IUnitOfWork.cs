@@ -10,6 +10,7 @@ public interface IUnitOfWork: IDisposable
     ICategoryRepository CategoryRepository { get; }
     IIndustryRepository IndustryRepository { get; }
     IEnterpriseRepository EnterpriseRepository { get; }
+    IEnterpriseIndustryRepository EnterpriseIndustryRepository { get; }
     
 
     Task Commit();
