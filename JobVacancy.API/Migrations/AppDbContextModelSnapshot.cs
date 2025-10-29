@@ -134,7 +134,7 @@ namespace JobVacancy.API.Migrations
 
                     b.HasIndex("IsPrimary");
 
-                    b.ToTable("EnterpriseIndustryEntity");
+                    b.ToTable("EnterpriseIndustries");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
