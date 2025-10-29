@@ -6,4 +6,5 @@ public interface IEnterpriseIndustryRepository: IGenericRepository<EnterpriseInd
 {
     Task<bool> ExistsByIndustryIdAndEnterpriseId(string industryId, string enterpriseId);
     Task<EnterpriseIndustryEntity?> GetByIndustryIdAndEnterpriseId(string industryId, string enterpriseId);
+    Task<int> GetAmountIndustryByEnterpriseId(string enterpriseId);
 }

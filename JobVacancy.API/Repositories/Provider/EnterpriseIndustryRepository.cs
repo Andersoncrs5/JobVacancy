@@ -20,4 +20,9 @@ public class EnterpriseIndustryRepository(AppDbContext context)
             .FirstOrDefaultAsync();
     }
 
+    public async Task<int> GetAmountIndustryByEnterpriseId(string enterpriseId)
+    {
+        return await context.EnterpriseIndustries.CountAsync(u => u.EnterpriseId == enterpriseId);
+    }
+    
 }
