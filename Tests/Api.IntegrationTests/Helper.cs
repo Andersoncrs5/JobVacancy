@@ -4,6 +4,7 @@ using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
+using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities.Enums;
@@ -185,4 +186,49 @@ public class Helper(
         
         return response.Data;
     }
+    
+    public async Task<IndustryDto> CreateIndustryWithIsActive(ResponseTokens master, bool isActive)
+    {
+        long num = Random.Shared.NextInt64(1, 10000000000000);
+        
+        string token = master.Token!;
+        client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        CreateIndustryDto dto = new CreateIndustryDto
+        {
+            IsActive = isActive,
+            Name = $"Test{num}",
+            Description = $"Test description {num}",
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/Industry", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<IndustryDto>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<IndustryDto>>();
+        
+        Assert.NotNull(response);
+        Assert.NotNull(response.Data);
+        Assert.NotNull(response.Data.Id);
+        
+        response.Data.Name.Should().Be(dto.Name);
+        response.Data.Description.Should().Be(dto.Description);
+        response.Data.IsActive.Should().Be(dto.IsActive);
+        
+        return response.Data;
+    }
+
+    public async Task CreateEnterpriseIndustry(string enterpriseId, string industryId)
+    {
+        CreateEnterpriseIndustryDto dto = new CreateEnterpriseIndustryDto
+        {
+            EnterpriseId = enterpriseId,
+            IndustryId = industryId,
+            IsPrimary = true
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/EnterpriseIndustry", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+    
 }
