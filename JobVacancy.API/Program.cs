@@ -211,12 +211,14 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IIndustryRepository, IndustryRepository>();
 builder.Services.AddScoped<IEnterpriseRepository, EnterpriseRepository>();
+builder.Services.AddScoped<IEnterpriseIndustryRepository, EnterpriseIndustryRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IIndustryService, IndustryService>();
 builder.Services.AddScoped<IEnterpriseService, EnterpriseService>();
+builder.Services.AddScoped<IEnterpriseIndustryService, EnterpriseIndustryService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
