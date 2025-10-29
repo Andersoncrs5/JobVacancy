@@ -4,6 +4,7 @@ using JobVacancy.API.models.entities;
 using AutoMapper;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
+using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.Utils.Page;
 
@@ -38,5 +39,8 @@ public class ConfigMapper: Profile
         CreateMap<CreateEnterpriseDto, EnterpriseEntity>();
         CreateMap<EnterpriseEntity, EnterpriseDto>();
 
+        // Enterprise industry
+        CreateMap<EnterpriseIndustryEntity, EnterpriseIndustryDto>();
+        
     }
 }
