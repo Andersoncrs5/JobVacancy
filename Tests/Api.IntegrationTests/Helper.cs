@@ -218,17 +218,25 @@ public class Helper(
         return response.Data;
     }
 
-    public async Task CreateEnterpriseIndustry(string enterpriseId, string industryId)
+    public async Task<string> CreateEnterpriseIndustry(string enterpriseId, string industryId, bool isPrimary = true)
     {
         CreateEnterpriseIndustryDto dto = new CreateEnterpriseIndustryDto
         {
             EnterpriseId = enterpriseId,
             IndustryId = industryId,
-            IsPrimary = true
+            IsPrimary = isPrimary
         };
 
         HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/EnterpriseIndustry", dto);
         message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<string>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<string>>();
+        
+        http.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+        http.Data.Should().NotBeNull();
+        
+        return http.Data;
     }
     
 }
