@@ -12,4 +12,5 @@ public class UserEntity: IdentityUser
     public DateTime? UpdatedAt { get; set; }
     
     public virtual EnterpriseEntity? Enterprise { get; set; }
+    public virtual ICollection<PostUserEntity> Posts { get; set; } = new List<PostUserEntity>();
 }
