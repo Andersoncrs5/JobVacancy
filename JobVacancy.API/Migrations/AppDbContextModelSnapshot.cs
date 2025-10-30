@@ -25,6 +25,45 @@ namespace JobVacancy.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.BasePostTable", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("boolean");
+
+                    b.Property<short?>("ReadingTimeMinutes")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PostsBase", (string)null);
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.CategoryEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -384,6 +423,25 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
+                {
+                    b.HasBaseType("JobVacancy.API.models.entities.BasePostTable");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostUsers", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
@@ -465,6 +523,36 @@ namespace JobVacancy.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.CategoryEntity", "Category")
+                        .WithMany("Posts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.BasePostTable", null)
+                        .WithOne()
+                        .HasForeignKey("JobVacancy.API.models.entities.PostUserEntity", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.CategoryEntity", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
                     b.Navigation("IndustryLinks");
@@ -478,6 +566,8 @@ namespace JobVacancy.API.Migrations
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
                 {
                     b.Navigation("Enterprise");
+
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }
