@@ -8,4 +8,5 @@ public abstract class BasePostTable: BaseEntity
     public bool IsActive { get; set; } = true;
     public bool IsFeatured { get; set; } = false;
     public int? ReadingTimeMinutes { get; set; }
+    public string CategoryId { get; set; } = string.Empty;
 }
