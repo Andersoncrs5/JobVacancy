@@ -20,23 +20,22 @@ public class UnitOfWork(
     private IndustryRepository? _industryRepository;
     private EnterpriseRepository? _enterpriseRepository;
     private EnterpriseIndustryRepository? _enterpriseIndustryRepository;
+    private PostUserRepository? _postUserRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
-
     public IRoleRepository RoleRepository
         => _roleRepository ??= new RoleRepository(roleManager);
-    
     public ICategoryRepository CategoryRepository
         => _categoryRepository ??= new CategoryRepository(context);
-    
     public IIndustryRepository IndustryRepository
         => _industryRepository ??= new IndustryRepository(context);
-    
     public IEnterpriseRepository EnterpriseRepository
         => _enterpriseRepository ??= new EnterpriseRepository(context);
     public IEnterpriseIndustryRepository EnterpriseIndustryRepository
         => _enterpriseIndustryRepository ??= new EnterpriseIndustryRepository(context);
+    public IPostUserRepository PostUserRepository
+        => _postUserRepository ??= new PostUserRepository(context);
 
     public async Task Commit() => await context.SaveChangesAsync();
     
