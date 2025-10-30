@@ -91,7 +91,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.IsPrimary);
-            entity.Property(e => e.IsPrimary).HasDefaultValue(false);
+            entity.Property(e => e.IsPrimary).IsRequired();
             
             entity.HasOne(ei => ei.Enterprise)
                 .WithMany(e => e.IndustryLinks) 
