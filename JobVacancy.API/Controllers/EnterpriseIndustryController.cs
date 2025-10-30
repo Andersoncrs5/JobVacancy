@@ -288,8 +288,8 @@ public class EnterpriseIndustryController(
         }
     }
 
-    [HttpPut("{id:required}/toggle/status/is-primary")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<string>))]
+    [HttpPatch("{id:required}/toggle/status/is-primary")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<bool>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
     [Authorize(Roles = "ENTERPRISE_ROLE")]
@@ -316,12 +316,12 @@ public class EnterpriseIndustryController(
             }
             
             entity.IsPrimary = !entity.IsPrimary;
-            await enterpriseIndustryService.UpdateSimple(entity);
+            EnterpriseIndustryEntity simple = await enterpriseIndustryService.UpdateSimple(entity);
             
-            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<object>
+            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<bool>
             {
                 Code = StatusCodes.Status200OK,
-                Data = null,
+                Data = simple.IsPrimary,
                 Message = "Status is primary changed with successfully",
                 Status = true,
                 Timestamp = DateTimeOffset.UtcNow,
