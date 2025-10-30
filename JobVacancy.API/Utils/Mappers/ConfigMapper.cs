@@ -41,6 +41,7 @@ public class ConfigMapper: Profile
 
         // Enterprise industry
         CreateMap<EnterpriseIndustryEntity, EnterpriseIndustryDto>();
+        CreateMap<EnterpriseIndustryDto, EnterpriseIndustryEntity>();
         
     }
 }
