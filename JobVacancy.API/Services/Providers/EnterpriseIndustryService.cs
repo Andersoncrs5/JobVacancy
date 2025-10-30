@@ -51,11 +51,19 @@ public class EnterpriseIndustryService(IUnitOfWork uow, IMapper mapper): IEnterp
     public void Delete(EnterpriseIndustryEntity entity)
     {
         uow.EnterpriseIndustryRepository.Delete(entity);
+        uow.Commit();
     }
 
     public IQueryable<EnterpriseIndustryEntity> GetQuery()
     {
         return uow.EnterpriseIndustryRepository.ReturnIQueryable();
+    }
+    
+    public async Task<EnterpriseIndustryEntity> UpdateSimple(EnterpriseIndustryEntity entity)
+    {
+        EnterpriseIndustryEntity update = await uow.EnterpriseIndustryRepository.Update(entity);
+        await uow.Commit();
+        return update;
     }
     
 }

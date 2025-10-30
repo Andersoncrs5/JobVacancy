@@ -12,4 +12,5 @@ public interface IEnterpriseIndustryService
     void Delete(EnterpriseIndustryEntity entity);
     IQueryable<EnterpriseIndustryEntity> GetQuery();
     Task<int> CheckAmount(string enterpriseId);
+    Task<EnterpriseIndustryEntity> UpdateSimple(EnterpriseIndustryEntity entity);
 }
