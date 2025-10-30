@@ -16,6 +16,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<EnterpriseIndustryEntity> EnterpriseIndustries { get; set; }
     public new DbSet<EnterpriseEntity> Enterprises { get; set; }
     public new DbSet<CategoryEntity> Categories { get; set; }
+    public new DbSet<PostUserEntity> PostUser { get; set;  }
 
     public override int SaveChanges()
     {
@@ -60,6 +61,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         {
             entity.HasOne(e => e.Enterprise)
                 .WithOne(e => e.User);
+        });
+
+        modelBuilder.Entity<BasePostTable>(options =>
+        {
+            options.UseTptMappingStrategy();
+            options.ToTable("PostsBase");
+            options.Property(c => c.Title).HasMaxLength(500).IsRequired();
+            options.Property(c => c.Content).HasColumnType("TEXT").IsRequired();
+            options.Property(c => c.ImageUrl).HasColumnType("TEXT").IsRequired(false);
+            options.Property(c => c.ReadingTimeMinutes).HasColumnType("SMALLINT").IsRequired(false);
+        });
+        
+        modelBuilder.Entity<PostUserEntity>(options =>
+        {
+            options.ToTable("PostUsers");
+            options.HasBaseType<BasePostTable>();
+            options.HasOne(e => e.User)
+                .WithMany(e => e.Posts)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            
+            options.HasOne(e => e.Category)
+                .WithMany(e => e.Posts)
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired();
         });
         
         modelBuilder.Entity<EnterpriseEntity>(entity =>
