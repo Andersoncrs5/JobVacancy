@@ -240,7 +240,7 @@ public class Helper(
         return http.Data;
     }
 
-    public async Task<PostUserDto> CreatePostUser(CategoryDto categoryDto, string userId)
+    public async Task<PostUserDto> CreatePostUser(CategoryDto categoryDto, string userId, int readingTimeMinutes = 5)
     {
         CreatePostUserDto dto = new CreatePostUserDto
         {
@@ -248,7 +248,7 @@ public class Helper(
             Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
             IsActive = true,
             ImageUrl = "https://github.com/Andersoncrs5",
-            ReadingTimeMinutes = 4,
+            ReadingTimeMinutes = readingTimeMinutes,
             Title = "A Title simple to a post simple"
         };
         
