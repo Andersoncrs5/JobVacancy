@@ -367,7 +367,7 @@ public class EnterpriseIndustryControllerTest: IClassFixture<CustomWebApplicatio
         ResponseHttp<string>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<string>>();
         response.Should().NotBeNull();
         response.Status.Should().BeTrue();
-        response.Data.Should().NotBeNullOrEmpty(); // Espera o ID da nova relação
+        response.Data.Should().NotBeNullOrEmpty();
         response.Message.Should().Be("Industry added with successfully");
     }
     
