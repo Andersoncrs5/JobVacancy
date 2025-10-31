@@ -11,6 +11,7 @@ public interface IUnitOfWork: IDisposable
     IIndustryRepository IndustryRepository { get; }
     IEnterpriseRepository EnterpriseRepository { get; }
     IEnterpriseIndustryRepository EnterpriseIndustryRepository { get; }
+    IPostUserRepository PostUserRepository { get; }
     
 
     Task Commit();
