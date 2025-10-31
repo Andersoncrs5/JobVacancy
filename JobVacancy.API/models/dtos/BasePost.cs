@@ -1,3 +1,5 @@
+using JobVacancy.API.models.dtos.Category;
+
 namespace JobVacancy.API.models.dtos;
 
 public class BasePost: BaseDto
@@ -9,4 +11,5 @@ public class BasePost: BaseDto
     public bool IsFeatured { get; set; } = false;
     public int? ReadingTimeMinutes { get; set; }
     public string CategoryId { get; set; } = string.Empty;
+    public CategoryDto? Category { get; set; }
 }
