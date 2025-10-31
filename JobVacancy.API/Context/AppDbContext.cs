@@ -66,7 +66,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<BasePostTable>(options =>
         {
             options.UseTptMappingStrategy();
-            options.ToTable("PostsBase");
             options.Property(c => c.Title).HasMaxLength(500).IsRequired();
             options.Property(c => c.Content).HasColumnType("TEXT").IsRequired();
             options.Property(c => c.ImageUrl).HasColumnType("TEXT").IsRequired(false);
@@ -75,7 +74,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         
         modelBuilder.Entity<PostUserEntity>(options =>
         {
-            options.ToTable("PostUsers");
             options.HasBaseType<BasePostTable>();
             options.HasOne(e => e.User)
                 .WithMany(e => e.Posts)
