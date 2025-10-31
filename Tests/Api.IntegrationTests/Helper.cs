@@ -6,6 +6,7 @@ using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
@@ -98,7 +99,7 @@ public class Helper(
         };
     }
 
-    public async Task<CategoryDto> CreateCategory(ResponseTokens master)
+    public async Task<CategoryDto> CreateCategory(ResponseTokens master, bool isActive = true)
     {
         int num = Random.Shared.Next(1, 10000000);
         
@@ -108,7 +109,7 @@ public class Helper(
 
         CreateCategoryDto dto = new CreateCategoryDto
         {
-            IsActive = true,
+            IsActive = isActive,
             Name = $"Test{num}",
             Description = $"Test description {num}",
         };
@@ -235,6 +236,36 @@ public class Helper(
         http.Should().NotBeNull();
         http.Status.Should().BeTrue();
         http.Data.Should().NotBeNull();
+        
+        return http.Data;
+    }
+
+    public async Task<PostUserDto> CreatePostUser(CategoryDto categoryDto, string userId)
+    {
+        CreatePostUserDto dto = new CreatePostUserDto
+        {
+            CategoryId = categoryDto.Id,
+            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            IsActive = true,
+            ImageUrl = "https://github.com/Andersoncrs5",
+            ReadingTimeMinutes = 4,
+            Title = "A Title simple to a post simple"
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/PostUser", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        ResponseHttp<PostUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostUserDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().NotBeEmpty();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.CategoryId.Should().Be(dto.CategoryId);
+        http.Data.IsActive.Should().Be(dto.IsActive);
+        http.Data.ReadingTimeMinutes.Should().Be(dto.ReadingTimeMinutes);
+        http.Data.ImageUrl.Should().Be(dto.ImageUrl);
+        http.Data.UserId.Should().Be(userId);
         
         return http.Data;
     }
