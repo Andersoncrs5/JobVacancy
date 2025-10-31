@@ -4,6 +4,7 @@ using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.PostUser;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
@@ -207,5 +208,245 @@ public class PostUserControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Message.Should().NotBeNull();
         http.Status.Should().BeFalse();
     }
+    
+    [Fact]
+    public async Task Delete()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id);
+
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{postUser.Id}");
+        message.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        http.Code.Should().Be(204);
+        http.Message.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DeleteNotFound()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id);
+
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        http.Code.Should().Be(404);
+        http.Message.Should().NotBeNull();
+        http.Status.Should().BeFalse();
+    }
+    
+    [Fact]
+    public async Task DeleteNotFoundThrowForb()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id);
+        
+        token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task DeleteNotFoundThrowForbBecauseAnotherUser()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        UserResultTest user1 = await _helper.CreateAndGetUser();
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id);
+        
+        token = user1.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{postUser.Id}");
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        http.Code.Should().Be(403);
+        http.Message.Should().NotBeNull();
+        http.Status.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task GetAll()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        string token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        HttpResponseMessage message = await _client.GetAsync($"{_url}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<PostUserDto>? http = await message.Content.ReadFromJsonAsync<Page<PostUserDto>>();
+        http.Should().NotBeNull();
+        http.PageIndex.Should().Be(1);
+        http.PageSize.Should().Be(10);
+    }
+    
+    [Fact]
+    public async Task GetAllByFilterPost()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id, 10);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}?" +
+                                                             $"Title={postUser.Title}" +
+                                                             $"&Content={postUser.Content}" +
+                                                             $"&IsActive={postUser.IsActive}" +
+                                                             $"&IsFeatured={postUser.IsFeatured}" +
+                                                             $"&ReadingTimeMinutesBefore={(postUser.ReadingTimeMinutes + 2)}" +
+                                                             $"&ReadingTimeMinutesAfter={(postUser.ReadingTimeMinutes - 2)}" + 
+                                                             $"&CategoryId={postUser.CategoryId}");
+        
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<PostUserDto>? http = await message.Content.ReadFromJsonAsync<Page<PostUserDto>>();
+        http.Should().NotBeNull();
+        http.PageIndex.Should().Be(1);
+        http.PageSize.Should().Be(10);
+        
+        http.Data.Should().NotBeNull();
+        http.Data.First().Should().NotBeNull();
+        http.Data.First().Id.Should().Be(postUser.Id);
+    }
+
+    [Fact]
+    public async Task GetAllByFilterCategory()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id, 10);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}?" +
+                                                             $"CategoryId={postUser.CategoryId}" +
+                                                             $"&NameCategory={postUser.Category!.Name}");
+        
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<PostUserDto>? http = await message.Content.ReadFromJsonAsync<Page<PostUserDto>>();
+        http.Should().NotBeNull();
+        http.PageIndex.Should().Be(1);
+        http.PageSize.Should().Be(10);
+        
+        http.Data.Should().NotBeNull();
+        http.Data.First().Should().NotBeNull();
+        http.Data.First().Id.Should().Be(postUser.Id);
+    }
+    
+    [Fact]
+    public async Task GetAllByFilterUser()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        
+        string token = master.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        CategoryDto categoryDto = await _helper.CreateCategory(master);
+
+        UserResultTest user = await _helper.CreateAndGetUser();
+        
+        token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        PostUserDto postUser = await _helper.CreatePostUser(categoryDto, user.User!.Id, 10);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}?" +
+                                                             $"UserId={postUser.UserId}" +
+                                                             $"&FullNameUser={postUser.User!.FullName}" +
+                                                             $"&UserName={postUser.User!.Username}" +
+                                                             $"&EmailUser={postUser.User!.Email}");
+        
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<PostUserDto>? http = await message.Content.ReadFromJsonAsync<Page<PostUserDto>>();
+        http.Should().NotBeNull();
+        http.PageIndex.Should().Be(1);
+        http.PageSize.Should().Be(10);
+        
+        http.Data.Should().NotBeNull();
+        http.Data.First().Should().NotBeNull();
+        http.Data.First().Id.Should().Be(postUser.Id);
+    }
+
     
 }
