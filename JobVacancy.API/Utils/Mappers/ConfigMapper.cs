@@ -48,5 +48,6 @@ public class ConfigMapper: Profile
         CreateMap<CreatePostUserDto, PostUserEntity>();
         CreateMap<UpdatePostUserDto, PostUserEntity>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<PostUserEntity, PostUserDto>();
     }
 }
