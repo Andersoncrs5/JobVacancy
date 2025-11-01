@@ -6,6 +6,7 @@ using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities.Enums;
@@ -266,6 +267,36 @@ public class Helper(
         http.Data.ReadingTimeMinutes.Should().Be(dto.ReadingTimeMinutes);
         http.Data.ImageUrl.Should().Be(dto.ImageUrl);
         http.Data.UserId.Should().Be(userId);
+        
+        return http.Data;
+    }
+
+    public async Task<PostEnterpriseDto> CreatePostEnterprise(CategoryDto categoryDto, bool isActive = true)
+    {
+        CreatePostEnterpriseDto dto = new CreatePostEnterpriseDto
+        {
+            CategoryId = categoryDto.Id,
+            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            IsActive = isActive,
+            ImageUrl = "https://github.com/Andersoncrs5",
+            ReadingTimeMinutes = 4,
+            Title = "A Title simple to a post simple"
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/PostEnterprise", dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        ResponseHttp<PostEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<PostEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().NotBeEmpty();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.CategoryId.Should().Be(dto.CategoryId);
+        http.Data.IsActive.Should().Be(dto.IsActive);
+        http.Data.ReadingTimeMinutes.Should().Be(dto.ReadingTimeMinutes);
+        http.Data.ImageUrl.Should().Be(dto.ImageUrl);
         
         return http.Data;
     }
