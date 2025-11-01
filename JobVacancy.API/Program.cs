@@ -224,6 +224,7 @@ builder.Services.AddScoped<IEnterpriseService, EnterpriseService>();
 builder.Services.AddScoped<IEnterpriseIndustryService, EnterpriseIndustryService>();
 builder.Services.AddScoped<IPostUserService, PostUserService>();
 builder.Services.AddScoped<IPostEnterpriseService, PostEnterpriseService>();
+builder.Services.AddScoped<ISkillService, SkillService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
