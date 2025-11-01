@@ -12,4 +12,5 @@ public class EnterpriseEntity: BaseEntity
     public string UserId { get; set; }
     public virtual UserEntity? User { get; set; }
     public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
+    public virtual ICollection<PostEnterpriseEntity> Posts { get; set; } = new List<PostEnterpriseEntity>();
 }
