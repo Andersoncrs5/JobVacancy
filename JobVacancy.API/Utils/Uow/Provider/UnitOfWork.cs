@@ -21,6 +21,7 @@ public class UnitOfWork(
     private EnterpriseRepository? _enterpriseRepository;
     private EnterpriseIndustryRepository? _enterpriseIndustryRepository;
     private PostUserRepository? _postUserRepository;
+    private PostEnterpriseRepository? _postEnterpriseRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -36,8 +37,21 @@ public class UnitOfWork(
         => _enterpriseIndustryRepository ??= new EnterpriseIndustryRepository(context);
     public IPostUserRepository PostUserRepository
         => _postUserRepository ??= new PostUserRepository(context);
-
-    public async Task Commit() => await context.SaveChangesAsync();
+    public IPostEnterpriseRepository PostEnterpriseRepository
+        => _postEnterpriseRepository ??= new PostEnterpriseRepository(context);
+    
+    public async Task Commit() 
+    {
+        try
+        {
+            await context.SaveChangesAsync();
+        } 
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
     
     public Task<IDbContextTransaction> BeginTransactionAsync()
     {
