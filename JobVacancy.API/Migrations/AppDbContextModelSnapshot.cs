@@ -59,7 +59,7 @@ namespace JobVacancy.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BasePostTable");
+                    b.ToTable("PostsBase", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -439,7 +439,7 @@ namespace JobVacancy.API.Migrations
 
                     b.HasIndex("EnterpriseId");
 
-                    b.ToTable("PostEnterpriseEntity");
+                    b.ToTable("PostEnterprises", (string)null);
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
@@ -458,7 +458,7 @@ namespace JobVacancy.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PostUser");
+                    b.ToTable("PostUsers", (string)null);
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>

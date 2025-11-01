@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<EnterpriseEntity> Enterprises { get; set; }
     public new DbSet<CategoryEntity> Categories { get; set; }
     public new DbSet<PostUserEntity> PostUser { get; set;  }
+    public new DbSet<PostEnterpriseEntity> PostEnterprise { get; set;  }
 
     public override int SaveChanges()
     {
@@ -66,6 +67,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<BasePostTable>(options =>
         {
             options.UseTptMappingStrategy();
+            options.ToTable("PostsBase");
             options.Property(c => c.Title).HasMaxLength(500).IsRequired();
             options.Property(c => c.Content).HasColumnType("TEXT").IsRequired();
             options.Property(c => c.ImageUrl).HasColumnType("TEXT").IsRequired(false);
@@ -75,6 +77,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<PostEnterpriseEntity>(options =>
         {
             options.HasBaseType<BasePostTable>();
+            options.ToTable("PostEnterprises");
             options.HasOne(e => e.Enterprise)
                 .WithMany(e => e.Posts)
                 .HasForeignKey(e => e.EnterpriseId)
@@ -89,6 +92,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<PostUserEntity>(options =>
         {
             options.HasBaseType<BasePostTable>();
+            options.ToTable("PostUsers");
             options.HasOne(e => e.User)
                 .WithMany(e => e.Posts)
                 .HasForeignKey(e => e.UserId)
