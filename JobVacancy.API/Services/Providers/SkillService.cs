@@ -40,7 +40,18 @@ public class SkillService(IUnitOfWork uow, IMapper  mapper): ISkillService
 
     public async Task<SkillEntity> UpdateAsync(UpdateSkillDto dto, SkillEntity skill)
     {
+        bool value = skill.IsActive;
+        
         mapper.Map(dto, skill);
+
+        if (dto.IsActive != null)
+        {
+            skill.IsActive =  dto.IsActive.Value;
+        }
+        else
+        {
+            skill.IsActive = value;
+        }
 
         SkillEntity update = await uow.SkillRepository.Update(skill);
         await uow.Commit();
