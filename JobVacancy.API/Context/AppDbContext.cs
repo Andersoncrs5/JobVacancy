@@ -71,6 +71,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.Property(c => c.ImageUrl).HasColumnType("TEXT").IsRequired(false);
             options.Property(c => c.ReadingTimeMinutes).HasColumnType("SMALLINT").IsRequired(false);
         });
+
+        modelBuilder.Entity<PostEnterpriseEntity>(options =>
+        {
+            options.HasBaseType<BasePostTable>();
+            options.HasOne(e => e.Enterprise)
+                .WithMany(e => e.Posts)
+                .HasForeignKey(e => e.EnterpriseId)
+                .IsRequired();
+            
+            options.HasOne(e => e.Category)
+                .WithMany(e => e.PostsEnterprise)
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired();
+        });
         
         modelBuilder.Entity<PostUserEntity>(options =>
         {
