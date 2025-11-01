@@ -24,7 +24,7 @@ public class PostEnterpriseService(IUnitOfWork uow, IMapper mapper): IPostEnterp
         await uow.Commit();
     }
 
-    public async Task<PostEnterpriseEntity> Create(CreatePostEnterpriseDto dto, string enterpriseId) // 🔑 ';' Removido
+    public async Task<PostEnterpriseEntity> Create(CreatePostEnterpriseDto dto, string enterpriseId)
     {
         PostEnterpriseEntity map = mapper.Map<PostEnterpriseEntity>(dto);
         map.EnterpriseId = enterpriseId;
