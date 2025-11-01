@@ -13,4 +13,6 @@ public class UserEntity: IdentityUser
     
     public virtual EnterpriseEntity? Enterprise { get; set; }
     public virtual ICollection<PostUserEntity> Posts { get; set; } = new List<PostUserEntity>();
+    public virtual ICollection<UserSkillEntity>? UserSkill { get; set; } 
+    
 }
