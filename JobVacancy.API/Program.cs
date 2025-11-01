@@ -215,6 +215,7 @@ builder.Services.AddScoped<IEnterpriseIndustryRepository, EnterpriseIndustryRepo
 builder.Services.AddScoped<IPostUserRepository, PostUserRepository>();
 builder.Services.AddScoped<IPostEnterpriseRepository, PostEnterpriseRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
