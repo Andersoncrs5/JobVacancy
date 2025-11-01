@@ -22,6 +22,7 @@ public class UnitOfWork(
     private EnterpriseIndustryRepository? _enterpriseIndustryRepository;
     private PostUserRepository? _postUserRepository;
     private PostEnterpriseRepository? _postEnterpriseRepository;
+    private SkillRepository? _skillRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -39,6 +40,8 @@ public class UnitOfWork(
         => _postUserRepository ??= new PostUserRepository(context);
     public IPostEnterpriseRepository PostEnterpriseRepository
         => _postEnterpriseRepository ??= new PostEnterpriseRepository(context);
+    public ISkillRepository SkillRepository
+        => _skillRepository ??= new SkillRepository(context);
     
     public async Task Commit() 
     {
