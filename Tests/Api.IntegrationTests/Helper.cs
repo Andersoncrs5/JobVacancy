@@ -8,6 +8,7 @@ using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
+using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
@@ -19,6 +20,31 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<SkillDto> CreateSkill()
+    {
+        CreateSkillDto dto = new CreateSkillDto
+        {
+            Name = "TestSkill" + Guid.NewGuid().ToString(),
+            Description = "TestSkill" + Guid.NewGuid().ToString(),
+            IconUrl = "https://github.com/Andersoncrs5",
+            IsActive = true
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/Skill", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<SkillDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<SkillDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        http.Data.Name.Should().Be(dto.Name);
+        http.Data.Description.Should().Be(dto.Description);
+        http.Data.IconUrl.Should().Be(dto.IconUrl);
+        http.Data.IsActive.Should().Be(true);
+        http.Data.Id.Should().NotBeEmpty();
+        
+        return http.Data;
+    }
+    
     public async Task<ResponseTokens> LoginMaster(IConfiguration configuration)
     {
         var datasSystemSection = configuration.GetSection("DataSystem");
