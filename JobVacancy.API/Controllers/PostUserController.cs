@@ -114,7 +114,7 @@ public class PostUserController(
     }
 
     [HttpGet("{id:required}")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ResponseHttp<PostUserDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<PostUserDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
     public async Task<IActionResult> Get(string id)
