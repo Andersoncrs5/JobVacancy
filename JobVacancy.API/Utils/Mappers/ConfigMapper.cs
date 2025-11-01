@@ -6,6 +6,7 @@ using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.Utils.Page;
 
@@ -49,5 +50,11 @@ public class ConfigMapper: Profile
         CreateMap<UpdatePostUserDto, PostUserEntity>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<PostUserEntity, PostUserDto>();
+        
+        // PostEnterprise
+        CreateMap<CreatePostEnterpriseDto, PostEnterpriseEntity>();
+        CreateMap<UpdatePostEnterpriseDto, PostEnterpriseEntity>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<PostEnterpriseEntity, PostEnterpriseDto>();
     }
 }
