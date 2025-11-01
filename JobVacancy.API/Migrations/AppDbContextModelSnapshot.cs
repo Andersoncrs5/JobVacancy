@@ -423,6 +423,25 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
+                {
+                    b.HasBaseType("JobVacancy.API.models.entities.BasePostTable");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.ToTable("PostEnterpriseEntity");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
                 {
                     b.HasBaseType("JobVacancy.API.models.entities.BasePostTable");
@@ -523,6 +542,31 @@ namespace JobVacancy.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.CategoryEntity", "Category")
+                        .WithMany("PostsEnterprise")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("Posts")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.BasePostTable", null)
+                        .WithOne()
+                        .HasForeignKey("JobVacancy.API.models.entities.PostEnterpriseEntity", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Enterprise");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.CategoryEntity", "Category")
@@ -551,11 +595,15 @@ namespace JobVacancy.API.Migrations
             modelBuilder.Entity("JobVacancy.API.models.entities.CategoryEntity", b =>
                 {
                     b.Navigation("Posts");
+
+                    b.Navigation("PostsEnterprise");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
                     b.Navigation("IndustryLinks");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
