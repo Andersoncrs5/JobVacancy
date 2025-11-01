@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<PostUserEntity> PostUser { get; set;  }
     public new DbSet<PostEnterpriseEntity> PostEnterprise { get; set;  }
     public new DbSet<SkillEntity> Skill { get; set;  }
+    public new DbSet<UserSkillEntity> UserSkill { get; set; }
 
     public override int SaveChanges()
     {
@@ -58,12 +59,36 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<UserSkillEntity>(options =>
+        {
+            options.HasKey(e => e.Id);
+            options.HasIndex(e => e.UserId);
+            options.HasIndex(e => e.SkillId);
+
+            options.Property(e => e.YearsOfExperience).IsRequired(false);
+            options.Property(e => e.ExternalCertificateUrl).IsRequired(false);
+            options.Property(e => e.ProficiencyLevel).IsRequired(false);
+
+            options.HasOne(e => e.Skill)
+                .WithMany(e => e.UserSkill)
+                .HasForeignKey(e => e.SkillId)
+                .IsRequired();
+            
+            options.HasOne(e => e.User)
+                .WithMany(e => e.UserSkill)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            
+            options.HasIndex(e => new { e.UserId, e.SkillId })
+                .IsUnique();
+        });
+        
         modelBuilder.Entity<SkillEntity>(options =>
         {
             options.ToTable("Skills");
             options.HasKey(s => s.Id);
             options.Property(s => s.Name).HasMaxLength(150).IsRequired();
-            options.HasIndex(s => s.Name);
+            options.HasIndex(s => s.Name).IsUnique();
             options.Property(s => s.Description).HasMaxLength(500).IsRequired(false);
             options.Property(s => s.IconUrl).HasColumnType("TEXT").IsRequired(false);
             options.HasIndex(s => s.IsActive);

@@ -268,7 +268,8 @@ namespace JobVacancy.API.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Skills", (string)null);
                 });
@@ -350,6 +351,46 @@ namespace JobVacancy.API.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("app_users", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserSkillEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExternalCertificateUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ProficiencyLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SkillId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("YearsOfExperience")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "SkillId")
+                        .IsUnique();
+
+                    b.ToTable("UserSkillEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -526,6 +567,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Industry");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserSkillEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.SkillEntity", "Skill")
+                        .WithMany("UserSkill")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("UserSkill")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skill");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
@@ -646,11 +706,18 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("EnterpriseLinks");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.SkillEntity", b =>
+                {
+                    b.Navigation("UserSkill");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
                 {
                     b.Navigation("Enterprise");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("UserSkill");
                 });
 #pragma warning restore 612, 618
         }
