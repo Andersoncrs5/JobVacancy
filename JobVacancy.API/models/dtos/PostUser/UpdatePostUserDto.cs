@@ -6,6 +6,5 @@ public class UpdatePostUserDto
     public string? Content { get; set; }
     public string? ImageUrl { get; set; }
     public bool? IsActive { get; set; }
-    public bool? IsFeatured { get; set; }
     public int? ReadingTimeMinutes { get; set; }
 }
