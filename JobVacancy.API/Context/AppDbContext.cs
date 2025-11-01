@@ -39,7 +39,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = DateTime.UtcNow;
                 entry.Entity.Id = entry.Entity.Id ?? Guid.NewGuid().ToString();
             }
             else if (entry.State == EntityState.Modified)
