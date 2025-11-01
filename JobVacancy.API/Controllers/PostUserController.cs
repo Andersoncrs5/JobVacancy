@@ -274,5 +274,77 @@ public class PostUserController(
             });
         }
     }
+
+    [HttpPatch("{id:required}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<PostUserDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    [Authorize(Roles = "USER_ROLE")]
+    public async Task<IActionResult> Patch(string id, [FromBody] UpdatePostUserDto dto)
+    {
+        try
+        {
+            string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (userId == null) return Unauthorized();
+            
+            PostUserEntity? post = await postUserService.GetById(id);
+            if (post == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Message = "Post not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
+            if (post.UserId != userId)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status403Forbidden,
+                    Message = "This post is not yours",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
+            PostUserEntity update = await postUserService.Update(dto, post);
+
+            PostUserDto map = mapper.Map<PostUserDto>(update);
+
+            return StatusCode(StatusCodes.Status200OK,new ResponseHttp<PostUserDto>
+            {
+                Data = map,
+                Code = StatusCodes.Status200OK,
+                Message = "Post updated with successfully.",
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
     
 }
