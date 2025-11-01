@@ -18,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<CategoryEntity> Categories { get; set; }
     public new DbSet<PostUserEntity> PostUser { get; set;  }
     public new DbSet<PostEnterpriseEntity> PostEnterprise { get; set;  }
+    public new DbSet<SkillEntity> Skill { get; set;  }
 
     public override int SaveChanges()
     {
@@ -58,6 +59,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<SkillEntity>(options =>
+        {
+            options.ToTable("Skills");
+            options.HasKey(s => s.Id);
+            options.Property(s => s.Name).HasMaxLength(150).IsRequired();
+            options.HasIndex(s => s.Name);
+            options.Property(s => s.Description).HasMaxLength(500).IsRequired(false);
+            options.Property(s => s.IconUrl).HasColumnType("TEXT").IsRequired(false);
+            options.HasIndex(s => s.IsActive);
+        });
+        
         modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasOne(e => e.Enterprise)
