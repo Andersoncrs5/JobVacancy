@@ -24,6 +24,7 @@ public class UnitOfWork(
     private PostEnterpriseRepository? _postEnterpriseRepository;
     private SkillRepository? _skillRepository;
     private UserSkillRepository? _userSkillRepository;
+    private FavoritePostUserRepository? _favoritePostUserRepository;
 
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -45,6 +46,8 @@ public class UnitOfWork(
         => _skillRepository ??= new SkillRepository(context);
     public IUserSkillRepository UserSkillRepository
         => _userSkillRepository ??= new UserSkillRepository(context);
+    public IFavoritePostUserRepository FavoritePostUserRepository
+        => _favoritePostUserRepository ??= new FavoritePostUserRepository(context);
     
     public async Task Commit() 
     {

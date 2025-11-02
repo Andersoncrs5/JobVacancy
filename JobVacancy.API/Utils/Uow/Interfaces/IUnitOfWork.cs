@@ -1,4 +1,5 @@
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace JobVacancy.API.Utils.Uow.Interfaces;
@@ -15,6 +16,7 @@ public interface IUnitOfWork: IDisposable
     IPostEnterpriseRepository PostEnterpriseRepository { get; }
     ISkillRepository SkillRepository { get; }
     IUserSkillRepository UserSkillRepository { get; }
+    IFavoritePostUserRepository FavoritePostUserRepository { get; }
     
 
     Task Commit();
