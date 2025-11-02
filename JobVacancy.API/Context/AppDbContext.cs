@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<PostEnterpriseEntity> PostEnterprise { get; set;  }
     public new DbSet<SkillEntity> Skill { get; set;  }
     public new DbSet<UserSkillEntity> UserSkill { get; set; }
+    public new DbSet<FavoritePostUserEntity> FavoritePostUser { get; set; }
 
     public override int SaveChanges()
     {
@@ -59,6 +60,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<FavoritePostUserEntity>(options =>
+        {
+            options.ToTable("FavoritePostUser");
+            options.HasKey(e => e.Id);
+            
+            options.HasIndex(e => e.UserId);
+            options.HasIndex(e => e.PostUserId);
+
+            options.HasOne(e => e.PostUser)
+                .WithMany(e => e.FavoritePosts)
+                .HasForeignKey(e => e.PostUserId)
+                .IsRequired();
+
+            options.HasOne(e => e.User)
+                .WithMany(e => e.FavoritePosts)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<UserSkillEntity>(options =>
         {
             options.HasKey(e => e.Id);
