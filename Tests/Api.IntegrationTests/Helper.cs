@@ -10,6 +10,7 @@ using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
+using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,29 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<UserSkillDto> CreateUserSkill(SkillDto skill)
+    {
+        string _URL = "/api/v1/UserSkill";
+        HttpResponseMessage message = await client.PostAsync($"{_URL}/Toggle/{skill.Id}", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<UserSkillDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserSkillDto>>();
+        http.Should().NotBeNull();
+
+        http.Code.Should().Be(201);
+        http.Status.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.SkillId.Should().Be(skill.Id);
+        http.Data.ExternalCertificateUrl.Should().BeNull();
+        http.Data.YearsOfExperience.Should().BeNull();
+        http.Data.ProficiencyLevel.Should().BeNull();
+        
+        return http.Data;
+    }
+    
     public async Task<SkillDto> CreateSkill()
     {
         CreateSkillDto dto = new CreateSkillDto
