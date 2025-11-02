@@ -9,6 +9,7 @@ using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Skill;
+using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.Utils.Page;
 
 namespace JobVacancy.API.Utils.Mappers;
@@ -63,6 +64,10 @@ public class ConfigMapper: Profile
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<SkillEntity, SkillDto>();
         
+        CreateMap<UserSkillDto, UserSkillEntity>();
+        CreateMap<UserSkillEntity, UserSkillDto>();
+        CreateMap<UpdateUserSkillDto, UserSkillEntity>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         
     }
 }
