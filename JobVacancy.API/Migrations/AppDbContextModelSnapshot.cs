@@ -174,6 +174,44 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("EnterpriseIndustries");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FavoritePostUserEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PostUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserNotes")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<short?>("UserRating")
+                        .HasColumnType("SMALLINT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "PostUserId")
+                        .IsUnique();
+
+                    b.ToTable("FavoritePostUser", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -567,6 +605,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Industry");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FavoritePostUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.PostUserEntity", "PostUser")
+                        .WithMany("FavoritePosts")
+                        .HasForeignKey("PostUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("FavoritePosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PostUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.UserSkillEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.SkillEntity", "Skill")
@@ -715,9 +772,16 @@ namespace JobVacancy.API.Migrations
                 {
                     b.Navigation("Enterprise");
 
+                    b.Navigation("FavoritePosts");
+
                     b.Navigation("Posts");
 
                     b.Navigation("UserSkill");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
+                {
+                    b.Navigation("FavoritePosts");
                 });
 #pragma warning restore 612, 618
         }

@@ -77,6 +77,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
                 .WithMany(e => e.FavoritePosts)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+            
+            options.HasIndex(e => new { e.UserId, e.PostUserId })
+                .IsUnique();
+            
+            options.Property(e => e.UserNotes).HasMaxLength(600).IsRequired(false);
+            options.Property(e => e.UserRating).HasColumnType("SMALLINT").IsRequired(false);
+            
         });
         
         modelBuilder.Entity<UserSkillEntity>(options =>
@@ -101,6 +108,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             
             options.HasIndex(e => new { e.UserId, e.SkillId })
                 .IsUnique();
+            
         });
         
         modelBuilder.Entity<SkillEntity>(options =>
