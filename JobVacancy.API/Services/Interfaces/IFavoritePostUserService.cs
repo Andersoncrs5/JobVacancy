@@ -9,7 +9,7 @@ public interface IFavoritePostUserService
     Task<FavoritePostUserEntity?> GetByUserIdAndPostUserId(string userId, string postUserId);
     Task<bool> ExistsByUserIdAndPostUserId(string userId, string postUserId);
     Task Delete(FavoritePostUserEntity favoritePostUser);
-    Task<FavoritePostUserEntity> Update(FavoritePostUserEntity favoritePostUser, UpdateFavoritePostDto dto);
+    Task<FavoritePostUserEntity> Update(FavoritePostUserEntity favoritePostUser, UpdateFavoritePostUserDto userDto);
     IQueryable<FavoritePostUserEntity> Query();
     Task<FavoritePostUserEntity> Create(string userId, string postUserId);
 }

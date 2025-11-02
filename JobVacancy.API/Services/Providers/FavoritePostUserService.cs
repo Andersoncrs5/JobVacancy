@@ -28,7 +28,7 @@ public class FavoritePostUserService(IUnitOfWork uow): IFavoritePostUserService
         await uow.Commit();
     }
 
-    public async Task<FavoritePostUserEntity> Update(FavoritePostUserEntity favoritePostUser, UpdateFavoritePostDto dto)
+    public async Task<FavoritePostUserEntity> Update(FavoritePostUserEntity favoritePostUser, UpdateFavoritePostUserDto userDto)
     {
         FavoritePostUserEntity update = await uow.FavoritePostUserRepository.Update(favoritePostUser);
         await uow.Commit();
