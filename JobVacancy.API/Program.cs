@@ -216,6 +216,7 @@ builder.Services.AddScoped<IPostUserRepository, PostUserRepository>();
 builder.Services.AddScoped<IPostEnterpriseRepository, PostEnterpriseRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
+builder.Services.AddScoped<IFavoritePostUserRepository, FavoritePostUserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -227,6 +228,7 @@ builder.Services.AddScoped<IPostUserService, PostUserService>();
 builder.Services.AddScoped<IPostEnterpriseService, PostEnterpriseService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IUserSkillService, UserSkillService>();
+builder.Services.AddScoped<IFavoritePostUserService, FavoritePostUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
