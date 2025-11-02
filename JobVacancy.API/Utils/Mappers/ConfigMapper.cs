@@ -5,6 +5,7 @@ using AutoMapper;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
+using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
@@ -69,5 +70,10 @@ public class ConfigMapper: Profile
         CreateMap<UpdateUserSkillDto, UserSkillEntity>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         
+        
+        CreateMap<FavoritePostUserEntity, FavoritePostUserDto>();
+        CreateMap<FavoritePostUserDto, FavoritePostUserEntity>();
+        CreateMap<UpdateFavoritePostUserDto, FavoritePostUserEntity>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }
