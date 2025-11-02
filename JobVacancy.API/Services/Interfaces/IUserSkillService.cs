@@ -8,6 +8,7 @@ public interface IUserSkillService
     Task<bool> ExistsByUserIdAndSkillId(string userId, string skillId);
     Task<UserSkillEntity?> GetByUserIdAndSkillId(string userId, string skillId);
     Task Delete(UserSkillEntity userSkill);
+    Task<UserSkillEntity?> GetById(string id);
     Task<UserSkillEntity> CreateAsync(string userId, string skillId);
     Task<UserSkillEntity> UpdateAsync(UserSkillEntity userSkill, UpdateUserSkillDto dto);
     IQueryable<UserSkillEntity> Query();
