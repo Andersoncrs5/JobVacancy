@@ -6,4 +6,5 @@ public interface IUserSkillRepository: IGenericRepository<UserSkillEntity>
 {
     Task<bool> ExistsByUserIdAndSkillId(string userId, string skillId);
     Task<UserSkillEntity?> GetByUserIdAndSkillId(string userId, string skillId);
+    Task<UserSkillEntity?> GetByUserIdAndSkillIdWithEntity(string userId, string skillId);
 }
