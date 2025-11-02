@@ -6,4 +6,5 @@ public class PostUserEntity: BasePostTable
     public virtual UserEntity? User { get; set; }
     public string CategoryId { get; set; }
     public virtual CategoryEntity? Category { get; set; }
+    public virtual ICollection<FavoritePostUserEntity> FavoritePosts { get; set; } = new List<FavoritePostUserEntity>();
 }
