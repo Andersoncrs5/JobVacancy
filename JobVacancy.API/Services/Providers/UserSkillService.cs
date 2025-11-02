@@ -13,6 +13,11 @@ public class UserSkillService(IUnitOfWork uow, IMapper  mapper): IUserSkillServi
         return await uow.UserSkillRepository.ExistsByUserIdAndSkillId(userId, skillId);
     }
     
+    public async Task<UserSkillEntity?> GetById(string id)
+    {
+        return await uow.UserSkillRepository.GetByIdAsync(id);
+    }
+    
     public async Task<UserSkillEntity?> GetByUserIdAndSkillId(string userId, string skillId)
     {
         return await uow.UserSkillRepository.GetByUserIdAndSkillId(userId, skillId);
@@ -39,7 +44,18 @@ public class UserSkillService(IUnitOfWork uow, IMapper  mapper): IUserSkillServi
 
     public async Task<UserSkillEntity> UpdateAsync(UserSkillEntity userSkill, UpdateUserSkillDto dto)
     {
+        var level = userSkill.ProficiencyLevel;
+        
         mapper.Map(dto, userSkill);
+
+        if (dto.ProficiencyLevel.HasValue)
+        {
+            userSkill.ProficiencyLevel = dto.ProficiencyLevel.Value;
+        }
+        else
+        {
+            userSkill.ProficiencyLevel = level;
+        }
 
         UserSkillEntity updated = await uow.UserSkillRepository.Update(userSkill);
         await uow.Commit();
