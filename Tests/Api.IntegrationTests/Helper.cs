@@ -5,6 +5,7 @@ using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
+using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
@@ -21,6 +22,22 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<FavoritePostUserDto> AddFavoritePost(PostUserDto postUser)
+    {
+        string _url = "/api/v1/FavoritePostUser";  
+        
+        HttpResponseMessage message = await client.PostAsync($"{_url}/{postUser.Id}/Toggle", null);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<FavoritePostUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<FavoritePostUserDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+        
+        return http.Data;
+    }
+    
     public async Task<UserSkillDto> CreateUserSkill(SkillDto skill)
     {
         string _URL = "/api/v1/UserSkill";
