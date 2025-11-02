@@ -8,4 +8,7 @@ public class FavoritePostUserEntity: BaseEntity
     public string PostUserId { get; set; } = string.Empty;
     public virtual PostUserEntity? PostUser { get; set; }
     
+    public string? UserNotes { get; set; }
+    public int? UserRating { get; set; }
+    
 }
