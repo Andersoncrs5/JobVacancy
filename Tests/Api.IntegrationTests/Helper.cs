@@ -6,6 +6,7 @@ using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
+using JobVacancy.API.models.dtos.FavoritePostEnterprise;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
@@ -22,6 +23,23 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<FavoritePostEnterpriseDto> AddFavoritePostEnterprise(PostEnterpriseDto post)
+    {
+        string _url = "/api/v1/FavoritePostEnterprise";
+        
+        HttpResponseMessage message = await client.PostAsync($"{_url}/{post.Id}/Toggle", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<FavoritePostEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<FavoritePostEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        
+        return http.Data;
+    }
+    
     public async Task<FavoritePostUserDto> AddFavoritePost(PostUserDto postUser)
     {
         string _url = "/api/v1/FavoritePostUser";  
