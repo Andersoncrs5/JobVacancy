@@ -15,5 +15,7 @@ public class UserEntity: IdentityUser
     public virtual ICollection<PostUserEntity> Posts { get; set; } = new List<PostUserEntity>();
     public virtual ICollection<UserSkillEntity>? UserSkill { get; set; } 
     public virtual ICollection<FavoritePostUserEntity> FavoritePosts { get; set; } = new List<FavoritePostUserEntity>();
+    public virtual ICollection<FavoritePostEnterpriseEntity> FavoritePostsEnterprise { get; set; } = new List<FavoritePostEnterpriseEntity>();
+    
     
 }
