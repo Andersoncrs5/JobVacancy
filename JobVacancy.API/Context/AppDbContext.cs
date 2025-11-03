@@ -1,4 +1,5 @@
 using JobVacancy.API.models.entities;
+using JobVacancy.API.models.entities.Base;
 using JobVacancy.API.models.entities.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -22,6 +23,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<UserSkillEntity> UserSkill { get; set; }
     public new DbSet<FavoritePostUserEntity> FavoritePostUser { get; set; }
     public new DbSet<FavoritePostEnterpriseEntity> FavoritePostEnterprise { get; set; }
+    public new DbSet<CommentPostUserEntity> CommentPostUser { get; set; }
 
     public override int SaveChanges()
     {
@@ -61,6 +63,38 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<CommentBaseEntity>(options =>
+        {
+            options.ToTable("CommentBase");
+            options.UseTptMappingStrategy();
+            options.HasKey(x => x.Id);
+            options.Property(x => x.Content).HasMaxLength(800).IsRequired();
+            options.Property(x => x.IsActive).IsRequired();
+            options.Property(x => x.ImageUrl).HasMaxLength(2048).IsRequired(false);
+            options.Property(c => c.Depth).HasColumnType("SMALLINT").IsRequired(false);
+
+            options.HasOne(x => x.ParentComment)
+                .WithMany(x => x.Replies)
+                .HasForeignKey(x => x.ParentCommentId)
+                .IsRequired(false);
+
+            options.HasOne(x => x.User)
+                .WithMany(x => x.Comments)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired(true);
+        });
+
+        modelBuilder.Entity<CommentPostUserEntity>(options =>
+        {
+            options.ToTable("CommentPostUser");
+            options.HasBaseType<CommentBaseEntity>();
+            
+            options.HasOne(x => x.Post)
+                .WithMany(x => x.CommentPostUser)
+                .HasForeignKey(x => x.PostId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<FavoritePostUserEntity>(options =>
         {
             options.ToTable("FavoritePostUser");

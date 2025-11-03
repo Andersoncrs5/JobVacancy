@@ -25,6 +25,50 @@ namespace JobVacancy.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<short?>("Depth")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ParentCommentId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentBase", (string)null);
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.BasePostTable", b =>
                 {
                     b.Property<string>("Id")
@@ -568,6 +612,19 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostUserEntity", b =>
+                {
+                    b.HasBaseType("JobVacancy.API.models.entities.Base.CommentBaseEntity");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("CommentPostUser", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
                 {
                     b.HasBaseType("JobVacancy.API.models.entities.BasePostTable");
@@ -604,6 +661,23 @@ namespace JobVacancy.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PostUsers", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId");
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParentComment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
@@ -744,6 +818,23 @@ namespace JobVacancy.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", null)
+                        .WithOne()
+                        .HasForeignKey("JobVacancy.API.models.entities.CommentPostUserEntity", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.PostUserEntity", "Post")
+                        .WithMany("CommentPostUser")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.CategoryEntity", "Category")
@@ -794,6 +885,11 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.CategoryEntity", b =>
                 {
                     b.Navigation("Posts");
@@ -820,6 +916,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Enterprise");
 
                     b.Navigation("FavoritePosts");
@@ -838,6 +936,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
                 {
+                    b.Navigation("CommentPostUser");
+
                     b.Navigation("FavoritePosts");
                 });
 #pragma warning restore 612, 618
