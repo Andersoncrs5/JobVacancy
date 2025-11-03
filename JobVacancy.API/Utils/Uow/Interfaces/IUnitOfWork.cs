@@ -17,7 +17,7 @@ public interface IUnitOfWork: IDisposable
     ISkillRepository SkillRepository { get; }
     IUserSkillRepository UserSkillRepository { get; }
     IFavoritePostUserRepository FavoritePostUserRepository { get; }
-    
+    IFavoritePostEnterpriseRepository FavoritePostEnterpriseRepository { get; }
 
     Task Commit();
     Task<IDbContextTransaction> BeginTransactionAsync();
