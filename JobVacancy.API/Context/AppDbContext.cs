@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<SkillEntity> Skill { get; set;  }
     public new DbSet<UserSkillEntity> UserSkill { get; set; }
     public new DbSet<FavoritePostUserEntity> FavoritePostUser { get; set; }
+    public new DbSet<FavoritePostEnterpriseEntity> FavoritePostEnterprise { get; set; }
 
     public override int SaveChanges()
     {
@@ -83,7 +84,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             
             options.Property(e => e.UserNotes).HasMaxLength(600).IsRequired(false);
             options.Property(e => e.UserRating).HasColumnType("SMALLINT").IsRequired(false);
+        });
+        
+        modelBuilder.Entity<FavoritePostEnterpriseEntity>(options =>
+        {
+            options.ToTable("FavoritePostEnterprise");
+            options.HasKey(e => e.Id);
             
+            options.HasIndex(e => e.UserId);
+            options.HasIndex(e => e.PostEnterpriseId);
+
+            options.HasOne(e => e.PostEnterprise)
+                .WithMany(e => e.FavoritePostsEnterprise)
+                .HasForeignKey(e => e.PostEnterpriseId)
+                .IsRequired();
+
+            options.HasOne(e => e.User)
+                .WithMany(e => e.FavoritePostsEnterprise)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            
+            options.HasIndex(e => new { e.UserId, e.PostEnterpriseId })
+                .IsUnique();
         });
         
         modelBuilder.Entity<UserSkillEntity>(options =>
