@@ -218,6 +218,7 @@ builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IFavoritePostUserRepository, FavoritePostUserRepository>();
 builder.Services.AddScoped<IFavoritePostEnterpriseRepository, FavoritePostEnterpriseRepository>();
+builder.Services.AddScoped<ICommentPostUserRepository, ICommentPostUserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
