@@ -5,6 +5,7 @@ namespace JobVacancy.API.Services.Interfaces;
 
 public interface IFavoritePostUserService
 {
+    Task<FavoritePostUserEntity?> GetById(string id);
     Task<FavoritePostUserEntity?> GetByUserIdAndPostUserIdWithEntity(string userId, string postUserId);
     Task<FavoritePostUserEntity?> GetByUserIdAndPostUserId(string userId, string postUserId);
     Task<bool> ExistsByUserIdAndPostUserId(string userId, string postUserId);
