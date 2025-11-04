@@ -38,6 +38,10 @@ public class CommentBaseFilterQuery
         {
             query = query.Where(e => e.ParentCommentId == filterParams.ParentCommentId);
         }
+        else
+        {
+            query = query.Where(e => e.ParentCommentId == null);
+        }
         
         if (!string.IsNullOrEmpty(filterParams.UserId))
         {
