@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<FavoritePostUserEntity> FavoritePostUser { get; set; }
     public new DbSet<FavoritePostEnterpriseEntity> FavoritePostEnterprise { get; set; }
     public new DbSet<CommentPostUserEntity> CommentPostUser { get; set; }
+    public new DbSet<FavoriteCommentEntity> FavoriteCommentEntities { get; set; }
 
     public override int SaveChanges()
     {
@@ -63,6 +64,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<FavoriteCommentEntity>(options =>
+        {
+            options.HasIndex(e => new { e.UserId, e.CommentId })
+                .IsUnique();
+           
+            options.HasOne(e => e.Comment)
+                .WithMany()
+                .HasForeignKey(e => e.CommentId)
+                .IsRequired();
+
+            options.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<CommentBaseEntity>(options =>
         {
             options.ToTable("CommentBase");

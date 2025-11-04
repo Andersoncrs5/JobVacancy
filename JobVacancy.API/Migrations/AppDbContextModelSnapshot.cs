@@ -218,6 +218,40 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("EnterpriseIndustries");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FavoriteCommentEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CommentBaseEntityId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CommentId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentBaseEntityId");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId", "CommentId")
+                        .IsUnique();
+
+                    b.ToTable("FavoriteCommentEntities");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.FavoritePostEnterpriseEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -710,6 +744,29 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Industry");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FavoriteCommentEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", null)
+                        .WithMany("FavoriteCommentEntities")
+                        .HasForeignKey("CommentBaseEntityId");
+
+                    b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.FavoritePostEnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.PostEnterpriseEntity", "PostEnterprise")
@@ -887,6 +944,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
                 {
+                    b.Navigation("FavoriteCommentEntities");
+
                     b.Navigation("Replies");
                 });
 
