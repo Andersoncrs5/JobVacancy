@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
+using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
@@ -140,6 +141,33 @@ public class Helper(
         content.Data.RefreshToken.Should().NotBeNull();
         
         return content;
+    }
+
+    public async Task<CommentPostUserDto> CreateComment(PostUserDto postUser, string? parentId = null)
+    {
+        string _url = "/api/v1/CommentPostUser";
+        CreateCommentPostUserDto dto = new CreateCommentPostUserDto()
+        {
+            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            Depth = 5,
+            PostId = postUser.Id,
+            ImageUrl = "https://github.com/Andersoncrs5",
+            IsActive = true
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_url}?parentId={parentId}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<CommentPostUserDto>? content = await message.Content.ReadFromJsonAsync<ResponseHttp<CommentPostUserDto>>();
+        content.Should().NotBeNull();
+        content.Data.Should().NotBeNull();
+        content.Code.Should().Be((int)HttpStatusCode.Created);
+        content.Status.Should().BeTrue();
+        
+        content.Data.PostId.Should().Be(postUser.Id);
+        content.Data.Id.Should().NotBeNullOrEmpty();
+        
+        return content.Data;
     }
     
     public async Task<UserResultTest> CreateAndGetUser()
