@@ -13,4 +13,5 @@ public class CommentBaseEntity: BaseEntity
     public virtual UserEntity? User { get; set; }
     public virtual CommentBaseEntity? ParentComment { get; set; }
     public virtual ICollection<CommentBaseEntity> Replies { get; set; } = new List<CommentBaseEntity>();
+    public virtual ICollection<FavoriteCommentEntity> FavoriteCommentEntities { get; set; } = new List<FavoriteCommentEntity>();
 }
