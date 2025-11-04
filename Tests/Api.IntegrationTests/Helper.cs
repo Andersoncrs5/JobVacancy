@@ -143,12 +143,12 @@ public class Helper(
         return content;
     }
 
-    public async Task<CommentPostUserDto> CreateComment(PostUserDto postUser, string? parentId = null)
+    public async Task<CommentPostUserDto> CreateComment(PostUserDto postUser, string? title = null, string? parentId = null)
     {
         string _url = "/api/v1/CommentPostUser";
         CreateCommentPostUserDto dto = new CreateCommentPostUserDto()
         {
-            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            Content = title == null? string.Concat(Enumerable.Repeat("AnyContent", 30)) : string.Concat(Enumerable.Repeat(title, 30)) ,
             Depth = 5,
             PostId = postUser.Id,
             ImageUrl = "https://github.com/Andersoncrs5",
