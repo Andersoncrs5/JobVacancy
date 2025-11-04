@@ -18,4 +18,35 @@ public class CommentPostUserService(IUnitOfWork work, IMapper mapper): ICommentP
         await work.Commit();
         return created;
     }
+
+    public async Task<CommentPostUserEntity?> GetById(string id)
+    {
+        return await work.CommentPostUserRepository.GetByIdAsync(id);
+    }
+
+    public async Task Delete(CommentPostUserEntity comment)
+    {
+        work.CommentPostUserRepository.Delete(comment);
+        await work.Commit();
+    }
+
+    public async Task<bool> ExistsById(string id)
+    {
+        return await work.CommentPostUserRepository.ExistsById(id);
+    }
+
+    public IQueryable<CommentPostUserEntity> Query()
+    {
+        return work.CommentPostUserRepository.ReturnIQueryable();
+    }
+
+    public async Task<CommentPostUserEntity> Update(CommentPostUserEntity comment, UpdateCommentPostUserDto dto)
+    {
+        mapper.Map(dto, comment);
+
+        CommentPostUserEntity updated = await work.CommentPostUserRepository.Update(comment);
+        await work.Commit();
+        return updated;
+    }
+    
 }
