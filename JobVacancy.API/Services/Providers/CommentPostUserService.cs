@@ -42,8 +42,19 @@ public class CommentPostUserService(IUnitOfWork work, IMapper mapper): ICommentP
 
     public async Task<CommentPostUserEntity> Update(CommentPostUserEntity comment, UpdateCommentPostUserDto dto)
     {
+        bool isActive = comment.IsActive;
+        
         mapper.Map(dto, comment);
 
+        if (dto.IsActive != null)
+        {
+            comment.IsActive = dto.IsActive.Value;
+        }
+        else
+        {
+            comment.IsActive = isActive;
+        }
+        
         CommentPostUserEntity updated = await work.CommentPostUserRepository.Update(comment);
         await work.Commit();
         return updated;
