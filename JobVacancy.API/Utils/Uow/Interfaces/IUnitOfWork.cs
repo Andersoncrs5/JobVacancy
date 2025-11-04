@@ -19,6 +19,7 @@ public interface IUnitOfWork: IDisposable
     IFavoritePostUserRepository FavoritePostUserRepository { get; }
     IFavoritePostEnterpriseRepository FavoritePostEnterpriseRepository { get; }
     ICommentPostUserRepository CommentPostUserRepository { get; }
+    IFavoriteCommentPostUserRepository FavoriteCommentPostUserRepository { get; }
 
     Task Commit();
     Task<IDbContextTransaction> BeginTransactionAsync();
