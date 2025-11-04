@@ -206,6 +206,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// JUST REPOSITORIES
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -218,8 +219,9 @@ builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IFavoritePostUserRepository, FavoritePostUserRepository>();
 builder.Services.AddScoped<IFavoritePostEnterpriseRepository, FavoritePostEnterpriseRepository>();
-builder.Services.AddScoped<ICommentPostUserRepository, ICommentPostUserRepository>();
+builder.Services.AddScoped<ICommentPostUserRepository, CommentPostUserRepository>();
 
+// JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
@@ -232,6 +234,7 @@ builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IUserSkillService, UserSkillService>();
 builder.Services.AddScoped<IFavoritePostUserService, FavoritePostUserService>();
 builder.Services.AddScoped<IFavoritePostEnterpriseService, FavoritePostEnterpriseService>();
+builder.Services.AddScoped<ICommentPostUserService, CommentPostUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
