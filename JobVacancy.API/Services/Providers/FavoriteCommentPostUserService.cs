@@ -21,4 +21,22 @@ public class FavoriteCommentPostUserService(IUnitOfWork uow): IFavoriteCommentPo
         uow.FavoriteCommentPostUserRepository.Delete(favoriteComment);
         await uow.Commit();
     }
+    
+    public async Task<bool> ExistsByCommentIdAndUserId(string commentId, string userId)
+    {
+        return await uow.FavoriteCommentPostUserRepository.ExistsByCommentIdAndUserId(commentId, userId);
+    }
+
+    public async Task Create(string commentId, string userId)
+    {
+        FavoriteCommentEntity favoriteComment = new FavoriteCommentEntity
+        {
+            CommentId = commentId,
+            UserId = userId,
+        };
+        
+        await uow.FavoriteCommentPostUserRepository.AddAsync(favoriteComment);
+        await uow.Commit();
+    }
+    
 }
