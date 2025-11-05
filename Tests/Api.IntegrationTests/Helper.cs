@@ -24,6 +24,20 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task AddFavoriteCommentPostUser(string commentId)
+    {
+        string _url = "/api/v1/FavoriteCommentPostUser";
+        HttpResponseMessage message = await client.PostAsync($"{_url}/{commentId}/Toggle", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<object>? content = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        
+        content.Should().NotBeNull();
+        content.Data.Should().BeNull();
+        content.Code.Should().Be((int)HttpStatusCode.Created);
+        content.Status.Should().BeTrue();
+    }
+    
     public async Task<FavoritePostEnterpriseDto> AddFavoritePostEnterprise(PostEnterpriseDto post)
     {
         string _url = "/api/v1/FavoritePostEnterprise";
