@@ -25,13 +25,13 @@ public class Helper(
     HttpClient client
     )
 {
-    public async Task<CommentPostEnterpriseDto> CreateCommentPostEnterpriseDto(string postId, bool isActive, string? parentId = null)
+    public async Task<CommentPostEnterpriseDto> CreateCommentPostEnterpriseDto(string postId, bool isActive, string? parentId = null, string? content = null)
     {
         string _url = "/api/v1/CommentPostEnterprise";
         
         CreateCommentPostEnterpriseDto dto = new CreateCommentPostEnterpriseDto
         {
-            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            Content = string.Concat(Enumerable.Repeat(content != null ? content : "AnyContent", 30)),
             Depth = 5,
             PostId = postId,
             ImageUrl = "https://github.com/Andersoncrs5",
