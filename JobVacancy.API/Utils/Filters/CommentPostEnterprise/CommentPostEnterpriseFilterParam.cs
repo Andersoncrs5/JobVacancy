@@ -11,6 +11,7 @@ public class CommentPostEnterpriseFilterParam: CommentBaseFilterParams
     public string? NameEnterprise { get; set; }
     public EnterpriseTypeEnum? Type  { get; set; }
     
+    public string? PostId { get; set; }
     public string? Title { get; set; }
     public string? ContentPost { get; set; }
     public int? ReadingTimeMinutesMin { get; set; }
