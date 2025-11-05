@@ -30,5 +30,14 @@ public class FavoriteCommentPostUserRepository(AppDbContext db): GenericReposito
     }
     
     
+    public async Task<bool> ExistsByCommentIdAndUserId(string commentId, string userId)
+    {
+        return await db.FavoriteCommentEntities
+            .Where(f => f.Comment != null && f.Comment is CommentPostUserEntity)
+            .AnyAsync(f => f.CommentId == commentId && f.UserId == userId);
+    }
+    
+    
+    
     
 }

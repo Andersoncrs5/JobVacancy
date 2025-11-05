@@ -6,4 +6,5 @@ public interface IFavoriteCommentPostUserRepository: IGenericRepository<Favorite
 {
     IQueryable<FavoriteCommentEntity> GetAllQuery();
     Task<FavoriteCommentEntity?> GetByCommentIdAndUserId(string commentId, string userId);
+    Task<bool> ExistsByCommentIdAndUserId(string commentId, string userId);
 }
