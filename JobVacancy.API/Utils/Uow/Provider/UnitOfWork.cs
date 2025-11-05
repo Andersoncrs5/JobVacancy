@@ -29,6 +29,7 @@ public class UnitOfWork(
     private CommentPostUserRepository? _commentPostUserRepository;
     private FavoriteCommentPostUserRepository? _favoriteCommentPostUserRepository;
     private CommentPostEnterpriseRepository? _commentPostEnterpriseRepository;
+    private FavoriteCommentPostEnterpriseRepository? _favoriteCommentPostEnterpriseRepository;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -60,6 +61,8 @@ public class UnitOfWork(
         => _favoriteCommentPostUserRepository ??= new FavoriteCommentPostUserRepository(context);
     public ICommentPostEnterpriseRepository CommentPostEnterpriseRepository
         => _commentPostEnterpriseRepository ??= new CommentPostEnterpriseRepository(context);
+    public IFavoriteCommentPostEnterpriseRepository FavoriteCommentPostEnterpriseRepository
+    => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context);
     
     public async Task Commit() 
     {
