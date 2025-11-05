@@ -4,7 +4,7 @@ using JobVacancy.API.Repositories.Interfaces;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class CommentPostEnterpriseRepository(AppDbContext context): GenericRepository<CommentPostUserEntity>(context), ICommentPostEnterpriseRepository
+public class CommentPostEnterpriseRepository(AppDbContext context): GenericRepository<CommentPostEnterpriseEntity>(context), ICommentPostEnterpriseRepository
 {
     
 }
