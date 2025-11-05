@@ -19,6 +19,11 @@ public class CommentPostEnterpriseFilterQuery
             query = query.Where(e => e.Post!.CategoryId  == filter.CategoryId);
         }
 
+        if (!string.IsNullOrEmpty(filter.PostId))
+        {
+            query = query.Where(x => x.PostId == filter.PostId);
+        }
+        
         if (!string.IsNullOrWhiteSpace(filter.Title))
         {
             query = query.Where(e => EF.Functions.Like(e.Post!.Title, $"%{filter.Title}%"));
