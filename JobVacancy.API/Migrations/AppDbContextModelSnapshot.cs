@@ -646,6 +646,19 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("app_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostEnterpriseEntity", b =>
+                {
+                    b.HasBaseType("JobVacancy.API.models.entities.Base.CommentBaseEntity");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("CommentPostEnterprise", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostUserEntity", b =>
                 {
                     b.HasBaseType("JobVacancy.API.models.entities.Base.CommentBaseEntity");
@@ -875,6 +888,23 @@ namespace JobVacancy.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostEnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", null)
+                        .WithOne()
+                        .HasForeignKey("JobVacancy.API.models.entities.CommentPostEnterpriseEntity", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.PostEnterpriseEntity", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostUserEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.Base.CommentBaseEntity", null)
@@ -990,6 +1020,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("FavoritePostsEnterprise");
                 });
 
