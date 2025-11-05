@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
+using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
@@ -24,6 +25,34 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<CommentPostEnterpriseDto> CreateCommentPostEnterpriseDto(string postId, bool isActive, string? parentId = null)
+    {
+        string _url = "/api/v1/CommentPostEnterprise";
+        
+        CreateCommentPostEnterpriseDto dto = new CreateCommentPostEnterpriseDto
+        {
+            Content = string.Concat(Enumerable.Repeat("AnyContent", 30)),
+            Depth = 5,
+            PostId = postId,
+            ImageUrl = "https://github.com/Andersoncrs5",
+            IsActive = isActive
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_url}?parentId={parentId}", dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<CommentPostEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<CommentPostEnterpriseDto>>();
+        http.Code.Should().Be(201);
+        http.Data.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        
+        return http.Data;
+    }
+    
     public async Task AddFavoriteCommentPostUser(string commentId)
     {
         string _url = "/api/v1/FavoriteCommentPostUser";
