@@ -262,4 +262,59 @@ public class CommentPostEnterpriseController(
         }
     }
     
+    [HttpPatch("{commentId:required}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<CommentPostEnterpriseDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> Update(string commentId, [FromBody] UpdateCommentPostEnterpriseDto dto )
+    {
+        try
+        {
+            string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (userId == null) return Unauthorized();
+            
+            CommentPostEnterpriseEntity? comment = await commentPostEnterpriseService.GetById(commentId);
+            if (comment == null)
+            {
+                return NotFound(new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Message = "Comment not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+            
+            CommentPostEnterpriseEntity update = await commentPostEnterpriseService.Update(comment, dto);
+            
+            return StatusCode(StatusCodes.Status200OK,new ResponseHttp<CommentPostEnterpriseDto>
+            {
+                Data = mapper.Map<CommentPostEnterpriseDto>(update),
+                Code = StatusCodes.Status200OK,
+                Message = "Comment updated with successfully.",
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
+    
 }
