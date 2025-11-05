@@ -2,10 +2,12 @@ using JobVacancy.API.models.dtos;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities;
 using AutoMapper;
+using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
+using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
 using JobVacancy.API.models.dtos.Industry;
@@ -13,6 +15,7 @@ using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.UserSkill;
+using JobVacancy.API.models.entities.Base;
 using JobVacancy.API.Utils.Page;
 
 namespace JobVacancy.API.Utils.Mappers;
@@ -86,5 +89,14 @@ public class ConfigMapper: Profile
         CreateMap<UpdateCommentPostUserDto, CommentPostUserEntity>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<CreateCommentPostUserDto, CommentPostUserEntity>();
+        
+        CreateMap<FavoriteCommentEntity, FavoriteCommentPostUserDto>();
+
+        CreateMap<CommentBaseEntity, CommentBase>()
+            .Include<CommentPostUserEntity, CommentPostUserDto>();
+            //.Include<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
+            
+        CreateMap<CommentPostUserEntity, CommentPostUserDto>();
+        //CreateMap<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
     }
 }
