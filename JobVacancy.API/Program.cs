@@ -220,6 +220,7 @@ builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IFavoritePostUserRepository, FavoritePostUserRepository>();
 builder.Services.AddScoped<IFavoritePostEnterpriseRepository, FavoritePostEnterpriseRepository>();
 builder.Services.AddScoped<ICommentPostUserRepository, CommentPostUserRepository>();
+builder.Services.AddScoped<IFavoriteCommentPostUserRepository, FavoriteCommentPostUserRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -235,6 +236,7 @@ builder.Services.AddScoped<IUserSkillService, UserSkillService>();
 builder.Services.AddScoped<IFavoritePostUserService, FavoritePostUserService>();
 builder.Services.AddScoped<IFavoritePostEnterpriseService, FavoritePostEnterpriseService>();
 builder.Services.AddScoped<ICommentPostUserService, CommentPostUserService>();
+builder.Services.AddScoped<IFavoriteCommentPostUserService, FavoriteCommentPostUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
