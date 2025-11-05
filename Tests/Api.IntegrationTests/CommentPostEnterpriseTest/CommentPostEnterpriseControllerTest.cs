@@ -38,9 +38,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -81,15 +81,15 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
+        await _helper.CreatePostEnterprise(categoryDto);
 
         CreateCommentPostEnterpriseDto dto = new CreateCommentPostEnterpriseDto
         {
@@ -120,9 +120,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -139,7 +139,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
             IsActive = true
         };
 
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_url}?parentId={commentCreated.Id}", dto);
         
@@ -166,9 +166,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -206,9 +206,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -216,7 +216,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         HttpResponseMessage message = await _client.GetAsync($"{_url}/{commentCreated.Id}");
         
@@ -262,9 +262,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -272,7 +272,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{commentCreated.Id}");
         
@@ -334,9 +334,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -344,7 +344,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null, content: "NoKnow");
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, content: "NoKnow");
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}?Content={commentCreated.Content}" +
                                                              $"&IsActive={commentCreated.IsActive}" +
@@ -374,9 +374,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -384,7 +384,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null, content: "NoKnow");
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, content: "NoKnow");
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}?UserId={user.User.Id}" +
                                                              $"&Username={user.User.Username}" +
@@ -413,9 +413,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -423,7 +423,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null, content: "NoKnow");
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, content: "NoKnow");
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}?Title={post.Title}" +
                                                              $"&PostId={post.Id}" +
@@ -455,7 +455,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         UserResultTest user = await _helper.CreateAndGetUser();
         EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -463,7 +463,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null, content: "NoKnow");
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true,  content: "NoKnow");
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}?EnterpriseId={enterprise.Id}" +
                                                              $"&NameEnterprise={enterprise.Name}" +
@@ -491,9 +491,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -501,7 +501,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         UpdateCommentPostEnterpriseDto dto = new UpdateCommentPostEnterpriseDto
         {
@@ -540,9 +540,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -550,7 +550,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         UpdateCommentPostEnterpriseDto dto = new UpdateCommentPostEnterpriseDto
         {
@@ -586,9 +586,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -596,7 +596,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         UpdateCommentPostEnterpriseDto dto = new UpdateCommentPostEnterpriseDto
         {
@@ -632,9 +632,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -642,7 +642,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         UpdateCommentPostEnterpriseDto dto = new UpdateCommentPostEnterpriseDto
         {
@@ -678,9 +678,9 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         IndustryDto industryDto = await _helper.CreateIndustry(master);
 
         UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
+        await _helper.CreateEnterprise(user, industryDto);
         
-        var loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        var loginUserWithNewRole = await _helper.LoginUser(user.User!.Email!, user.CreateUser!.PasswordHash);
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
@@ -688,7 +688,7 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
 
         PostEnterpriseDto post = await _helper.CreatePostEnterprise(categoryDto);
         
-        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true, null);
+        CommentPostEnterpriseDto commentCreated = await _helper.CreateCommentPostEnterpriseDto(post.Id, true);
 
         UpdateCommentPostEnterpriseDto dto = new UpdateCommentPostEnterpriseDto
         {
