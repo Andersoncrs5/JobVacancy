@@ -7,6 +7,7 @@ using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.PostEnterprise;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
@@ -303,5 +304,25 @@ public class CommentPostEnterpriseControllerTest: IClassFixture<CustomWebApplica
         http.Message.Should().NotBeNullOrWhiteSpace();
         http.Status.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task GetAll()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        
+        string token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}");
+        
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<CommentPostEnterpriseDto>? page = await message.Content.ReadFromJsonAsync<Page<CommentPostEnterpriseDto>>();
+        page.Should().NotBeNull();
+        page.PageIndex.Should().Be(1);
+        page.PageSize.Should().Be(10);
+    }
+    
     
 }
