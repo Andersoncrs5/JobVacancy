@@ -222,6 +222,7 @@ builder.Services.AddScoped<IFavoritePostEnterpriseRepository, FavoritePostEnterp
 builder.Services.AddScoped<ICommentPostUserRepository, CommentPostUserRepository>();
 builder.Services.AddScoped<ICommentPostEnterpriseRepository, CommentPostEnterpriseRepository>();
 builder.Services.AddScoped<IFavoriteCommentPostUserRepository, FavoriteCommentPostUserRepository>();
+builder.Services.AddScoped<IFavoriteCommentPostEnterpriseRepository, FavoriteCommentPostEnterpriseRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -270,8 +271,8 @@ using (var scope = app.Services.CreateScope())
     var datasRoles = configuration.GetSection("Roles");
     string masterRole = datasRoles["MasterRole"] ?? throw new InvalidOperationException("Master role configuration is missing.");
     string userRole = datasRoles["UserRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
-    string superAdmRole = datasRoles["SuperAdmRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
-    string enterpriseRole = datasRoles["EnterpriseRole"] ?? throw new InvalidOperationException("User role configuration is missing.");
+    string superAdmRole = datasRoles["SuperAdmRole"] ?? throw new InvalidOperationException("Super adm role configuration is missing.");
+    string enterpriseRole = datasRoles["EnterpriseRole"] ?? throw new InvalidOperationException("Enterprise role configuration is missing.");
 
     string[] roles = { userRole, masterRole, superAdmRole, enterpriseRole };
     
