@@ -1,0 +1,10 @@
+namespace JobVacancy.API.models.dtos.CommentPostEnterprise;
+
+public class CreateCommentPostEnterpriseDto
+{
+    public string Content { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public string? ImageUrl { get; set; }
+    public int? Depth { get; set; }
+    public string PostId { get; set; } = string.Empty;
+}
