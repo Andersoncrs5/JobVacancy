@@ -237,6 +237,7 @@ builder.Services.AddScoped<IUserSkillService, UserSkillService>();
 builder.Services.AddScoped<IFavoritePostUserService, FavoritePostUserService>();
 builder.Services.AddScoped<IFavoritePostEnterpriseService, FavoritePostEnterpriseService>();
 builder.Services.AddScoped<ICommentPostUserService, CommentPostUserService>();
+builder.Services.AddScoped<ICommentPostEnterpriseService, CommentPostEnterpriseService>();
 builder.Services.AddScoped<IFavoriteCommentPostUserService, FavoriteCommentPostUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
