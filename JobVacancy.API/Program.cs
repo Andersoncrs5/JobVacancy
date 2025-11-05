@@ -220,6 +220,7 @@ builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IFavoritePostUserRepository, FavoritePostUserRepository>();
 builder.Services.AddScoped<IFavoritePostEnterpriseRepository, FavoritePostEnterpriseRepository>();
 builder.Services.AddScoped<ICommentPostUserRepository, CommentPostUserRepository>();
+builder.Services.AddScoped<ICommentPostEnterpriseRepository, CommentPostEnterpriseRepository>();
 builder.Services.AddScoped<IFavoriteCommentPostUserRepository, FavoriteCommentPostUserRepository>();
 
 // JUST SERVICES
