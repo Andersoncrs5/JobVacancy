@@ -26,7 +26,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<CommentPostUserEntity> CommentPostUser { get; set; }
     public new DbSet<CommentPostEnterpriseEntity> CommentPostEnterprise { get; set; }
     public new DbSet<FavoriteCommentEntity> FavoriteCommentEntities { get; set; }
-
+    public new DbSet<EmployeeInvitationEntity> EmployeeInvitations { get; set; }
     public override int SaveChanges()
     {
         SetAuditDates();
@@ -65,6 +65,49 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<EmployeeInvitationEntity>(options =>
+        {
+            options.ToTable("EmployeeInvitations");
+            
+            options.HasKey(ev => ev.Id);
+            
+            options.HasIndex(ev => ev.UserId);
+            options.HasIndex(ev => ev.EnterpriseId);
+            options.HasIndex(ev => ev.InviteSenderId);
+            
+            options.Property(ev => ev.Token).HasMaxLength(1000).IsRequired(false);
+            options.Property(ev => ev.Message).HasMaxLength(1500).IsRequired(false);
+            options.Property(ev => ev.InvitationLink).HasMaxLength(1500).IsRequired(false);
+            options.Property(ev => ev.RejectReason).HasMaxLength(1500).IsRequired(false);
+            options.Property(ev => ev.Position).HasMaxLength(400).IsRequired();
+            options.Property(ev => ev.SalaryRange).HasMaxLength(100).IsRequired();
+            options.Property(ev => ev.EmploymentType).IsRequired();
+            options.Property(ev => ev.ProposedStartDate).IsRequired();
+            options.Property(ev => ev.ProposedEndDate).IsRequired(false);
+            options.Property(ev => ev.Status).IsRequired();
+            options.Property(ev => ev.Currency).IsRequired();
+            options.Property(ev => ev.ResponseDate).IsRequired(false);
+            options.Property(ev => ev.ExpiresAt).IsRequired();
+
+            options.HasOne(ev => ev.User)
+                .WithMany(ev => ev.InvitationsReceived)
+                .HasForeignKey(ev => ev.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            options.HasOne(ev => ev.Enterprise)
+                .WithMany(ev => ev.EmployeeInvitations)
+                .HasForeignKey(ev => ev.EnterpriseId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+            
+            options.HasOne(ev => ev.InviteSender)
+                .WithMany(ev => ev.InvitationsSent)
+                .HasForeignKey(ev => ev.InviteSenderId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+        });
+        
         modelBuilder.Entity<FavoriteCommentEntity>(options =>
         {
             options.HasIndex(e => new { e.UserId, e.CommentId })

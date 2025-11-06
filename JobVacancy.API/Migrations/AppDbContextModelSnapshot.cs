@@ -140,6 +140,86 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeInvitationEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EmploymentType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("InvitationLink")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<string>("InviteSenderId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<DateTime?>("ProposedEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ProposedStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RejectReason")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SalaryRange")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Token")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("InviteSenderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmployeeInvitations", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -727,6 +807,32 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeInvitationEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("EmployeeInvitations")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "InviteSender")
+                        .WithMany("InvitationsSent")
+                        .HasForeignKey("InviteSenderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("InvitationsReceived")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("InviteSender");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
@@ -988,6 +1094,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
+                    b.Navigation("EmployeeInvitations");
+
                     b.Navigation("IndustryLinks");
 
                     b.Navigation("Posts");
@@ -1012,6 +1120,10 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("FavoritePosts");
 
                     b.Navigation("FavoritePostsEnterprise");
+
+                    b.Navigation("InvitationsReceived");
+
+                    b.Navigation("InvitationsSent");
 
                     b.Navigation("Posts");
 
