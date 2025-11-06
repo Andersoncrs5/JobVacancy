@@ -1,3 +1,4 @@
+using AutoMapper;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
@@ -11,7 +12,8 @@ namespace JobVacancy.API.Utils.Uow.Provider;
 public class UnitOfWork(
     AppDbContext context, 
     UserManager<UserEntity> userManager, 
-    RoleManager<RoleEntity> roleManager
+    RoleManager<RoleEntity> roleManager,
+    IMapper mapper
     ) : IUnitOfWork, IDisposable
 {
     private UserRepository? _userRepository;
@@ -30,6 +32,8 @@ public class UnitOfWork(
     private FavoriteCommentPostUserRepository? _favoriteCommentPostUserRepository;
     private CommentPostEnterpriseRepository? _commentPostEnterpriseRepository;
     private FavoriteCommentPostEnterpriseRepository? _favoriteCommentPostEnterpriseRepository;
+    private EmployeeInvitationRepository? _employeeInvitationRepository;
+    public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
         => _userRepository ??= new UserRepository(context, userManager);
@@ -62,7 +66,9 @@ public class UnitOfWork(
     public ICommentPostEnterpriseRepository CommentPostEnterpriseRepository
         => _commentPostEnterpriseRepository ??= new CommentPostEnterpriseRepository(context);
     public IFavoriteCommentPostEnterpriseRepository FavoriteCommentPostEnterpriseRepository
-    => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context);
+        => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context);
+    public IEmployeeInvitationRepository EmployeeInvitationRepository
+        => _employeeInvitationRepository ??= new EmployeeInvitationRepository(context);
     
     public async Task Commit() 
     {

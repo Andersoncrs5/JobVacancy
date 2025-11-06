@@ -1,3 +1,4 @@
+using AutoMapper;
 using JobVacancy.API.Repositories.Interfaces;
 using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -22,6 +23,8 @@ public interface IUnitOfWork: IDisposable
     ICommentPostEnterpriseRepository CommentPostEnterpriseRepository { get; }
     IFavoriteCommentPostUserRepository FavoriteCommentPostUserRepository { get; }
     IFavoriteCommentPostEnterpriseRepository FavoriteCommentPostEnterpriseRepository { get; }
+    IEmployeeInvitationRepository EmployeeInvitationRepository { get; }
+    IMapper Mapper { get; }
     
     Task Commit();
     Task<IDbContextTransaction> BeginTransactionAsync();
