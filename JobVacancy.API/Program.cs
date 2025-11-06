@@ -240,6 +240,7 @@ builder.Services.AddScoped<IFavoritePostEnterpriseService, FavoritePostEnterpris
 builder.Services.AddScoped<ICommentPostUserService, CommentPostUserService>();
 builder.Services.AddScoped<ICommentPostEnterpriseService, CommentPostEnterpriseService>();
 builder.Services.AddScoped<IFavoriteCommentPostUserService, FavoriteCommentPostUserService>();
+builder.Services.AddScoped<IFavoriteCommentPostEnterpriseService, FavoriteCommentPostEnterpriseService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
