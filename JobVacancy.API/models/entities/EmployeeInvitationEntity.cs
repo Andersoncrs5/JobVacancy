@@ -20,6 +20,7 @@ public class EmployeeInvitationEntity: BaseEntity
     public DateTime ProposedStartDate {  get; set; }
     public DateTime? ProposedEndDate { get; set; }
     public StatusEnum Status { get; set; }
+    public CurrencyEnum Currency { get; set; }
     public DateTime? ResponseDate { get; set; }
     public DateTime ExpiresAt { get; set; }
     
