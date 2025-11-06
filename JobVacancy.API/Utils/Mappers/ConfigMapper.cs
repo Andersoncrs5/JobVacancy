@@ -8,6 +8,7 @@ using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
+using JobVacancy.API.models.dtos.FavoriteCommentPostEnterprise;
 using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
@@ -99,14 +100,11 @@ public class ConfigMapper: Profile
         
         
         
-        
         CreateMap<FavoriteCommentEntity, FavoriteCommentPostUserDto>();
+        CreateMap<FavoriteCommentEntity, FavoriteCommentPostEnterpriseDto>();
 
         CreateMap<CommentBaseEntity, CommentBase>()
-            .Include<CommentPostUserEntity, CommentPostUserDto>();
-            //.Include<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
-            
-        CreateMap<CommentPostUserEntity, CommentPostUserDto>();
-        //CreateMap<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
+            .Include<CommentPostUserEntity, CommentPostUserDto>()
+            .Include<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
     }
 }
