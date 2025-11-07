@@ -5,6 +5,7 @@ using JobVacancy.API.Repositories.Interfaces;
 using JobVacancy.API.Repositories.Provider;
 using JobVacancy.API.Utils.Uow.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace JobVacancy.API.Utils.Uow.Provider;
@@ -76,10 +77,17 @@ public class UnitOfWork(
         {
             await context.SaveChangesAsync();
         } 
-        catch (Exception e)
+        catch (DbUpdateException ex)
         {
-            Console.WriteLine(e);
-            throw;
+            var innerEx = ex.InnerException; 
+        
+            if (innerEx != null)
+            {
+                Console.WriteLine($"SQL COMMIT ERROR: {innerEx.Message}");
+                throw new InvalidOperationException($"Violação de Integridade do Banco de Dados: {innerEx.Message}", innerEx);
+            }
+
+            throw; 
         }
     }
     
