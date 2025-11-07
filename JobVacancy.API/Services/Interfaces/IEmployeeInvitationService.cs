@@ -12,5 +12,8 @@ public interface IEmployeeInvitationService
         string? inviteSenderId);
     Task<EmployeeInvitationEntity> Update(UpdateEmployeeInvitationDto dto,
         EmployeeInvitationEntity invitation);
+
+    Task<EmployeeInvitationEntity> UpdateByUser(UpdateEmployeeInvitationByUserDto dto,
+        EmployeeInvitationEntity invitation);
     IQueryable<EmployeeInvitationEntity> Query();
 }
