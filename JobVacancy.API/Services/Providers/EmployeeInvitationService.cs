@@ -1,5 +1,6 @@
 using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.entities;
+using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
 using JobVacancy.API.Utils.Uow.Interfaces;
 
@@ -29,6 +30,20 @@ public class EmployeeInvitationService(IUnitOfWork uow): IEmployeeInvitationServ
         EmployeeInvitationEntity map = uow.Mapper.Map<EmployeeInvitationEntity>(dto);
         map.InviteSenderId = inviteSenderId;
         map.EnterpriseId = enterpriseId;
+        map.Status = StatusEnum.Pending;
+    
+        map.ExpiresAt = DateTime.UtcNow.AddDays(7); 
+        
+        if (map.ProposedEndDate.HasValue && map.ProposedEndDate.Value < map.ProposedStartDate.AddDays(10))
+        {
+            map.ExpiresAt = DateTime.UtcNow.AddDays(3);
+        }
+        else
+        {
+            map.ExpiresAt = DateTime.UtcNow.AddDays(30); 
+        }
+    
+        map.ResponseDate = null; 
 
         EmployeeInvitationEntity created = await uow.EmployeeInvitationRepository.AddAsync(map);
         await uow.Commit();
@@ -38,11 +53,11 @@ public class EmployeeInvitationService(IUnitOfWork uow): IEmployeeInvitationServ
     public async Task<EmployeeInvitationEntity> Update(UpdateEmployeeInvitationDto dto,
         EmployeeInvitationEntity invitation)
     {
-        EmployeeInvitationEntity map = uow.Mapper.Map(dto,  invitation);
+        uow.Mapper.Map(dto, invitation);
 
-        EmployeeInvitationEntity update = await uow.EmployeeInvitationRepository.Update(map);
+        EmployeeInvitationEntity update = await uow.EmployeeInvitationRepository.Update(invitation);
         await uow.Commit();
-        return update;
+        return invitation;
     }
 
     public IQueryable<EmployeeInvitationEntity> Query()
