@@ -304,6 +304,20 @@ public class EmployeeInvitationController(
                     Version = 1
                 });
             }
+            
+            if (dto.Status == StatusEnum.Accepted) 
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ResponseHttp<object>
+                {
+                    Data = null,
+                    Code = StatusCodes.Status403Forbidden,
+                    Message = $"The invitation cannot be accept by this router",
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
 
             if (employee.ExpiresAt < DateTime.UtcNow)
             {
