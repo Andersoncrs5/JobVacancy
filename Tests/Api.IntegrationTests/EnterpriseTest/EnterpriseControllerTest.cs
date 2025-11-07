@@ -8,6 +8,7 @@ using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
+using Xunit.Abstractions;
 
 namespace JobVacancy.API.IntegrationTests.EnterpriseTest;
 
@@ -17,12 +18,14 @@ public class EnterpriseControllerTest: IClassFixture<CustomWebApplicationFactory
     private readonly Helper _helper;
     private readonly IConfiguration _configuration;
     private readonly string _URL = "/api/v1/Enterprise";
-
-    public EnterpriseControllerTest(CustomWebApplicationFactory factory) 
+    private readonly ITestOutputHelper _output;
+    
+    public EnterpriseControllerTest(CustomWebApplicationFactory factory, ITestOutputHelper output) 
     {
         _client = factory.CreateClient(); 
         _helper = new Helper(_client); 
         _configuration = factory.Configuration;
+        _output = output;
     }
     
     [Fact]
