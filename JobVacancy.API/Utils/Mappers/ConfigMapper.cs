@@ -115,7 +115,6 @@ public class ConfigMapper: Profile
             .ForMember(dest => dest.EnterpriseId, opt => opt.Ignore())
             .ForMember(dest => dest.InviteSenderId, opt => opt.Ignore())
             .ForMember(dest => dest.Token, opt => opt.Ignore())
-            .ForMember(dest => dest.ProposedStartDate, opt => opt.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)) ;
             
         CreateMap<EmployeeInvitationEntity, EmployeeInvitationDto>();
