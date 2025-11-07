@@ -436,6 +436,39 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Industries");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PositionEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Describe")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Positions", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.RoleEntity", b =>
                 {
                     b.Property<string>("Id")

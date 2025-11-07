@@ -27,6 +27,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<CommentPostEnterpriseEntity> CommentPostEnterprise { get; set; }
     public new DbSet<FavoriteCommentEntity> FavoriteCommentEntities { get; set; }
     public new DbSet<EmployeeInvitationEntity> EmployeeInvitations { get; set; }
+    public new DbSet<PositionEntity> Positions { get; set; }
+    
     public override int SaveChanges()
     {
         SetAuditDates();
@@ -106,6 +108,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
                 .HasForeignKey(ev => ev.InviteSenderId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
+        });
+
+        modelBuilder.Entity<PositionEntity>(options =>
+        {
+            options.ToTable("Positions");
+            options.HasKey(ev => ev.Id);
+            options.Property(ev => ev.Name).HasMaxLength(300).IsRequired();
+            options.HasIndex(ev => ev.Name).IsUnique();
+            options.HasIndex(ev => ev.IsActive);
+            options.Property(x => x.Describe).HasMaxLength(600).IsRequired(false);
         });
         
         modelBuilder.Entity<FavoriteCommentEntity>(options =>
