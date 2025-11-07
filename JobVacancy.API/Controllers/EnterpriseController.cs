@@ -18,7 +18,6 @@ namespace JobVacancy.API.Controllers;
 [ApiVersion("1.0")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class EnterpriseController(
-    ITokenService tokenService,
     IEnterpriseService enterpriseService,
     IRolesService rolesService,
     IUserService userService,
