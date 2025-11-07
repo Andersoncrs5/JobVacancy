@@ -6,6 +6,7 @@ using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
+using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoriteCommentPostEnterprise;
@@ -106,5 +107,17 @@ public class ConfigMapper: Profile
         CreateMap<CommentBaseEntity, CommentBase>()
             .Include<CommentPostUserEntity, CommentPostUserDto>()
             .Include<CommentPostEnterpriseEntity, CommentPostEnterpriseDto>();
+        
+        CreateMap<CreateEmployeeInvitationDto, EmployeeInvitationEntity>();
+        CreateMap<UpdateEmployeeInvitationDto, EmployeeInvitationEntity>()
+
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.EnterpriseId, opt => opt.Ignore())
+            .ForMember(dest => dest.InviteSenderId, opt => opt.Ignore())
+            .ForMember(dest => dest.Token, opt => opt.Ignore())
+            .ForMember(dest => dest.ProposedStartDate, opt => opt.Ignore())
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)) ;
+            
+        CreateMap<EmployeeInvitationEntity, EmployeeInvitationDto>();
     }
 }
