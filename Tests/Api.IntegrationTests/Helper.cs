@@ -5,6 +5,7 @@ using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
+using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
@@ -25,6 +26,46 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<EmployeeInvitationDto> CreateEmployeeInvitation(UserResultTest userGuest)
+    {
+        string _URL = "/api/v1/EmployeeInvitation";
+        CreateEmployeeInvitationDto dto = new CreateEmployeeInvitationDto
+        {
+            UserId = userGuest.User!.Id,
+            Currency = CurrencyEnum.Aud,
+            EmploymentType = EmploymentTypeEnum.Temporary,
+            Message = "AnyMessage",
+            Position = "DEVOPS",
+            ProposedStartDate = DateTime.UtcNow.AddDays(7),
+            ProposedEndDate = DateTime.UtcNow.AddDays(20),
+            SalaryRange = "5000-7000",
+            
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_URL}", dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<EmployeeInvitationDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeInvitationDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.UserId.Should().Be(dto.UserId);
+        http.Data.Currency.Should().Be(dto.Currency);
+        http.Data.EmploymentType.Should().Be(dto.EmploymentType);
+        http.Data.Message.Should().Be(dto.Message);
+        http.Data.Position.Should().Be(dto.Position);
+        http.Data.ProposedStartDate.Should().Be(dto.ProposedStartDate);
+        http.Data.ProposedEndDate.Should().Be(dto.ProposedEndDate);
+        http.Data.SalaryRange.Should().Be(dto.SalaryRange);
+
+        return http.Data;
+    }
+    
     public async Task AddFavoriteCommentPostEnterprise(string commentId)
     {
         string _url = "/api/v1/FavoriteCommentPostEnterprise";
