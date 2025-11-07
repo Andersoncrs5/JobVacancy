@@ -82,12 +82,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.Property(ev => ev.Position).HasMaxLength(400).IsRequired();
             options.Property(ev => ev.SalaryRange).HasMaxLength(100).IsRequired();
             options.Property(ev => ev.EmploymentType).IsRequired();
-            options.Property(ev => ev.ProposedStartDate).IsRequired();
-            options.Property(ev => ev.ProposedEndDate).IsRequired(false);
+            options.Property(ev => ev.ProposedStartDate).HasColumnType("TIMESTAMPTZ").IsRequired();
+            options.Property(ev => ev.ProposedEndDate).HasColumnType("TIMESTAMPTZ").IsRequired(false);
             options.Property(ev => ev.Status).IsRequired();
             options.Property(ev => ev.Currency).IsRequired();
-            options.Property(ev => ev.ResponseDate).IsRequired(false);
-            options.Property(ev => ev.ExpiresAt).IsRequired();
+            options.Property(ev => ev.ResponseDate).HasColumnType("TIMESTAMPTZ").IsRequired(false);
+            options.Property(ev => ev.ExpiresAt).HasColumnType("TIMESTAMPTZ").IsRequired();
 
             options.HasOne(ev => ev.User)
                 .WithMany(ev => ev.InvitationsReceived)

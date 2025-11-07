@@ -159,7 +159,7 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("TIMESTAMPTZ");
 
                     b.Property<string>("InvitationLink")
                         .HasMaxLength(1500)
@@ -178,17 +178,17 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("character varying(400)");
 
                     b.Property<DateTime?>("ProposedEndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("TIMESTAMPTZ");
 
                     b.Property<DateTime>("ProposedStartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("TIMESTAMPTZ");
 
                     b.Property<string>("RejectReason")
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
                     b.Property<DateTime?>("ResponseDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("TIMESTAMPTZ");
 
                     b.Property<string>("SalaryRange")
                         .IsRequired()
