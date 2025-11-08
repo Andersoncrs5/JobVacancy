@@ -19,6 +19,7 @@ public class EmployeeInvitationController(
     IEnterpriseService enterpriseService,
     IUserService userService,
     IEmployeeInvitationService employeeInvitationService,
+    IPositionService positionService,
     IConfiguration configuration,
     IMapper mapper
 ) : Controller
@@ -236,6 +237,24 @@ public class EmployeeInvitationController(
                     TraceId = HttpContext.TraceIdentifier,
                     Version = 1
                 });
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.PositionId) && dto.PositionId != employee.PositionId)
+            {
+                bool existsByName = await positionService.ExistsById(dto.PositionId);
+                if (!existsByName)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Message = "Position not found",
+                        Data = null,
+                        Status = false,
+                        Timestamp = DateTimeOffset.UtcNow,
+                        TraceId = HttpContext.TraceIdentifier,
+                        Version = 1
+                    });
+                }
             }
 
             EmployeeInvitationEntity update = await employeeInvitationService.Update(dto, employee);
