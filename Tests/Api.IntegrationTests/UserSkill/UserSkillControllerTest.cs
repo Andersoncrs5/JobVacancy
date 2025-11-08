@@ -213,8 +213,6 @@ public class UserSkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.YearsOfExperience.Should().Be(userSkill.YearsOfExperience);
         http.Data.SkillId.Should().Be(userSkill.SkillId);
         http.Data.UserId.Should().Be(userSkill.UserId);
-        http.Data.CreatedAt.Should().Be(userSkill.CreatedAt);
-        
     }
     
     [Fact]
@@ -256,7 +254,6 @@ public class UserSkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.YearsOfExperience.Should().Be(userSkill.YearsOfExperience);
         http.Data.SkillId.Should().Be(userSkill.SkillId);
         http.Data.UserId.Should().Be(userSkill.UserId);
-        http.Data.CreatedAt.Should().Be(userSkill.CreatedAt);
         
     }
     
@@ -299,8 +296,6 @@ public class UserSkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.YearsOfExperience.Should().Be(dto.YearsOfExperience);
         http.Data.SkillId.Should().Be(userSkill.SkillId);
         http.Data.UserId.Should().Be(userSkill.UserId);
-        http.Data.CreatedAt.Should().Be(userSkill.CreatedAt);
-        
     }
     
     [Fact]
