@@ -4,6 +4,8 @@ using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.EmployeeInvitation;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -379,7 +381,39 @@ public class EmployeeInvitationController(
             });
         }
     }
-    
-    
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<EmployeeInvitationDto>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> GetAll([FromQuery] EmployeeInvitationFilterParam filter)
+    {
+        try
+        {
+            IQueryable<EmployeeInvitationEntity> iQueryable = employeeInvitationService.Query();
+            IQueryable<EmployeeInvitationEntity> appliedFilter = EmployeeInvitationFilterQuery.ApplyFilter(iQueryable, filter);
+            PaginatedList<EmployeeInvitationEntity> paginatedList = await PaginatedList<EmployeeInvitationEntity>.CreateAsync(
+                source: appliedFilter,
+                pageSize: filter.PageSize,
+                pageIndex: filter.PageNumber
+            );
+        
+            Page<EmployeeInvitationDto> dtos = mapper.Map<Page<EmployeeInvitationDto>>(paginatedList);
+        
+            return Ok(dtos);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp<object>
+            {
+                Data = e.StackTrace,
+                Code = StatusCodes.Status500InternalServerError,
+                Message = e.Message,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+            });
+        }
+    }
     
 }
