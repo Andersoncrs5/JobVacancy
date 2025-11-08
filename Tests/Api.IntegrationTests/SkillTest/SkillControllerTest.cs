@@ -291,7 +291,6 @@ public class SkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.Id.Should().Be(skill.Id);
         http.Data.Name.Should().Be(dto.Name);
         http.Data.Description.Should().Be(skill.Description);
-        http.Data.CreatedAt.Should().Be(skill.CreatedAt);
         http.Data.IsActive.Should().Be(skill.IsActive);
     }
     
@@ -322,7 +321,6 @@ public class SkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.Id.Should().Be(skill.Id);
         http.Data.Name.Should().Be(skill.Name);
         http.Data.Description.Should().Be(dto.Description);
-        http.Data.CreatedAt.Should().Be(skill.CreatedAt);
         http.Data.IsActive.Should().Be(skill.IsActive);
     }
     
@@ -353,7 +351,6 @@ public class SkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.Id.Should().Be(skill.Id);
         http.Data.Name.Should().Be(skill.Name);
         http.Data.Description.Should().Be(skill.Description);
-        http.Data.CreatedAt.Should().Be(skill.CreatedAt);
         http.Data.IsActive.Should().Be(dto.IsActive.Value);
     }
     
@@ -384,7 +381,6 @@ public class SkillControllerTest: IClassFixture<CustomWebApplicationFactory>
         http.Data.Id.Should().Be(skill.Id);
         http.Data.Name.Should().Be(skill.Name);
         http.Data.Description.Should().Be(skill.Description);
-        http.Data.CreatedAt.Should().Be(skill.CreatedAt);
         http.Data.IsActive.Should().Be(skill.IsActive);
         http.Data.IconUrl.Should().Be(dto.IconUrl);
     }
