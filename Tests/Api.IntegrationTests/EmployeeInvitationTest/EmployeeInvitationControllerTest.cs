@@ -6,6 +6,7 @@ using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +35,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -51,11 +53,10 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
             Currency = CurrencyEnum.Aud,
             EmploymentType = EmploymentTypeEnum.Temporary,
             Message = "AnyMessage",
-            Position = "DEVOPS",
+            PositionId = positionDto.Id,
             ProposedStartDate = DateTime.UtcNow.AddDays(7),
             ProposedEndDate = DateTime.UtcNow.AddDays(20),
             SalaryRange = "5000-7000",
-            
         };
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_URL}", dto);
@@ -74,7 +75,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
         http.Data.Message.Should().Be(dto.Message);
-        http.Data.Position.Should().Be(dto.Position);
+        http.Data.PositionId.Should().Be(dto.PositionId);
         http.Data.ProposedStartDate.Should().Be(dto.ProposedStartDate);
         http.Data.ProposedEndDate.Should().Be(dto.ProposedEndDate);
         http.Data.SalaryRange.Should().Be(dto.SalaryRange);
@@ -87,6 +88,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
         
         UserResultTest user = await _helper.CreateAndGetUser();
         EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
@@ -103,7 +105,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
             Currency = CurrencyEnum.Aud,
             EmploymentType = EmploymentTypeEnum.Temporary,
             Message = "AnyMessage",
-            Position = "DEVOPS",
+            PositionId = positionDto.Id,
             ProposedStartDate = DateTime.UtcNow.AddDays(7),
             ProposedEndDate = DateTime.UtcNow.AddDays(20),
             SalaryRange = "5000-7000",
@@ -122,36 +124,11 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     }
     
     [Fact]
-    public async Task CreateThrowForb()
-    {
-        UserResultTest user = await _helper.CreateAndGetUser();
-        
-        string token = user.Tokens!.Token!;
-        _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        CreateEmployeeInvitationDto dto = new CreateEmployeeInvitationDto
-        {
-            UserId = Guid.NewGuid().ToString(),
-            Currency = CurrencyEnum.Aud,
-            EmploymentType = EmploymentTypeEnum.Temporary,
-            Message = "AnyMessage",
-            Position = "DEVOPS",
-            ProposedStartDate = DateTime.UtcNow.AddDays(7),
-            ProposedEndDate = DateTime.UtcNow.AddDays(20),
-            SalaryRange = "5000-7000",
-        };
-
-        HttpResponseMessage message = await _client.PostAsJsonAsync($"{_URL}", dto);
-        
-        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
     public async Task Get()
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -163,7 +140,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         HttpResponseMessage message = await _client.GetAsync($"{_URL}/{invitation.Id}");
         message.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -201,6 +178,8 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -212,7 +191,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         HttpResponseMessage message = await _client.DeleteAsync($"{_URL}/{invitation.Id}");
         message.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -269,6 +248,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -280,7 +260,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
         {
@@ -320,7 +300,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
         http.Data.Message.Should().Be(invitation.Message);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
     }
     
@@ -329,6 +309,8 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -340,7 +322,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
         {
@@ -367,6 +349,8 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -378,7 +362,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
         {
@@ -398,6 +382,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -409,7 +394,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
         {
@@ -448,7 +433,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
         http.Data.Message.Should().Be(invitation.Message);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
     }
     
@@ -457,6 +442,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -468,7 +454,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
         {
@@ -507,7 +493,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
         http.Data.Message.Should().Be(invitation.Message);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
     }
     
@@ -516,6 +502,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -527,7 +514,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -536,7 +523,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
             Currency = CurrencyEnum.Eur,
             EmploymentType = EmploymentTypeEnum.FullTime,
             Message = "AnyMessageUpdate",
-            Position = "SOFTWARE ENGINEER",
+            PositionId = positionDto.Id,
             SalaryRange = "2000-7000",
         };
         
@@ -561,7 +548,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
         http.Data.Message.Should().Be(dto.Message);
-        http.Data.Position.Should().Be(dto.Position);
+        http.Data.PositionId.Should().Be(dto.PositionId);
         http.Data.SalaryRange.Should().Be(dto.SalaryRange);
     }
     
@@ -570,6 +557,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -581,7 +569,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -590,7 +578,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
             Currency = CurrencyEnum.Eur,
             EmploymentType = EmploymentTypeEnum.FullTime,
             Message = "AnyMessageUpdate",
-            Position = "SOFTWARE ENGINEER",
+            PositionId = "SOFTWARE ENGINEER",
             SalaryRange = "2000-7000",
         };
         
@@ -605,6 +593,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -616,7 +605,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -644,7 +633,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
         http.Data.Message.Should().Be(invitation.Message);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
     }
     
@@ -653,6 +642,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -664,7 +654,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -691,7 +681,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
         http.Data.Message.Should().Be(invitation.Message);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
     }
     
@@ -700,6 +690,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -711,7 +702,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -745,7 +736,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
         
         http.Data.Message.Should().Be(dto.Message);
@@ -756,6 +747,8 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        PositionDto positionB = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -767,11 +760,11 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
-            Position = "DEV BACK END"
+            PositionId = positionB.Id,
         };
         
         HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_URL}/{invitation.Id}/By/Enterprise", dto);
@@ -801,7 +794,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
-        http.Data.Position.Should().Be(dto.Position);
+        http.Data.PositionId.Should().Be(dto.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
         
         http.Data.Message.Should().Be(invitation.Message);
@@ -812,6 +805,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -823,7 +817,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -857,7 +851,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(dto.SalaryRange);
         
         http.Data.Message.Should().Be(invitation.Message);
@@ -868,6 +862,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -879,7 +874,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -913,7 +908,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         
         http.Data.Currency.Should().Be(invitation.Currency);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
         
         http.Data.Message.Should().Be(invitation.Message);
@@ -924,6 +919,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
 
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         UserResultTest user = await _helper.CreateAndGetUser();
@@ -935,7 +931,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         _client.DefaultRequestHeaders.Authorization = 
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest);
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
 
         UpdateEmployeeInvitationDto dto = new UpdateEmployeeInvitationDto
         {
@@ -969,7 +965,7 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
-        http.Data.Position.Should().Be(invitation.Position);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
         
         http.Data.Message.Should().Be(invitation.Message);
