@@ -34,6 +34,7 @@ public class UnitOfWork(
     private CommentPostEnterpriseRepository? _commentPostEnterpriseRepository;
     private FavoriteCommentPostEnterpriseRepository? _favoriteCommentPostEnterpriseRepository;
     private EmployeeInvitationRepository? _employeeInvitationRepository;
+    private PositionRepository? _positionRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -70,6 +71,8 @@ public class UnitOfWork(
         => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context);
     public IEmployeeInvitationRepository EmployeeInvitationRepository
         => _employeeInvitationRepository ??= new EmployeeInvitationRepository(context);
+    public IPositionRepository PositionRepository
+        => _positionRepository ??= new PositionRepository(context);
     
     public async Task Commit() 
     {

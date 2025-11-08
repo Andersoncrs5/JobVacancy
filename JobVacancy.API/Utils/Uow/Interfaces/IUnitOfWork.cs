@@ -24,6 +24,7 @@ public interface IUnitOfWork: IDisposable
     IFavoriteCommentPostUserRepository FavoriteCommentPostUserRepository { get; }
     IFavoriteCommentPostEnterpriseRepository FavoriteCommentPostEnterpriseRepository { get; }
     IEmployeeInvitationRepository EmployeeInvitationRepository { get; }
+    IPositionRepository PositionRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
