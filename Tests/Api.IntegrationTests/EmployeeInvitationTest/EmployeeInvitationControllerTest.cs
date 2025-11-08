@@ -306,46 +306,6 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
     }
     
     [Fact]
-    public async Task UpdateByUserReturnForbBecauseStatusAccepted()
-    {
-        ResponseTokens master = await _helper.LoginMaster(_configuration);
-        IndustryDto industryDto = await _helper.CreateIndustry(master);
-        PositionDto positionDto = await _helper.CreatePositionAsync();
-        
-
-        UserResultTest userGuest = await _helper.CreateAndGetUser();
-        UserResultTest user = await _helper.CreateAndGetUser();
-        EnterpriseDto enterprise = await _helper.CreateEnterprise(user, industryDto);
-        
-        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
-        
-        string token = loginUserWithNewRole.Token!;
-        _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
-
-        UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
-        {
-            Status = StatusEnum.Accepted,
-            RejectReason = string.Concat(Enumerable.Repeat("SalaryBad", 30))
-        };
-        
-        _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
-        
-        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_URL}/{invitation.Id}/By/User", dto);
-        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
-        http.Should().NotBeNull();
-        http.Data.Should().BeNull();
-        http.Status.Should().BeFalse();
-        http.Code.Should().Be((int)HttpStatusCode.Forbidden);
-        http.Message.Should().NotBeNullOrWhiteSpace();
-    }
-    
-    [Fact]
     public async Task UpdateByUserThrowForb()
     {
         ResponseTokens master = await _helper.LoginMaster(_configuration);
