@@ -39,7 +39,18 @@ public class PositionService(IUnitOfWork uow): IPositionService
 
     public async Task<PositionEntity> Update(UpdatePositionDto dto, PositionEntity position)
     {
+        var active = position.IsActive;
+        
         uow.Mapper.Map(dto, position);
+
+        if (dto.IsActive.HasValue)
+        {
+            position.IsActive = dto.IsActive.Value;
+        }
+        else
+        {
+            position.IsActive = active;
+        }
 
         PositionEntity update = await uow.PositionRepository.Update(position);
         await uow.Commit();
