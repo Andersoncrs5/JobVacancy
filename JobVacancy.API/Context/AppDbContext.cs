@@ -81,7 +81,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.Property(ev => ev.Message).HasMaxLength(1500).IsRequired(false);
             options.Property(ev => ev.InvitationLink).HasMaxLength(1500).IsRequired(false);
             options.Property(ev => ev.RejectReason).HasMaxLength(1500).IsRequired(false);
-            options.Property(ev => ev.Position).HasMaxLength(400).IsRequired();
             options.Property(ev => ev.SalaryRange).HasMaxLength(100).IsRequired();
             options.Property(ev => ev.EmploymentType).IsRequired();
             options.Property(ev => ev.ProposedStartDate).HasColumnType("TIMESTAMPTZ").IsRequired();
@@ -97,6 +96,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            options.HasOne(x => x.Position)
+                .WithMany(x => x.EmployeeInvitations)
+                .HasForeignKey(x => x.PositionId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
             options.HasOne(ev => ev.Enterprise)
                 .WithMany(ev => ev.EmployeeInvitations)
                 .HasForeignKey(ev => ev.EnterpriseId)
