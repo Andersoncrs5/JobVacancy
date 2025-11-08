@@ -5,7 +5,7 @@ namespace JobVacancy.API.models.dtos.EmployeeInvitation;
 public class UpdateEmployeeInvitationDto
 {
     public string? Message {get; set;}
-    public string? Position {get; set;}
+    public string? PositionId {get; set;}
     public string? SalaryRange {get; set;}
     public EmploymentTypeEnum? EmploymentType {get; set;}
     public DateTime? ProposedStartDate {  get; set; }
