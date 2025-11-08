@@ -1,4 +1,5 @@
 using JobVacancy.API.models.dtos.Enterprise;
+using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities.Enums;
 
@@ -14,7 +15,6 @@ public class EmployeeInvitationDto: BaseDto
     public string? RejectReason {get; set;}
     public string? InvitationLink {get; set;} 
     public string? Token {get; set;}
-    public string PositionId {get; set;} = string.Empty;
     public string SalaryRange {get; set;} = string.Empty;
     public EmploymentTypeEnum EmploymentType {get; set;}
     public DateTime ProposedStartDate {  get; set; }
@@ -25,4 +25,7 @@ public class EmployeeInvitationDto: BaseDto
     public DateTime ExpiresAt { get; set; }
     public string? InviteSenderId  {get; set;}
     public UserDto? InviteSender {get; set;}
+    
+    public string PositionId {get; set;} = string.Empty;
+    public PositionDto? Position {get; set;}
 }
