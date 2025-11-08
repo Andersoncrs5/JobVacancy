@@ -14,6 +14,7 @@ using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Skill;
@@ -118,5 +119,11 @@ public class ConfigMapper: Profile
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)) ;
             
         CreateMap<EmployeeInvitationEntity, EmployeeInvitationDto>();
+        
+        CreateMap<PositionEntity, PositionDto>();
+        CreateMap<CreatePositionDto, PositionEntity>();
+        CreateMap<UpdatePositionDto, PositionEntity>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)) ;
+
     }
 }
