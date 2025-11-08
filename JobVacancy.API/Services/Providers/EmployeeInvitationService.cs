@@ -56,9 +56,9 @@ public class EmployeeInvitationService(IUnitOfWork uow, IMapper mapper): IEmploy
             invitation.Message = dto.Message;
         }
         
-        if (!string.IsNullOrEmpty(dto.Position))
+        if (!string.IsNullOrEmpty(dto.PositionId))
         {
-            invitation.Position = dto.Position;
+            invitation.PositionId = dto.PositionId;
         }
         
         if (!string.IsNullOrEmpty(dto.SalaryRange))
