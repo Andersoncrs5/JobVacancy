@@ -244,6 +244,7 @@ builder.Services.AddScoped<ICommentPostEnterpriseService, CommentPostEnterpriseS
 builder.Services.AddScoped<IFavoriteCommentPostUserService, FavoriteCommentPostUserService>();
 builder.Services.AddScoped<IFavoriteCommentPostEnterpriseService, FavoriteCommentPostEnterpriseService>();
 builder.Services.AddScoped<IEmployeeInvitationService, EmployeeInvitationService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
