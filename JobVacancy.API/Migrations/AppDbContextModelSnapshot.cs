@@ -172,10 +172,9 @@ namespace JobVacancy.API.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
-                    b.Property<string>("Position")
+                    b.Property<string>("PositionId")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("ProposedEndDate")
                         .HasColumnType("TIMESTAMPTZ");
@@ -214,6 +213,8 @@ namespace JobVacancy.API.Migrations
                     b.HasIndex("EnterpriseId");
 
                     b.HasIndex("InviteSenderId");
+
+                    b.HasIndex("PositionId");
 
                     b.HasIndex("UserId");
 
@@ -853,6 +854,12 @@ namespace JobVacancy.API.Migrations
                         .HasForeignKey("InviteSenderId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("JobVacancy.API.models.entities.PositionEntity", "Position")
+                        .WithMany("EmployeeInvitations")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
                         .WithMany("InvitationsReceived")
                         .HasForeignKey("UserId")
@@ -862,6 +869,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Enterprise");
 
                     b.Navigation("InviteSender");
+
+                    b.Navigation("Position");
 
                     b.Navigation("User");
                 });
@@ -1137,6 +1146,11 @@ namespace JobVacancy.API.Migrations
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
                 {
                     b.Navigation("EnterpriseLinks");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.PositionEntity", b =>
+                {
+                    b.Navigation("EmployeeInvitations");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.SkillEntity", b =>
