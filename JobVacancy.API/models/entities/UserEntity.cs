@@ -18,8 +18,9 @@ public class UserEntity: IdentityUser
     public virtual ICollection<FavoritePostUserEntity> FavoritePosts { get; set; } = new List<FavoritePostUserEntity>();
     public virtual ICollection<FavoritePostEnterpriseEntity> FavoritePostsEnterprise { get; set; } = new List<FavoritePostEnterpriseEntity>();
     public virtual ICollection<CommentBaseEntity>  Comments { get; set; } = new List<CommentBaseEntity>();
-    
     public virtual ICollection<EmployeeInvitationEntity> InvitationsReceived { get; set; } = new List<EmployeeInvitationEntity>();
-    
     public virtual ICollection<EmployeeInvitationEntity> InvitationsSent { get; set; } = new List<EmployeeInvitationEntity>();
+    public virtual ICollection<EmployeeEnterpriseEntity> InvitationsEnterprise { get; set; } = new List<EmployeeEnterpriseEntity>();
+    public virtual ICollection<EmployeeEnterpriseEntity> Employee { get; set; } = new List<EmployeeEnterpriseEntity>();
+    
 }

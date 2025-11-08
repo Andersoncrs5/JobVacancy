@@ -14,4 +14,5 @@ public class EnterpriseEntity: BaseEntity
     public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
     public virtual ICollection<PostEnterpriseEntity> Posts { get; set; } = new List<PostEnterpriseEntity>();
     public virtual ICollection<EmployeeInvitationEntity> EmployeeInvitations { get; set; } = new List<EmployeeInvitationEntity>();
+    public virtual ICollection<EmployeeEnterpriseEntity> EmployeeEnterprise { get; set; } = new List<EmployeeEnterpriseEntity>();
 }
