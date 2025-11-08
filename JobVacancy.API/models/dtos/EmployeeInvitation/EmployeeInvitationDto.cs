@@ -14,7 +14,7 @@ public class EmployeeInvitationDto: BaseDto
     public string? RejectReason {get; set;}
     public string? InvitationLink {get; set;} 
     public string? Token {get; set;}
-    public string Position {get; set;} = string.Empty;
+    public string PositionId {get; set;} = string.Empty;
     public string SalaryRange {get; set;} = string.Empty;
     public EmploymentTypeEnum EmploymentType {get; set;}
     public DateTime ProposedStartDate {  get; set; }
