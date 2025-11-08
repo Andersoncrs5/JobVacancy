@@ -11,6 +11,7 @@ using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
 using JobVacancy.API.models.dtos.Industry;
+using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.Skill;
@@ -26,6 +27,36 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<PositionDto> CreatePositionAsync()
+    {
+        string _URL = "/api/v1/Position";
+        int num = Random.Shared.Next(1, 1000000);
+        
+        CreatePositionDto dto = new CreatePositionDto()
+        {
+            Describe = string.Concat(Enumerable.Repeat("AnyDesc", 5)),
+            Name = Guid.NewGuid().ToString(),
+            IsActive = true
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync(_URL, dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+        ResponseHttp<PositionDto>? content = await message.Content.ReadFromJsonAsync<ResponseHttp<PositionDto>>();
+        
+        content.Should().NotBeNull();
+        content.Status.Should().BeTrue();
+        content.Message.Should().NotBeNullOrWhiteSpace();
+        content.Code.Should().Be((int)HttpStatusCode.Created);
+        
+        content.Data.Should().NotBeNull();
+        content.Data.Id.Should().NotBeNullOrWhiteSpace();
+        content.Data.Name.Should().Be(dto.Name);
+        content.Data.Describe.Should().Be(dto.Describe);
+        content.Data.IsActive.Should().Be(dto.IsActive);
+        
+        return content.Data;
+    }
+    
     public async Task<EmployeeInvitationDto> CreateEmployeeInvitation(UserResultTest userGuest)
     {
         string _URL = "/api/v1/EmployeeInvitation";
