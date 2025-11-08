@@ -224,6 +224,7 @@ builder.Services.AddScoped<ICommentPostEnterpriseRepository, CommentPostEnterpri
 builder.Services.AddScoped<IFavoriteCommentPostUserRepository, FavoriteCommentPostUserRepository>();
 builder.Services.AddScoped<IFavoriteCommentPostEnterpriseRepository, FavoriteCommentPostEnterpriseRepository>();
 builder.Services.AddScoped<IEmployeeInvitationRepository, EmployeeInvitationRepository>();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
