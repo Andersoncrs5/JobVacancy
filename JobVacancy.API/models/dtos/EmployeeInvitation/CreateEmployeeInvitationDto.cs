@@ -1,4 +1,5 @@
 using JobVacancy.API.models.entities.Enums;
+using JobVacancy.API.Utils.Annotations.Validations;
 
 namespace JobVacancy.API.models.dtos.EmployeeInvitation;
 
@@ -6,7 +7,9 @@ public class CreateEmployeeInvitationDto
 {
     public string UserId {get; set;} = string.Empty;
     public string? Message {get; set;}
-    public string Position {get; set;} = string.Empty;
+    
+    [ExistsPosition]
+    public string PositionId {get; set;} = string.Empty;
     public string SalaryRange {get; set;} = string.Empty;
     public EmploymentTypeEnum EmploymentType {get; set;}
     public DateTime ProposedStartDate {  get; set; }
