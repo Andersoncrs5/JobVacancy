@@ -8,6 +8,7 @@ using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.entities.Enums;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
@@ -969,6 +970,24 @@ public class EmployeeInvitationControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
         
         http.Data.Message.Should().Be(invitation.Message);
+    }
+
+    [Fact]
+    public async Task GetAll()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        string token = user.Tokens!.Token!;
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        HttpResponseMessage message = await _client.GetAsync($"{_URL}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<EmployeeInvitationDto>? page = await message.Content.ReadFromJsonAsync<Page<EmployeeInvitationDto>>();
+        page.Should().NotBeNull();
+        page.PageIndex.Should().Be(1);
+        page.PageSize.Should().Be(10);
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
     }
     
 }
