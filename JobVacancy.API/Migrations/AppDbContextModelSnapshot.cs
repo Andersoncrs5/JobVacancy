@@ -140,6 +140,93 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeEnterpriseEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ContractLegalType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContractLink")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("ContractType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EmploymentStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EmploymentType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("InviteSenderId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<int>("PaymentFrequency")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PositionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SalaryCurrency")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SalaryRange")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal>("SalaryValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TerminationReason")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("InviteSenderId");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmployeeEnterprises");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeInvitationEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -841,6 +928,41 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeEnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("EmployeeEnterprise")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "InviteSender")
+                        .WithMany("InvitationsEnterprise")
+                        .HasForeignKey("InviteSenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.PositionEntity", "Position")
+                        .WithMany("EmployeeEnterprise")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("Employee")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("InviteSender");
+
+                    b.Navigation("Position");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EmployeeInvitationEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -1136,6 +1258,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseEntity", b =>
                 {
+                    b.Navigation("EmployeeEnterprise");
+
                     b.Navigation("EmployeeInvitations");
 
                     b.Navigation("IndustryLinks");
@@ -1150,6 +1274,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PositionEntity", b =>
                 {
+                    b.Navigation("EmployeeEnterprise");
+
                     b.Navigation("EmployeeInvitations");
                 });
 
@@ -1162,11 +1288,15 @@ namespace JobVacancy.API.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("Employee");
+
                     b.Navigation("Enterprise");
 
                     b.Navigation("FavoritePosts");
 
                     b.Navigation("FavoritePostsEnterprise");
+
+                    b.Navigation("InvitationsEnterprise");
 
                     b.Navigation("InvitationsReceived");
 

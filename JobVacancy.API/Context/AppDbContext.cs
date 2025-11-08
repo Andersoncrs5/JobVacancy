@@ -28,6 +28,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<FavoriteCommentEntity> FavoriteCommentEntities { get; set; }
     public new DbSet<EmployeeInvitationEntity> EmployeeInvitations { get; set; }
     public new DbSet<PositionEntity> Positions { get; set; }
+    public new DbSet<EmployeeEnterpriseEntity> EmployeeEnterprises { get; set; }
     
     public override int SaveChanges()
     {
@@ -67,6 +68,46 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<EmployeeEnterpriseEntity>(options =>
+        {
+            options.HasKey(x => x.Id);
+            options.Property(x => x.ContractLink).HasMaxLength(1000).IsRequired(false);
+            options.Property(x => x.SalaryRange).HasMaxLength(200).IsRequired();
+            options.Property(x => x.TerminationReason).HasMaxLength(600).IsRequired(false);
+            options.Property(x => x.Notes).HasMaxLength(600).IsRequired(false);
+            options.Property(x => x.SalaryValue).IsRequired();
+            
+            options.Property(x => x.PaymentFrequency).IsRequired();
+            options.Property(x => x.ContractLegalType).IsRequired(false);
+            options.Property(x => x.ContractType).IsRequired();
+            options.Property(x => x.SalaryCurrency).IsRequired();
+            options.Property(x => x.EmploymentType).IsRequired();
+            options.Property(x => x.EmploymentStatus).IsRequired();
+            options.Property(x => x.Currency).IsRequired();
+            
+            options.Property(x => x.EndDate).IsRequired(false);
+            
+            options.HasOne(x => x.Position)
+                .WithMany(x => x.EmployeeEnterprise)
+                .HasForeignKey(x => x.PositionId)
+                .IsRequired();
+            
+            options.HasOne(x => x.Enterprise)
+                .WithMany(x => x.EmployeeEnterprise)
+                .HasForeignKey(x => x.EnterpriseId)
+                .IsRequired();
+            
+            options.HasOne(x => x.User)
+                .WithMany(e => e.Employee)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+            
+            options.HasOne(x => x.InviteSender)
+                .WithMany(e => e.InvitationsEnterprise)
+                .HasForeignKey(x => x.InviteSenderId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<EmployeeInvitationEntity>(options =>
         {
             options.ToTable("EmployeeInvitations");
