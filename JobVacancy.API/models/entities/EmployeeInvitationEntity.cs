@@ -12,7 +12,6 @@ public class EmployeeInvitationEntity: BaseEntity
     public string? RejectReason {get; set;} 
     public string? InvitationLink {get; set;} 
     public string? Token {get; set;} 
-    public string Position {get; set;} = string.Empty;
     public string SalaryRange {get; set;} = string.Empty;
     public EmploymentTypeEnum EmploymentType {get; set;}
     public DateTime ProposedStartDate {  get; set; }
@@ -23,4 +22,6 @@ public class EmployeeInvitationEntity: BaseEntity
     public DateTime ExpiresAt { get; set; }
     public string? InviteSenderId  {get; set;}
     public virtual UserEntity? InviteSender {get; set;}
+    public string PositionId {get; set;} = string.Empty;
+    public virtual PositionEntity? Position { get; set; }
 }
