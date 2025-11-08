@@ -57,7 +57,7 @@ public class Helper(
         return content.Data;
     }
     
-    public async Task<EmployeeInvitationDto> CreateEmployeeInvitation(UserResultTest userGuest)
+    public async Task<EmployeeInvitationDto> CreateEmployeeInvitation(UserResultTest userGuest, PositionDto position)
     {
         string _URL = "/api/v1/EmployeeInvitation";
         CreateEmployeeInvitationDto dto = new CreateEmployeeInvitationDto
@@ -66,7 +66,7 @@ public class Helper(
             Currency = CurrencyEnum.Aud,
             EmploymentType = EmploymentTypeEnum.Temporary,
             Message = "AnyMessage",
-            Position = "DEVOPS",
+            PositionId = position.Id,
             ProposedStartDate = DateTime.UtcNow.AddDays(7),
             ProposedEndDate = DateTime.UtcNow.AddDays(20),
             SalaryRange = "5000-7000",
@@ -89,7 +89,7 @@ public class Helper(
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
         http.Data.Message.Should().Be(dto.Message);
-        http.Data.Position.Should().Be(dto.Position);
+        http.Data.PositionId.Should().Be(dto.PositionId);
         http.Data.ProposedStartDate.Should().Be(dto.ProposedStartDate);
         http.Data.ProposedEndDate.Should().Be(dto.ProposedEndDate);
         http.Data.SalaryRange.Should().Be(dto.SalaryRange);
