@@ -13,7 +13,6 @@ public class CreateEmployeeEnterpriseDto
     public decimal SalaryValue {get; set;}
     public PaymentFrequencyEnum PaymentFrequency {get; set;}
     public ContractLegalTypeEnum? ContractLegalType {get; set;}
-    public EmploymentTypeEnum ContractType {get; set;} 
     public EmploymentTypeEnum EmploymentType {get; set;}
     public EmploymentStatusEnum EmploymentStatus {get; set;}
     public CurrencyEnum Currency { get; set; }
