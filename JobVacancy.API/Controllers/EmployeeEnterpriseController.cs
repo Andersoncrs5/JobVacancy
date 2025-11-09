@@ -5,6 +5,8 @@ using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.EmployeeEnterprise;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -329,6 +331,22 @@ public class EmployeeEnterpriseController(
         }
     }
     
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<EmployeeEnterpriseDto>))]
+    public async Task<IActionResult> GetAll([FromQuery] EmployeeEnterpriseFilterParam filter) 
+    {
+        IQueryable<EmployeeEnterpriseEntity> iQueryable = employeeEnterpriseService.Query();
+        IQueryable<EmployeeEnterpriseEntity> appliedFilter = EmployeeEnterpriseFilterQuery.ApplyFilter(iQueryable, filter);
+        
+        PaginatedList<EmployeeEnterpriseEntity> paginatedList = await PaginatedList<EmployeeEnterpriseEntity>.CreateAsync(
+            source: appliedFilter,
+            pageSize: filter.PageSize,
+            pageIndex: filter.PageNumber
+        );
     
+        Page<EmployeeEnterpriseDto> dtos = mapper.Map<Page<EmployeeEnterpriseDto>>(paginatedList);
+    
+        return Ok(dtos);
+    }
     
 }
