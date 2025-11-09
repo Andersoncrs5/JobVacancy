@@ -80,7 +80,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.Property(x => x.PaymentFrequency).IsRequired();
             options.Property(x => x.ContractLegalType).IsRequired(false);
             options.Property(x => x.ContractType).IsRequired();
-            options.Property(x => x.SalaryCurrency).IsRequired();
             options.Property(x => x.EmploymentType).IsRequired();
             options.Property(x => x.EmploymentStatus).IsRequired();
             options.Property(x => x.Currency).IsRequired();

@@ -189,9 +189,6 @@ namespace JobVacancy.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SalaryCurrency")
-                        .HasColumnType("integer");
-
                     b.Property<string>("SalaryRange")
                         .IsRequired()
                         .HasMaxLength(200)
