@@ -6,6 +6,7 @@ using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
+using JobVacancy.API.models.dtos.EmployeeEnterprise;
 using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
@@ -28,6 +29,58 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<EmployeeEnterpriseDto> CreateEmployeeEnterprise(EmployeeInvitationDto invitationUpdated)
+    {
+        string _url = "/api/v1/EmployeeEnterprise";
+        CreateEmployeeEnterpriseDto dto = new CreateEmployeeEnterpriseDto()
+        {
+            InviteSenderId = invitationUpdated.InviteSenderId,
+            UserId = invitationUpdated.UserId,
+            ContractLegalType = ContractLegalTypeEnum.Indefinite,
+            ContractLink = null,
+            ContractType = EmploymentTypeEnum.Temporary,
+            Currency = CurrencyEnum.Cad,
+            EmploymentStatus = EmploymentStatusEnum.CurrentEmployee,
+            EmploymentType = invitationUpdated.EmploymentType,
+            PositionId = invitationUpdated.PositionId,
+            EndDate = null,
+            Notes = string.Concat(Enumerable.Repeat("OKOK", 20)),
+            PaymentFrequency = PaymentFrequencyEnum.Monthly,
+            SalaryRange = invitationUpdated.SalaryRange,
+            SalaryValue = 8659.75m,
+            StartDate = invitationUpdated.ProposedStartDate,
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync($"{_url}/{invitationUpdated.Id}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<EmployeeEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Version.Should().Be(1);
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.InviteSenderId.Should().Be(invitationUpdated.InviteSenderId);
+        http.Data.UserId.Should().Be(invitationUpdated.UserId);
+        http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
+        http.Data.ContractLink.Should().Be(dto.ContractLink);
+        http.Data.ContractType.Should().Be(dto.ContractType);
+        http.Data.Currency.Should().Be(dto.Currency);
+        http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
+        http.Data.EmploymentType.Should().Be(dto.EmploymentType);
+        http.Data.PositionId.Should().Be(dto.PositionId);
+        http.Data.EndDate.Should().Be(dto.EndDate);
+        http.Data.Notes.Should().Be(dto.Notes);
+        http.Data.PaymentFrequency.Should().Be(dto.PaymentFrequency);
+        http.Data.SalaryRange.Should().Be(dto.SalaryRange);
+        http.Data.SalaryValue.Should().Be(dto.SalaryValue);
+        http.Data.StartDate.Should().Be(dto.StartDate);
+        
+        return http.Data;
+    }
+    
     public async Task<EmployeeInvitationDto> UpdateInvitationByUser(StatusEnum status, EmployeeInvitationDto invitation)
     {
         string url = "/api/v1/EmployeeInvitation";
