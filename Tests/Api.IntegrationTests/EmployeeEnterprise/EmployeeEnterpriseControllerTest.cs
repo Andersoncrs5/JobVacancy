@@ -60,7 +60,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
             UserId = invitationUpdated.UserId,
             ContractLegalType = ContractLegalTypeEnum.Indefinite,
             ContractLink = null,
-            ContractType = EmploymentTypeEnum.Temporary,
             Currency = CurrencyEnum.Cad,
             EmploymentStatus = EmploymentStatusEnum.CurrentEmployee,
             EmploymentType = invitationUpdated.EmploymentType,
@@ -91,7 +90,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.UserId.Should().Be(invitationUpdated.UserId);
         http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
         http.Data.ContractLink.Should().Be(dto.ContractLink);
-        http.Data.ContractType.Should().Be(dto.ContractType);
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
@@ -132,7 +130,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
             UserId = invitation.UserId,
             ContractLegalType = ContractLegalTypeEnum.Indefinite,
             ContractLink = null,
-            ContractType = EmploymentTypeEnum.Temporary,
             Currency = CurrencyEnum.Cad,
             EmploymentStatus = EmploymentStatusEnum.CurrentEmployee,
             EmploymentType = invitation.EmploymentType,
@@ -191,7 +188,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
             UserId = invitationUpdated.UserId,
             ContractLegalType = ContractLegalTypeEnum.Indefinite,
             ContractLink = null,
-            ContractType = EmploymentTypeEnum.Temporary,
             Currency = CurrencyEnum.Cad,
             EmploymentStatus = EmploymentStatusEnum.CurrentEmployee,
             EmploymentType = invitationUpdated.EmploymentType,
@@ -410,7 +406,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
             SalaryValue = 6756.34m,
             PaymentFrequency = PaymentFrequencyEnum.Weekly,
             ContractLegalType = ContractLegalTypeEnum.Internship,
-            ContractType = EmploymentTypeEnum.Contract,
             EmploymentType = EmploymentTypeEnum.Contract,
             EmploymentStatus = EmploymentStatusEnum.Probation,
             Currency = CurrencyEnum.Zar,
@@ -439,7 +434,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         http.Data.SalaryValue.Should().Be(dto.SalaryValue);
         http.Data.PaymentFrequency.Should().Be(dto.PaymentFrequency);
         http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
-        http.Data.ContractType.Should().Be(dto.ContractType);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
         http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
         http.Data.Currency.Should().Be(dto.Currency);
