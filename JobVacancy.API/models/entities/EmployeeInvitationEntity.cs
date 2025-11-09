@@ -5,9 +5,9 @@ namespace JobVacancy.API.models.entities;
 public class EmployeeInvitationEntity: BaseEntity
 {
     public string UserId {get; set;}
-    public virtual UserEntity? User {get; set;}
+    public UserEntity? User {get; set;}
     public string EnterpriseId {get; set;}
-    public virtual EnterpriseEntity? Enterprise {get; set;}
+    public EnterpriseEntity? Enterprise {get; set;}
     public string? Message {get; set;} 
     public string? RejectReason {get; set;} 
     public string? InvitationLink {get; set;} 
@@ -21,7 +21,7 @@ public class EmployeeInvitationEntity: BaseEntity
     public DateTime? ResponseDate { get; set; }
     public DateTime ExpiresAt { get; set; }
     public string? InviteSenderId  {get; set;}
-    public virtual UserEntity? InviteSender {get; set;}
+    public UserEntity? InviteSender {get; set;}
     public string PositionId {get; set;} = string.Empty;
-    public virtual PositionEntity? Position { get; set; }
+    public PositionEntity? Position { get; set; }
 }

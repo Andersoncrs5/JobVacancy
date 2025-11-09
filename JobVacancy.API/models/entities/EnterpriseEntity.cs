@@ -10,9 +10,9 @@ public class EnterpriseEntity: BaseEntity
     public string? LogoUrl { get; set; }
     public EnterpriseTypeEnum Type { get; set; }
     public string UserId { get; set; }
-    public virtual UserEntity? User { get; set; }
-    public virtual ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
-    public virtual ICollection<PostEnterpriseEntity> Posts { get; set; } = new List<PostEnterpriseEntity>();
-    public virtual ICollection<EmployeeInvitationEntity> EmployeeInvitations { get; set; } = new List<EmployeeInvitationEntity>();
-    public virtual ICollection<EmployeeEnterpriseEntity> EmployeeEnterprise { get; set; } = new List<EmployeeEnterpriseEntity>();
+    public UserEntity? User { get; set; }
+    public ICollection<EnterpriseIndustryEntity>? IndustryLinks { get; set; }
+    public ICollection<PostEnterpriseEntity>? Posts { get; set; }
+    public ICollection<EmployeeInvitationEntity>? EmployeeInvitations { get; set; }
+    public ICollection<EmployeeEnterpriseEntity>? EmployeeEnterprise { get; set; }
 }
