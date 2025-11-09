@@ -25,7 +25,7 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseLazyLoadingProxies(); 
+    //options.UseLazyLoadingProxies(); 
     options.UseNpgsql(
         connectionString,
         npgsqlOptions =>
