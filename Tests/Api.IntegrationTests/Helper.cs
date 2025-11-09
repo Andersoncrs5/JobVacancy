@@ -38,7 +38,6 @@ public class Helper(
             UserId = invitationUpdated.UserId,
             ContractLegalType = ContractLegalTypeEnum.Indefinite,
             ContractLink = null,
-            ContractType = EmploymentTypeEnum.Temporary,
             Currency = CurrencyEnum.Cad,
             EmploymentStatus = EmploymentStatusEnum.CurrentEmployee,
             EmploymentType = invitationUpdated.EmploymentType,
@@ -66,7 +65,6 @@ public class Helper(
         http.Data.UserId.Should().Be(invitationUpdated.UserId);
         http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
         http.Data.ContractLink.Should().Be(dto.ContractLink);
-        http.Data.ContractType.Should().Be(dto.ContractType);
         http.Data.Currency.Should().Be(dto.Currency);
         http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
         http.Data.EmploymentType.Should().Be(dto.EmploymentType);
