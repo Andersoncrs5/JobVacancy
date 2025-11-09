@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
@@ -8,6 +9,7 @@ using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.entities.Enums;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
@@ -45,12 +47,12 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            new AuthenticationHeaderValue("Bearer", token);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
@@ -73,7 +75,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         };
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_url}/{invitationUpdated.Id}", dto);
         message.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -117,12 +119,12 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            new AuthenticationHeaderValue("Bearer", token);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
         
         CreateEmployeeEnterpriseDto dto = new CreateEmployeeEnterpriseDto()
         {
@@ -143,7 +145,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         };
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_url}/{invitation.Id}", dto);
         message.StatusCode.Should().Be(HttpStatusCode.Conflict);
@@ -173,12 +175,12 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         
         string token = loginUserWithNewRole.Token!;
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            new AuthenticationHeaderValue("Bearer", token);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
@@ -201,7 +203,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         };
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_url}/{Guid.NewGuid()}", dto);
         message.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -228,22 +230,22 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
         
         EmployeeEnterpriseDto dto = await _helper.CreateEmployeeEnterprise(invitationUpdated);
 
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}/{dto.Id}");
         message.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -265,7 +267,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", master.Token);
+            new AuthenticationHeaderValue("Bearer", master.Token);
         
         HttpResponseMessage message = await _client.GetAsync($"{_url}/{Guid.NewGuid()}");
         message.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -293,17 +295,17 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
         
         EmployeeEnterpriseDto dto = await _helper.CreateEmployeeEnterprise(invitationUpdated);
         
@@ -333,17 +335,17 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
         
         HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
         message.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -362,7 +364,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
     {
         UserResultTest userGuest = await _helper.CreateAndGetUser();
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
         
         HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
         message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -383,17 +385,17 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
 
         EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+            new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
 
         EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
 
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+            new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
         
         EmployeeEnterpriseDto emp = await _helper.CreateEmployeeEnterprise(invitationUpdated);
 
@@ -449,7 +451,7 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         ResponseTokens master = await _helper.LoginMaster(_configuration);
         
         _client.DefaultRequestHeaders.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", master.Token);
+            new AuthenticationHeaderValue("Bearer", master.Token);
         
         UpdateEmployeeEnterpriseDto dto = new UpdateEmployeeEnterpriseDto();
         
@@ -457,5 +459,22 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
+    [Fact]
+    public async Task GetAll()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        _client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+
+        HttpResponseMessage message = await _client.GetAsync($"{_url}?PageSize=1");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<EmployeeEnterpriseDto>? page = await message.Content.ReadFromJsonAsync<Page<EmployeeEnterpriseDto>>();
+        page.Should().NotBeNull();
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
+        
+        page.PageIndex.Should().Be(1);
+        //page.PageSize.Should().Be(10);
+    }
     
 }
