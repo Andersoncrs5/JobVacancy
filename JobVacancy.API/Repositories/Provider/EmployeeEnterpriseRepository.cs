@@ -11,4 +11,9 @@ public class EmployeeEnterpriseRepository(AppDbContext context): GenericReposito
     {
         return await context.EmployeeEnterprises.AnyAsync(x => x.UserId == userId && x.EnterpriseId == enterpriseId);
     }
+
+    public async Task<EmployeeEnterpriseEntity?> GetByUserIdAndEnterpriseId(string userId, string enterpriseId)
+    {
+        return await context.EmployeeEnterprises.FirstOrDefaultAsync(x => x.UserId == userId && x.EnterpriseId == enterpriseId);
+    }
 }
