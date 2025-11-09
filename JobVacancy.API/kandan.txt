@@ -4,4 +4,9 @@ controller and test
 
 next
 impl config Enterprise, EnterpriseIndustry
-table PostUser, PostEnterprise, Area, FavoritePostUser And Enterprise, Enterprise
+table Area, FavoritePostUser And Enterprise, Enterprise
+column bool para controlar se o user quer receber invitation
+notify user sobre a new employee enterprise
+notify the enterprise about a user has accepted the invitation
+notify user about remotion of enterprise
+notify user about turn off of enterprise
