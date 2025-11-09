@@ -88,11 +88,6 @@ public class EmployeeEnterpriseService(IUnitOfWork uow): IEmployeeEnterpriseServ
             entity.ContractLegalType = dto.ContractLegalType.Value;
         }
         
-        if (dto.ContractType.HasValue)
-        {
-            entity.ContractType = dto.ContractType.Value;
-        }
-        
         if (dto.EmploymentType.HasValue)
         {
             entity.EmploymentType = dto.EmploymentType.Value;
