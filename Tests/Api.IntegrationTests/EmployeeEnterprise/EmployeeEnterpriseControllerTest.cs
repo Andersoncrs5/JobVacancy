@@ -217,5 +217,251 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         http.Message.Should().NotBeNullOrWhiteSpace();
         http.Status.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task Get()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+        
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        EmployeeEnterpriseDto dto = await _helper.CreateEmployeeEnterprise(invitationUpdated);
+
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}/{dto.Id}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<EmployeeEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Id.Should().Be(dto.Id);
+        
+    }
+    
+    [Fact]
+    public async Task GetNotFound()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", master.Token);
+        
+        HttpResponseMessage message = await _client.GetAsync($"{_url}/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Data.Should().BeNull();
+        http.Code.Should().Be((int) HttpStatusCode.NotFound);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+        
+    }
+    
+    [Fact]
+    public async Task Del()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+        
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        EmployeeEnterpriseDto dto = await _helper.CreateEmployeeEnterprise(invitationUpdated);
+        
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{dto.Id}");
+        message.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.NoContent);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task DelNotFound()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+        
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.NotFound);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+        
+        http.Data.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task DelThrowForb()
+    {
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+        
+        HttpResponseMessage message = await _client.DeleteAsync($"{_url}/{Guid.NewGuid()}");
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task PatchAllFields()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        PositionDto positionDtoB = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+        
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        EmployeeEnterpriseDto emp = await _helper.CreateEmployeeEnterprise(invitationUpdated);
+
+        UpdateEmployeeEnterpriseDto dto = new UpdateEmployeeEnterpriseDto()
+        {
+            ContractLink = "https://github.com/Andersoncrs5/",
+            SalaryRange = "7890-9000",
+            TerminationReason = null,
+            Notes = null,
+            SalaryValue = 6756.34m,
+            PaymentFrequency = PaymentFrequencyEnum.Weekly,
+            ContractLegalType = ContractLegalTypeEnum.Internship,
+            ContractType = EmploymentTypeEnum.Contract,
+            EmploymentType = EmploymentTypeEnum.Contract,
+            EmploymentStatus = EmploymentStatusEnum.Probation,
+            Currency = CurrencyEnum.Zar,
+            StartDate = DateTime.UtcNow.AddMonths(1),
+            EndDate = DateTime.UtcNow.AddYears(1),
+            PositionId = positionDtoB.Id
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{emp.Id}", dto);
+        //_output.WriteLine(message.Content.ReadAsStringAsync().Result);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        ResponseHttp<EmployeeEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().Be(emp.Id);
+        http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
+        http.Data.ContractLink.Should().Be(dto.ContractLink);
+        http.Data.SalaryRange.Should().Be(dto.SalaryRange);
+        http.Data.TerminationReason.Should().Be(emp.TerminationReason);
+        http.Data.Notes.Should().Be(emp.Notes);
+        http.Data.SalaryValue.Should().Be(dto.SalaryValue);
+        http.Data.PaymentFrequency.Should().Be(dto.PaymentFrequency);
+        http.Data.ContractLegalType.Should().Be(dto.ContractLegalType);
+        http.Data.ContractType.Should().Be(dto.ContractType);
+        http.Data.EmploymentType.Should().Be(dto.EmploymentType);
+        http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
+        http.Data.Currency.Should().Be(dto.Currency);
+        http.Data.StartDate.Should().Be(dto.StartDate);
+        http.Data.EndDate.Should().Be(dto.EndDate);
+        http.Data.PositionId.Should().Be(dto.PositionId);
+        
+    }
+    
+    [Fact]
+    public async Task PatchThrowForb()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", master.Token);
+        
+        UpdateEmployeeEnterpriseDto dto = new UpdateEmployeeEnterpriseDto();
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{Guid.NewGuid()}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
     
 }
