@@ -12,4 +12,5 @@ public interface IEmployeeEnterpriseService
     Task Delete(EmployeeEnterpriseEntity entity);
     Task<bool> ExistsById(string id);
     Task<EmployeeEnterpriseEntity?> GetById(string id);
+    Task<EmployeeEnterpriseEntity?> GetByUserIdAndEnterpriseId(string userId, string enterpriseId);
 }

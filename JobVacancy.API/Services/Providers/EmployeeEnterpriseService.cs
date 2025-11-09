@@ -11,6 +11,11 @@ public class EmployeeEnterpriseService(IUnitOfWork uow): IEmployeeEnterpriseServ
     {
         return await uow.EmployeeEnterpriseRepository.GetByIdAsync(id);
     }
+    
+    public async Task<EmployeeEnterpriseEntity?> GetByUserIdAndEnterpriseId(string userId, string enterpriseId)
+    {
+        return await uow.EmployeeEnterpriseRepository.GetByUserIdAndEnterpriseId(userId, enterpriseId);
+    }
 
     public async Task<bool> ExistsById(string id)
     {
@@ -53,6 +58,11 @@ public class EmployeeEnterpriseService(IUnitOfWork uow): IEmployeeEnterpriseServ
             entity.SalaryRange = dto.SalaryRange;
         }
         
+        if (!string.IsNullOrWhiteSpace(dto.PositionId))
+        {
+            entity.PositionId = dto.PositionId;
+        }
+        
         if (!string.IsNullOrWhiteSpace(dto.TerminationReason))
         {
             entity.TerminationReason = dto.TerminationReason;
@@ -81,11 +91,6 @@ public class EmployeeEnterpriseService(IUnitOfWork uow): IEmployeeEnterpriseServ
         if (dto.ContractType.HasValue)
         {
             entity.ContractType = dto.ContractType.Value;
-        }
-        
-        if (dto.SalaryCurrency.HasValue)
-        {
-            entity.SalaryCurrency = dto.SalaryCurrency.Value;
         }
         
         if (dto.EmploymentType.HasValue)
