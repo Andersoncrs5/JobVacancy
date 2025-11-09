@@ -10,7 +10,6 @@ public static class UserFilterQuery
         if (!string.IsNullOrWhiteSpace(filter.UserName))
         {
             query = query.Where(c => EF.Functions.Like(c.UserName, $"%{filter.UserName}%"));
-            
         }
         
         if (!string.IsNullOrWhiteSpace(filter.Id))

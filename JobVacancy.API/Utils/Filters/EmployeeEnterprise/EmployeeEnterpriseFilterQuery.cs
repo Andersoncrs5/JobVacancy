@@ -8,14 +8,8 @@ public class EmployeeEnterpriseFilterQuery
     public static IQueryable<EmployeeEnterpriseEntity> ApplyFilter(IQueryable<EmployeeEnterpriseEntity> query,
         EmployeeEnterpriseFilterParam filter)
     {
-        if (
-            !string.IsNullOrEmpty(filter.UserId) ||
-            !string.IsNullOrEmpty(filter.Username) ||
-            !string.IsNullOrEmpty(filter.UserEmail)
-            )
-        {
-            query = query.Include(x => x.User);
-        }
+        query = query.Include(x => x.User);
+        query = query.Include(x => x.Position);
 
         if (
             !string.IsNullOrEmpty(filter.EnterpriseId) ||
@@ -24,14 +18,6 @@ public class EmployeeEnterpriseFilterQuery
         )
         {
             query = query.Include(x => x.Enterprise);
-        }
-        
-        if (
-            !string.IsNullOrEmpty(filter.PositionId) || 
-            !string.IsNullOrEmpty(filter.NamePosition )
-            )
-        {
-            query = query.Include(x => x.Position);
         }
         
         if (

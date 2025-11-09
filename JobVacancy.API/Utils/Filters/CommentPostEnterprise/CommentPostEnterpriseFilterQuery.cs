@@ -9,8 +9,18 @@ public class CommentPostEnterpriseFilterQuery
     public static IQueryable<CommentPostEnterpriseEntity> ApplyFilter(IQueryable<CommentPostEnterpriseEntity> query,
         CommentPostEnterpriseFilterParam filter)
     {
-        query = query.Include(x => x.Post);
         query = query.Include(x => x.User);
+
+        if (
+            !string.IsNullOrWhiteSpace(filter.PostId) ||
+            !string.IsNullOrWhiteSpace(filter.Title) ||
+            !string.IsNullOrWhiteSpace(filter.ContentPost) ||
+            filter.ReadingTimeMinutesMin.HasValue ||
+            filter.ReadingTimeMinutesMax.HasValue
+        )
+        {
+            query = query.Include(x => x.Post);
+        }
         
         query = CommentBaseFilterQuery.ApplyBaseFilters(query, filter);
         

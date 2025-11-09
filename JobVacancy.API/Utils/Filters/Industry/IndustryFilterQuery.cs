@@ -11,7 +11,6 @@ public class IndustryFilterQuery
         if (!string.IsNullOrWhiteSpace(filter.Name))
         {
             query = query.Where(c => EF.Functions.Like(c.Name, $"%{filter.Name}%"));
-            
         }
         
         if (!string.IsNullOrWhiteSpace(filter.Description))

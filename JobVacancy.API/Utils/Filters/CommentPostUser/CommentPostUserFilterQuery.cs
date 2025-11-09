@@ -9,13 +9,28 @@ public class CommentPostUserFilterQuery
     public static IQueryable<CommentPostUserEntity> ApplyFilter(IQueryable<CommentPostUserEntity> query, CommentPostUserFilterParam filter)
     {
         query = query.Include(x => x.User);
-        query = query.Include(x => x.Post);
+        
+        if (
+            !string.IsNullOrWhiteSpace(filter.PostId) ||
+            !string.IsNullOrWhiteSpace(filter.Title) ||
+            !string.IsNullOrWhiteSpace(filter.ContentPost) ||
+            filter.ReadingTimeMinutesMin.HasValue ||
+            filter.ReadingTimeMinutesMax.HasValue
+        )
+        {
+            query = query.Include(x => x.Post);
+        }
         
         query = CommentBaseFilterQuery.ApplyBaseFilters(query, filter);
 
         if (!string.IsNullOrEmpty(filter.CategoryId))
         {
             query = query.Where(e => e.Post!.CategoryId  == filter.CategoryId);
+        }
+        
+        if (!string.IsNullOrEmpty(filter.PostId))
+        {
+            query = query.Where(e => e.Post!.Id  == filter.PostId);
         }
         
         if (!string.IsNullOrWhiteSpace(filter.Title))

@@ -9,9 +9,9 @@ public class EnterpriseIndustryFilterQuery
         EnterpriseIndustryFilterParams filter)
     {
         if (filter.EnterpriseFilterParam != null)
-                {
-                    query = query.Include(c =>c.Enterprise);
-                }
+        {
+            query = query.Include(c =>c.Enterprise);
+        }
 
         if (filter.EnterpriseFilterParam != null && filter.EnterpriseFilterParam.UserFilterParams != null)
         {

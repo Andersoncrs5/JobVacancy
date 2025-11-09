@@ -8,7 +8,14 @@ public class PostEnterpriseFilterQuery
     public static IQueryable<PostEnterpriseEntity> ApplyFilter(IQueryable<PostEnterpriseEntity> query, PostEnterpriseFilterParam filter)
     {
         query = query.Include(c => c.Enterprise);
-        query = query.Include(c => c.Category);
+
+        if (
+            !string.IsNullOrWhiteSpace(filter.CategoryId) || 
+            !string.IsNullOrWhiteSpace(filter.NameCategory)
+        )
+        {
+            query = query.Include(c => c.Category);
+        }
         
         if (!string.IsNullOrWhiteSpace(filter.Title))
         {

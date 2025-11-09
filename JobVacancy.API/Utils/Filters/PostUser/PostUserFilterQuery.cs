@@ -8,7 +8,14 @@ public class PostUserFilterQuery
     public static IQueryable<PostUserEntity> ApplyFilter(IQueryable<PostUserEntity> query, PostUserFilterParam filter)
     {
         query = query.Include(c => c.User);
-        query = query.Include(c => c.Category);
+
+        if (
+            !string.IsNullOrWhiteSpace(filter.CategoryId) || 
+            !string.IsNullOrWhiteSpace(filter.NameCategory)
+        )
+        {
+            query = query.Include(c => c.Category);
+        }
         
         if (!string.IsNullOrWhiteSpace(filter.Title))
         {
