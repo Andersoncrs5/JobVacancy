@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
@@ -27,6 +28,50 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<EmployeeInvitationDto> UpdateInvitationByUser(StatusEnum status, EmployeeInvitationDto invitation)
+    {
+        string url = "/api/v1/EmployeeInvitation";
+        UpdateEmployeeInvitationByUserDto dto = new UpdateEmployeeInvitationByUserDto
+        {
+            Status = status,
+            RejectReason = string.Concat(Enumerable.Repeat("SalaryBad", 30))
+        };
+        
+        HttpResponseMessage message = await client.PatchAsJsonAsync($"{url}/{invitation.Id}/By/User", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<EmployeeInvitationDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeInvitationDto>>();
+        http.Should().NotBeNull();
+        http.Data.Should().NotBeNull();
+        http.Status.Should().BeTrue();
+        http.Code.Should().Be((int)HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Id.Should().Be(invitation.Id);
+        http.Data.EnterpriseId.Should().Be(invitation.EnterpriseId);
+        http.Data.InviteSenderId.Should().Be(invitation.InviteSenderId);
+        
+        http.Data.Status.Should().Be(dto.Status);
+        http.Data.RejectReason.Should().Be(dto.RejectReason);
+        
+        http.Data.ProposedStartDate.Should().BeCloseTo(
+            invitation.ProposedStartDate, 
+            1.Microseconds() 
+        );
+        http.Data.ProposedEndDate.Should().NotBeNull();
+        http.Data.ProposedEndDate.Value.Should().BeCloseTo(
+            invitation.ProposedEndDate!.Value, 
+            1.Microseconds() 
+        );
+        http.Data.Currency.Should().Be(invitation.Currency);
+        http.Data.EmploymentType.Should().Be(invitation.EmploymentType);
+        http.Data.Message.Should().Be(invitation.Message);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
+        http.Data.SalaryRange.Should().Be(invitation.SalaryRange);
+        
+        return http.Data;
+    }
+    
     public async Task<PositionDto> CreatePositionAsync()
     {
         string _URL = "/api/v1/Position";
