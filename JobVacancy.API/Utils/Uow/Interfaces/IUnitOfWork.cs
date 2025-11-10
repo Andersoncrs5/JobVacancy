@@ -26,6 +26,7 @@ public interface IUnitOfWork: IDisposable
     IEmployeeInvitationRepository EmployeeInvitationRepository { get; }
     IEmployeeEnterpriseRepository EmployeeEnterpriseRepository { get; }
     IPositionRepository PositionRepository { get; }
+    IReviewEnterpriseRepository ReviewEnterpriseRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
