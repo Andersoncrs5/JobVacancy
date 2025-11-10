@@ -7,6 +7,11 @@ namespace JobVacancy.API.Services.Providers;
 
 public class ReviewEnterpriseService(IUnitOfWork uow): IReviewEnterpriseService
 {
+    public async Task<bool> ExistsByEnterpriseIdAndUserId(string enterpriseId, string userId)
+    {
+        return await uow.ReviewEnterpriseRepository.ExistsByUserIdAndEnterpriseId(userId, enterpriseId);
+    }
+    
     public async Task<ReviewEnterpriseEntity?> GetById(string id)
     {
         return await uow.ReviewEnterpriseRepository.GetByIdAsync(id);

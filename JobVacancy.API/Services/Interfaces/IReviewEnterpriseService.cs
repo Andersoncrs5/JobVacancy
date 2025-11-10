@@ -10,6 +10,7 @@ public interface IReviewEnterpriseService
     Task<ReviewEnterpriseEntity> Create(CreateReviewEnterpriseDto dto, string enterpriseId, string userId,
         string positionId);
 
+    Task<bool> ExistsByEnterpriseIdAndUserId(string enterpriseId, string userId);
     Task Delete(ReviewEnterpriseEntity review);
     IQueryable<ReviewEnterpriseEntity> Query();
     Task<ReviewEnterpriseEntity> Update(UpdateReviewEnterpriseDto dto, ReviewEnterpriseEntity review);
