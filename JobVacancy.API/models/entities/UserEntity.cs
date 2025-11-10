@@ -22,5 +22,7 @@ public class UserEntity: IdentityUser
     public ICollection<EmployeeInvitationEntity>? InvitationsSent { get; set; }
     public ICollection<EmployeeEnterpriseEntity>? InvitationsEnterprise { get; set; }
     public ICollection<EmployeeEnterpriseEntity>? Employee { get; set; }
+    public ICollection<ReviewEnterpriseEntity>? Reviews { get; set; }
+    
     
 }
