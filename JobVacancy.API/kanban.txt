@@ -10,3 +10,7 @@ notify user sobre a new employee enterprise
 notify the enterprise about a user has accepted the invitation
 notify user about remotion of enterprise
 notify user about turn off of enterprise
+table reviewUser of user and enterprise
+impled column to filter generic
+table indicacaoUser
+table config to user and enterprise
