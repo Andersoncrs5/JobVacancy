@@ -1157,7 +1157,7 @@ namespace JobVacancy.API.Migrations
                         .IsRequired();
 
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1388,6 +1388,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("InvitationsSent");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Reviews");
 
                     b.Navigation("UserSkill");
                 });

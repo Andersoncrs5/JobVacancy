@@ -94,6 +94,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
                 .WithMany(x => x.Reviews)
                 .HasForeignKey(x => x.EnterpriseId)
                 .IsRequired();
+            
+            options.HasOne(x => x.User)
+                .WithMany(x => x.Reviews)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
         });
         
         modelBuilder.Entity<EmployeeEnterpriseEntity>(options =>
