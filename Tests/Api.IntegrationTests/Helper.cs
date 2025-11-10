@@ -16,6 +16,7 @@ using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
+using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
@@ -29,6 +30,46 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<ReviewEnterpriseDto> CreateReviewEnterprise(EmployeeInvitationDto invitation)
+    {
+        CreateReviewEnterpriseDto reviewDto = new CreateReviewEnterpriseDto()
+        {
+            Title = string.Concat(Enumerable.Repeat("HelloWorld", 20)),
+            Content = string.Concat(Enumerable.Repeat("HelloWorld", 50)),
+            IsAnonymous = true,
+            RatingOverall = Random.Shared.Next(0, 5),
+            RatingCulture = Random.Shared.Next(0, 5),
+            RatingManagement = Random.Shared.Next(0, 5),
+            RatingCompensation = Random.Shared.Next(0, 5),
+            RatingWorkLifeBalance = Random.Shared.Next(0, 5),
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"/api/v1/ReviewEnterprise/{invitation.EnterpriseId}", reviewDto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<ReviewEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ReviewEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        http.Version.Should().Be(1);
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Title.Should().Be(reviewDto.Title);
+        http.Data.Content.Should().Be(reviewDto.Content);
+        http.Data.IsAnonymous.Should().Be(reviewDto.IsAnonymous);
+        http.Data.RatingOverall.Should().Be(reviewDto.RatingOverall);
+        http.Data.RatingCulture.Should().Be(reviewDto.RatingCulture);
+        http.Data.RatingManagement.Should().Be(reviewDto.RatingManagement);
+        http.Data.RatingCompensation.Should().Be(reviewDto.RatingCompensation);
+        http.Data.RatingWorkLifeBalance.Should().Be(reviewDto.RatingWorkLifeBalance);
+        http.Data.PositionId.Should().Be(invitation.PositionId);
+        http.Data.EnterpriseId.Should().Be(invitation.EnterpriseId);
+        
+        return http.Data;
+    }
+    
     public async Task<EmployeeEnterpriseDto> CreateEmployeeEnterprise(EmployeeInvitationDto invitationUpdated)
     {
         string _url = "/api/v1/EmployeeEnterprise";
