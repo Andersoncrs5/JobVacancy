@@ -18,9 +18,6 @@ namespace JobVacancy.API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.10")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -549,6 +546,69 @@ namespace JobVacancy.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Positions", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PositionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short?>("RatingCompensation")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingCulture")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingManagement")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short>("RatingOverall")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingWorkLifeBalance")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("EnterpriseId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("review_enterprise", (string)null);
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.RoleEntity", b =>
@@ -1082,6 +1142,33 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("Reviews")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.PositionEntity", "Position")
+                        .WithMany("Reviews")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("Position");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.UserSkillEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.SkillEntity", "Skill")
@@ -1259,6 +1346,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("IndustryLinks");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
@@ -1271,6 +1360,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("EmployeeEnterprise");
 
                     b.Navigation("EmployeeInvitations");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.SkillEntity", b =>

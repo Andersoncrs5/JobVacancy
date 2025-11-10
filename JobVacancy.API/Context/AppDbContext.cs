@@ -29,6 +29,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<EmployeeInvitationEntity> EmployeeInvitations { get; set; }
     public new DbSet<PositionEntity> Positions { get; set; }
     public new DbSet<EmployeeEnterpriseEntity> EmployeeEnterprises { get; set; }
+    public new DbSet<ReviewEnterpriseEntity> ReviewEnterpriseEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -67,6 +68,34 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<ReviewEnterpriseEntity>(options =>
+        {
+            options.ToTable("review_enterprise");
+            options.HasKey(x => x.Id);
+            options.HasIndex(x => new { x.EnterpriseId, x.UserId }).IsUnique();
+            
+            options.Property(x => x.Title).HasMaxLength(300).IsRequired();
+            options.Property(x => x.Content).HasMaxLength(800).IsRequired();
+            
+            options.Property(x => x.RatingOverall).HasColumnType("SMALLINT").IsRequired();
+            options.Property(x => x.RatingCulture).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingCompensation).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingManagement).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingWorkLifeBalance).HasColumnType("SMALLINT").IsRequired(false);
+            
+            options.Property(x => x.IsAnonymous).IsRequired();
+
+            options.HasOne(x => x.Position)
+                .WithMany(x => x.Reviews)
+                .HasForeignKey(x => x.PositionId)
+                .IsRequired();
+
+            options.HasOne(x => x.Enterprise)
+                .WithMany(x => x.Reviews)
+                .HasForeignKey(x => x.EnterpriseId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<EmployeeEnterpriseEntity>(options =>
         {
             options.HasKey(x => x.Id);
