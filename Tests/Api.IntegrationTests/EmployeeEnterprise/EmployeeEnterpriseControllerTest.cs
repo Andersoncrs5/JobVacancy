@@ -417,7 +417,6 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
         };
         
         HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{emp.Id}", dto);
-        //_output.WriteLine(message.Content.ReadAsStringAsync().Result);
         message.StatusCode.Should().Be(HttpStatusCode.OK);
         
         ResponseHttp<EmployeeEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EmployeeEnterpriseDto>>();
@@ -464,17 +463,18 @@ public class EmployeeEnterpriseControllerTest: IClassFixture<CustomWebApplicatio
     {
         UserResultTest user = await _helper.CreateAndGetUser();
         _client.DefaultRequestHeaders.Authorization = 
-            new AuthenticationHeaderValue("Bearer", user.Tokens.Token);
+            new AuthenticationHeaderValue("Bearer", user.Tokens!.Token);
 
-        HttpResponseMessage message = await _client.GetAsync($"{_url}?PageSize=1");
+        HttpResponseMessage message = await _client.GetAsync($"{_url}");
         message.StatusCode.Should().Be(HttpStatusCode.OK);
 
         Page<EmployeeEnterpriseDto>? page = await message.Content.ReadFromJsonAsync<Page<EmployeeEnterpriseDto>>();
         page.Should().NotBeNull();
-        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
         
         page.PageIndex.Should().Be(1);
-        //page.PageSize.Should().Be(10);
+        page.PageSize.Should().Be(10);
     }
+    
+    
     
 }
