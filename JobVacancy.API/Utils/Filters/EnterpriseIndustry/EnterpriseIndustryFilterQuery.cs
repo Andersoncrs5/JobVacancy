@@ -8,6 +8,9 @@ public class EnterpriseIndustryFilterQuery
     public static IQueryable<EnterpriseIndustryEntity> ApplyFilters(IQueryable<EnterpriseIndustryEntity> query,
         EnterpriseIndustryFilterParams filter)
     {
+        query = query.Include(x => x.Enterprise);
+        query = query.Include(x => x.Industry);
+        
         if (filter.EnterpriseFilterParam != null)
         {
             query = query.Include(c =>c.Enterprise);
