@@ -3,6 +3,8 @@ using AutoMapper;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.ReviewEnterprise;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -167,7 +169,79 @@ public class ReviewEnterpriseController(
             TraceId = HttpContext.TraceIdentifier,
             Version = 1
         });
+    }
+    
+    [HttpPatch("{reviewId:required}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<ReviewEnterpriseDto>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status410Gone, Type = typeof(ResponseHttp<object>))]
+    [Authorize(Roles = "USER_ROLE")]
+    public async Task<IActionResult> Patch(string reviewId, UpdateReviewEnterpriseDto dto)
+    {
+        string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        ReviewEnterpriseEntity? review = await reviewEnterpriseService.GetById(reviewId);
+        if (review == null) 
+        {
+            return StatusCode( StatusCodes.Status404NotFound, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Message = "Review not found",
+                Data = null,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+        DateTime limitDate = review.CreatedAt.AddMonths(1);
+
+        if (DateTime.UtcNow > limitDate)
+        {
+            return StatusCode( StatusCodes.Status410Gone, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status410Gone,
+                Message = "Review cannot be updated",
+                Data = null,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
         
+        ReviewEnterpriseEntity update = await reviewEnterpriseService.Update(dto, review);
+
+        return StatusCode(StatusCodes.Status200OK, new ResponseHttp<object>
+        {
+            Code = StatusCodes.Status200OK,
+            Data = mapper.Map<ReviewEnterpriseDto>(update),
+            Message = "Review updated",
+            Status = true,
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1
+        });
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<ReviewEnterpriseDto>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> GetAll([FromQuery] ReviewEnterpriseFilterParams filter)
+    {
+        IQueryable<ReviewEnterpriseEntity> iQueryable = reviewEnterpriseService.Query();
+        IQueryable<ReviewEnterpriseEntity> appliedFilter = ReviewEnterpriseFilterQuery.ApplyFilter(iQueryable, filter);
+        PaginatedList<ReviewEnterpriseEntity> paginatedList = await PaginatedList<ReviewEnterpriseEntity>.CreateAsync(
+            source: appliedFilter,
+            pageSize: filter.PageSize,
+            pageIndex: filter.PageNumber
+        );
+        
+        Page<ReviewEnterpriseDto> dtos = mapper.Map<Page<ReviewEnterpriseDto>>(paginatedList);
+        
+        return Ok(dtos);
     }
     
 }
