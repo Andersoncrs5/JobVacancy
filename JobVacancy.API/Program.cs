@@ -226,6 +226,7 @@ builder.Services.AddScoped<IFavoriteCommentPostEnterpriseRepository, FavoriteCom
 builder.Services.AddScoped<IEmployeeInvitationRepository, EmployeeInvitationRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IEmployeeEnterpriseRepository, EmployeeEnterpriseRepository>();
+builder.Services.AddScoped<IReviewEnterpriseRepository, ReviewEnterpriseRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -247,6 +248,7 @@ builder.Services.AddScoped<IFavoriteCommentPostEnterpriseService, FavoriteCommen
 builder.Services.AddScoped<IEmployeeInvitationService, EmployeeInvitationService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEmployeeEnterpriseService, EmployeeEnterpriseService>();
+builder.Services.AddScoped<IReviewEnterpriseService, ReviewEnterpriseService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
