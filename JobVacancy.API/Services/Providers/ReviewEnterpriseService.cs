@@ -43,8 +43,30 @@ public class ReviewEnterpriseService(IUnitOfWork uow): IReviewEnterpriseService
 
     public async Task<ReviewEnterpriseEntity> Update(UpdateReviewEnterpriseDto dto, ReviewEnterpriseEntity review)
     {
-        uow.Mapper.Map(dto, review);
+        if (!string.IsNullOrWhiteSpace(dto.Title))
+            review.Title = dto.Title;
+        
+        if (!string.IsNullOrWhiteSpace(dto.Content))
+            review.Content = dto.Content;
+        
+        if (dto.RatingOverall.HasValue)
+            review.RatingOverall = dto.RatingOverall.Value;
+        
+        if (dto.RatingCulture.HasValue)
+            review.RatingCulture = dto.RatingCulture.Value;
 
+        if (dto.RatingCompensation.HasValue)
+            review.RatingCompensation = dto.RatingCompensation.Value;
+        
+        if (dto.RatingManagement.HasValue)
+            review.RatingManagement = dto.RatingManagement.Value;
+        
+        if (dto.RatingWorkLifeBalance.HasValue)
+            review.RatingWorkLifeBalance = dto.RatingWorkLifeBalance.Value;
+
+        if (dto.IsAnonymous.HasValue)
+            review.IsAnonymous = dto.IsAnonymous.Value;
+        
         ReviewEnterpriseEntity update = await uow.ReviewEnterpriseRepository.Update(review);
         await uow.Commit();
         return update;
