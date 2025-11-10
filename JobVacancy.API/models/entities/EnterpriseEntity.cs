@@ -15,4 +15,5 @@ public class EnterpriseEntity: BaseEntity
     public ICollection<PostEnterpriseEntity>? Posts { get; set; }
     public ICollection<EmployeeInvitationEntity>? EmployeeInvitations { get; set; }
     public ICollection<EmployeeEnterpriseEntity>? EmployeeEnterprise { get; set; }
+    public ICollection<ReviewEnterpriseEntity>? Reviews { get; set; }
 }

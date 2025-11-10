@@ -7,5 +7,6 @@ public class PositionEntity: BaseEntity
     public bool IsActive { get; set; }
     public ICollection<EmployeeInvitationEntity>?  EmployeeInvitations { get; set; }
     public ICollection<EmployeeEnterpriseEntity>? EmployeeEnterprise { get; set; }
+    public ICollection<ReviewEnterpriseEntity>? Reviews { get; set; }
     
 }
