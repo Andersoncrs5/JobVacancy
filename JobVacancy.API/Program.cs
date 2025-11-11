@@ -250,6 +250,7 @@ builder.Services.AddScoped<IEmployeeInvitationService, EmployeeInvitationService
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEmployeeEnterpriseService, EmployeeEnterpriseService>();
 builder.Services.AddScoped<IReviewEnterpriseService, ReviewEnterpriseService>();
+builder.Services.AddScoped<IIndicationUserService, IndicationUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
@@ -303,7 +304,7 @@ using (var scope = app.Services.CreateScope())
     
     UserEntity? checkName = await userManager.FindByNameAsync(systemUserName);
     UserEntity? checkEmail = await userManager.FindByEmailAsync(systemUserEmail);
-    UserEntity? systemUser = null;
+    UserEntity? systemUser;
     if (checkName == null &&  checkEmail == null)
     {
         try
