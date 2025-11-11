@@ -480,6 +480,48 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("FavoritePostUser", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("AcceptanceDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EndorsedId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EndorserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("SkillRating")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EndorsedId");
+
+                    b.HasIndex("EndorserId", "EndorsedId")
+                        .IsUnique();
+
+                    b.ToTable("IndicationUser", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1142,6 +1184,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "Endorsed")
+                        .WithMany("ReceivedEndors")
+                        .HasForeignKey("EndorsedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "Endorser")
+                        .WithMany("SentEndors")
+                        .HasForeignKey("EndorserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Endorsed");
+
+                    b.Navigation("Endorser");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -1389,7 +1450,11 @@ namespace JobVacancy.API.Migrations
 
                     b.Navigation("Posts");
 
+                    b.Navigation("ReceivedEndors");
+
                     b.Navigation("Reviews");
+
+                    b.Navigation("SentEndors");
 
                     b.Navigation("UserSkill");
                 });
