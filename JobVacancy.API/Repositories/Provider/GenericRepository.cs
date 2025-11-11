@@ -1,3 +1,4 @@
+using IdGen;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
@@ -40,7 +41,10 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
 
     public async Task<T> AddAsync(T entity)
     {
+        var generator = new IdGenerator(0); 
+        
         entity.CreatedAt = DateTime.UtcNow;
+        entity.Id = generator.CreateId().ToString();
         EntityEntry<T> data = await _dbSet.AddAsync(entity);
         return data.Entity;
     }
