@@ -14,6 +14,7 @@ using JobVacancy.API.models.dtos.FavoriteCommentPostEnterprise;
 using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
+using JobVacancy.API.models.dtos.IndicationUser;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
@@ -135,5 +136,8 @@ public class ConfigMapper: Profile
         CreateMap<CreateReviewEnterpriseDto, ReviewEnterpriseEntity>();
         CreateMap<UpdateReviewEnterpriseDto, ReviewEnterpriseEntity>()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)) ;
+        
+        CreateMap<IndicationUserEntity, IndicationUserDto>();
+        CreateMap<CreateIndicationUserDto, IndicationUserEntity>();
     }
 }
