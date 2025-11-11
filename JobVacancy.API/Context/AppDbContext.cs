@@ -30,6 +30,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<PositionEntity> Positions { get; set; }
     public new DbSet<EmployeeEnterpriseEntity> EmployeeEnterprises { get; set; }
     public new DbSet<ReviewEnterpriseEntity> ReviewEnterpriseEntities { get; set; }
+    public new DbSet<IndicationUserEntity> IndicationUsers { get; set; }
     
     public override int SaveChanges()
     {
@@ -68,6 +69,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<IndicationUserEntity>(options =>
+        {
+            options.ToTable("IndicationUser");
+
+            options.HasOne(i => i.Endorser)
+                .WithMany(u => u.SentEndors)
+                .HasForeignKey(i => i.EndorserId)
+                .IsRequired();
+
+            options.HasOne(i => i.Endorsed)
+                .WithMany(u => u.ReceivedEndors)
+                .HasForeignKey(i => i.EndorsedId)
+                .IsRequired();
+           
+            options.HasIndex(i => new { i.EndorserId, i.EndorsedId })
+                .IsUnique();
+        });
+        
         modelBuilder.Entity<ReviewEnterpriseEntity>(options =>
         {
             options.ToTable("review_enterprise");
