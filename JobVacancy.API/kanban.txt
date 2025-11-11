@@ -1,10 +1,6 @@
 ongoing
-table Enterprise, EnterpriseIndustry
-controller and test
 
 next
-impl config Enterprise, EnterpriseIndustry
-table Area, FavoritePostUser And Enterprise, Enterprise
 column bool para controlar se o user quer receber invitation
 notify user sobre a new employee enterprise
 notify the enterprise about a user has accepted the invitation
@@ -14,3 +10,4 @@ table reviewUser of user and enterprise
 impled column to filter generic
 table indicacaoUser
 table config to user and enterprise
+table IndicationSkillEntity
