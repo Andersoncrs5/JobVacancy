@@ -227,6 +227,7 @@ builder.Services.AddScoped<IEmployeeInvitationRepository, EmployeeInvitationRepo
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IEmployeeEnterpriseRepository, EmployeeEnterpriseRepository>();
 builder.Services.AddScoped<IReviewEnterpriseRepository, ReviewEnterpriseRepository>();
+builder.Services.AddScoped<IIndicationUserRepository, IndicationUserRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
