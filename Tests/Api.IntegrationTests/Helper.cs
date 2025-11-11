@@ -12,6 +12,7 @@ using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
+using JobVacancy.API.models.dtos.IndicationUser;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
@@ -30,6 +31,33 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<IndicationUserDto> AddIndicationUser(UserResultTest endorsedUser)
+    {
+        CreateIndicationUserDto dto = new CreateIndicationUserDto()
+        {
+            EndorsedId = endorsedUser.User!.Id,
+            Content = string.Concat(Enumerable.Repeat("HeIsAWellEmployee", 10)),
+            SkillRating = Random.Shared.Next(0, 10),
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/IndicationUser", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<IndicationUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<IndicationUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.EndorsedId.Should().Be(endorsedUser.User.Id);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.SkillRating.Should().Be(dto.SkillRating);
+        
+        return http.Data;
+    }
+    
     public async Task<ReviewEnterpriseDto> CreateReviewEnterprise(EmployeeInvitationDto invitation)
     {
         CreateReviewEnterpriseDto reviewDto = new CreateReviewEnterpriseDto()
