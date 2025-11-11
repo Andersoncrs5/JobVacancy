@@ -11,4 +11,5 @@ public interface IIndicationUserService
     Task<IndicationUserEntity> Create(CreateIndicationUserDto dto, string endorserId, string endorsedId);
     Task<IndicationUserEntity> Update(UpdateIndicationUserDto dto, IndicationUserEntity entity);
     IQueryable<IndicationUserEntity> Query();
+    Task<IndicationUserEntity?> GetById(string id);
 }

@@ -23,6 +23,11 @@ public class IndicationUserService(IUnitOfWork uow): IIndicationUserService
         uow.IndicationUserRepository.Delete(entity);
         await uow.Commit();
     }
+
+    public async Task<IndicationUserEntity?> GetById(string id)
+    {
+        return await uow.IndicationUserRepository.GetByIdAsync(id);
+    }
     
     public async Task<IndicationUserEntity> Create(CreateIndicationUserDto dto, string endorserId, string endorsedId)
     {
