@@ -4,10 +4,11 @@ namespace JobVacancy.API.models.entities;
 
 public class IndicationUserEntity: BaseEntity
 {
+    // Indicador
     public string EndorserId { get; set; }
     public UserEntity? Endorser { get; set; }
 
-    // O Usuário Júnior/Candidato que está sendo recomendado
+    // Indicado
     public string EndorsedId { get; set; } 
     public UserEntity? Endorsed { get; set; }
     
