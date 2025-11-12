@@ -31,6 +31,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<EmployeeEnterpriseEntity> EmployeeEnterprises { get; set; }
     public new DbSet<ReviewEnterpriseEntity> ReviewEnterpriseEntities { get; set; }
     public new DbSet<IndicationUserEntity> IndicationUsers { get; set; }
+    public new DbSet<AreaEntity> AreaEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -69,6 +70,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<AreaEntity>(options =>
+        {
+            options.HasIndex(x => x.Name).IsUnique();
+            options.Property(x => x.Name).HasMaxLength(150).IsRequired();
+            options.Property(x => x.Description).HasMaxLength(500).IsRequired(false);
+            options.HasIndex(x => x.IsActive);
+            options.Property(x => x.IsActive).IsRequired();
+        });
+        
         modelBuilder.Entity<IndicationUserEntity>(options =>
         {
             options.ToTable("IndicationUser");

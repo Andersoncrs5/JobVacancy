@@ -22,6 +22,39 @@ namespace JobVacancy.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.AreaEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("AreaEntities");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -478,6 +511,37 @@ namespace JobVacancy.API.Migrations
                         .IsUnique();
 
                     b.ToTable("FavoritePostUser", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndicationSkillEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IndicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SkillId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserSkillId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IndicationUserId");
+
+                    b.HasIndex("SkillId");
+
+                    b.ToTable("IndicationSkillEntity");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
@@ -1184,6 +1248,23 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndicationSkillEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.IndicationUserEntity", "IndicationUser")
+                        .WithMany("EndorsedSkills")
+                        .HasForeignKey("IndicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserSkillEntity", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillId");
+
+                    b.Navigation("IndicationUser");
+
+                    b.Navigation("Skill");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "Endorsed")
@@ -1409,6 +1490,11 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
+                {
+                    b.Navigation("EndorsedSkills");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndustryEntity", b =>
