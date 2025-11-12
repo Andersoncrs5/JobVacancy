@@ -2,6 +2,7 @@ using JobVacancy.API.models.dtos;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities;
 using AutoMapper;
+using JobVacancy.API.models.dtos.Area;
 using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
@@ -139,5 +140,9 @@ public class ConfigMapper: Profile
         
         CreateMap<IndicationUserEntity, IndicationUserDto>();
         CreateMap<CreateIndicationUserDto, IndicationUserEntity>();
+        
+        CreateMap<AreaEntity, AreaDto>();
+        CreateMap<AreaDto, AreaEntity>();
+        CreateMap<CreateAreaDto, AreaEntity>();
     }
 }
