@@ -9,7 +9,10 @@ public interface IIndicationUserService
     Task<IndicationUserEntity?> GetByEndorserIdAndEndorsedId(string endorserId, string endorsedId);
     Task Delete(IndicationUserEntity entity);
     Task<IndicationUserEntity> Create(CreateIndicationUserDto dto, string endorserId, string endorsedId);
-    Task<IndicationUserEntity> Update(UpdateIndicationUserDto dto, IndicationUserEntity entity);
+    Task<IndicationUserEntity> Update(UpdateIndicationUserEndorserDto endorserDto, IndicationUserEntity entity);
+
+    Task<IndicationUserEntity> UpdateByEndorsed(UpdateIndicationUserEndorsedDto endorserDto,
+        IndicationUserEntity entity);
     IQueryable<IndicationUserEntity> Query();
     Task<IndicationUserEntity?> GetById(string id);
 }

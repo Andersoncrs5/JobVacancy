@@ -40,16 +40,23 @@ public class IndicationUserService(IUnitOfWork uow): IIndicationUserService
         return indicationNew;
     }
 
-    public async Task<IndicationUserEntity> Update(UpdateIndicationUserDto dto, IndicationUserEntity entity)
+    public async Task<IndicationUserEntity> Update(UpdateIndicationUserEndorserDto endorserDto, IndicationUserEntity entity)
     {
-        if (!string.IsNullOrEmpty(entity.Content))
-            entity.Content = entity.Content;
+        if (!string.IsNullOrWhiteSpace(endorserDto.Content))
+            entity.Content = endorserDto.Content;
         
-        if (dto.Status.HasValue)
-            entity.Status = dto.Status.Value;
+        if (endorserDto.SkillRating.HasValue)
+            entity.SkillRating = endorserDto.SkillRating.Value;
         
-        if (dto.SkillRating.HasValue)
-            entity.SkillRating = dto.SkillRating.Value;
+        IndicationUserEntity update = await uow.IndicationUserRepository.Update(entity);
+        await uow.Commit();
+        return update;
+    }
+
+    public async Task<IndicationUserEntity> UpdateByEndorsed(UpdateIndicationUserEndorsedDto endorserDto, IndicationUserEntity entity)
+    {
+        if (endorserDto.Status.HasValue)
+            entity.Status = endorserDto.Status.Value;
         
         IndicationUserEntity update = await uow.IndicationUserRepository.Update(entity);
         await uow.Commit();
