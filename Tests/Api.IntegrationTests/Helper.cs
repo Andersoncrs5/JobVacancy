@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using JobVacancy.API.IntegrationTests.Utils;
+using JobVacancy.API.models.dtos.Area;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
 using JobVacancy.API.models.dtos.CommentPostUser;
@@ -31,6 +32,33 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<AreaDto> CreateArea(bool isActive = true)
+    {
+        CreateAreaDto dto = new CreateAreaDto
+        {
+            IsActive = isActive,
+            Name = $"Test {Guid.NewGuid()}",
+            Description = $"Test description {Guid.NewGuid()}",
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("api/v1/Area", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<AreaDto>? response = await message.Content.ReadFromJsonAsync<ResponseHttp<AreaDto>>();
+        response.Should().NotBeNull();
+        response.Status.Should().BeTrue();
+        response.Message.Should().NotBeNullOrWhiteSpace();
+        response.Code.Should().Be((int) HttpStatusCode.Created);
+        
+        Assert.NotNull(response.Data);
+        response.Data.Id.Should().NotBeNullOrWhiteSpace();
+        response.Data.Name.Should().Be(dto.Name);
+        response.Data.Description.Should().Be(dto.Description);
+        response.Data.IsActive.Should().Be(dto.IsActive);
+        
+        return response.Data;
+    }
+    
     public async Task<IndicationUserDto> AddIndicationUser(UserResultTest endorsedUser)
     {
         CreateIndicationUserDto dto = new CreateIndicationUserDto()
