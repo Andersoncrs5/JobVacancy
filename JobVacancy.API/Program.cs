@@ -228,6 +228,7 @@ builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IEmployeeEnterpriseRepository, EmployeeEnterpriseRepository>();
 builder.Services.AddScoped<IReviewEnterpriseRepository, ReviewEnterpriseRepository>();
 builder.Services.AddScoped<IIndicationUserRepository, IndicationUserRepository>();
+builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -251,6 +252,7 @@ builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEmployeeEnterpriseService, EmployeeEnterpriseService>();
 builder.Services.AddScoped<IReviewEnterpriseService, ReviewEnterpriseService>();
 builder.Services.AddScoped<IIndicationUserService, IndicationUserService>();
+builder.Services.AddScoped<IAreaService, AreaService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
