@@ -38,6 +38,7 @@ public class UnitOfWork(
     private EmployeeEnterpriseRepository? _employeeEnterpriseRepository;
     private ReviewEnterpriseRepository? _reviewEnterpriseRepository;
     private IndicationUserRepository? _indicationUserRepository;
+    private AreaRepository? _areaRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -81,7 +82,9 @@ public class UnitOfWork(
     public IReviewEnterpriseRepository ReviewEnterpriseRepository
         => _reviewEnterpriseRepository ??= new ReviewEnterpriseRepository(context);
     public IIndicationUserRepository IndicationUserRepository
-    => _indicationUserRepository ??= new IndicationUserRepository(context);
+        => _indicationUserRepository ??= new IndicationUserRepository(context);
+    public IAreaRepository AreaRepository
+        => _areaRepository ??= new AreaRepository(context);
     
     public async Task Commit() 
     {
