@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using JobVacancy.API.IntegrationTests.Utils;
 using JobVacancy.API.models.dtos.IndicationUser;
+using JobVacancy.API.models.entities.Enums;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
@@ -214,4 +216,156 @@ public class IndicationUserControllerTest: IClassFixture<CustomWebApplicationFac
 
         http.Data.Should().BeNull();
     }
+
+    [Fact]
+    public async Task GetAll()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+                _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Tokens!.Token);
+
+        HttpResponseMessage message = await _client.GetAsync($"{_URL}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<IndicationUserDto>? page = await message.Content.ReadFromJsonAsync<Page<IndicationUserDto>>();
+        
+        page.Should().NotBeNull();
+        page.PageSize.Should().Be(10);
+        page.PageIndex.Should().Be(1);
+    }
+    
+    [Fact]
+    public async Task Patch()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        UserResultTest endorsedUser = await _helper.CreateAndGetUser();
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Tokens!.Token);
+
+        IndicationUserDto indicationUser = await _helper.AddIndicationUser(endorsedUser);
+
+        UpdateIndicationUserEndorserDto endorserDto = new UpdateIndicationUserEndorserDto()
+        {
+            SkillRating = Random.Shared.Next(0, 10),
+            Content = string.Concat(Enumerable.Repeat("AnyContent",20))
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_URL}/{indicationUser.Id}", endorserDto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<IndicationUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<IndicationUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().Be(indicationUser.Id);
+        http.Data.SkillRating.Should().Be(endorserDto.SkillRating);
+        http.Data.Status.Should().Be(indicationUser.Status);
+        http.Data.Content.Should().Be(endorserDto.Content);
+    }
+
+    [Fact]
+    public async Task PatchReturnConflict()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        UserResultTest endorsedUser = await _helper.CreateAndGetUser();
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Tokens!.Token);
+
+        IndicationUserDto indicationUser = await _helper.AddIndicationUser(endorsedUser);
+
+        UpdateIndicationUserEndorserDto endorserDto = new UpdateIndicationUserEndorserDto()
+        {
+            SkillRating = Random.Shared.Next(0, 10),
+            Content = string.Concat(Enumerable.Repeat("AnyContent",20))
+        };
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", endorsedUser.Tokens!.Token);
+
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_URL}/{indicationUser.Id}", endorserDto);
+        message.StatusCode.Should().Be(HttpStatusCode.Conflict);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Conflict);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+
+        http.Data.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task PatchByEndorsed()
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        UserResultTest endorsedUser = await _helper.CreateAndGetUser();
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Tokens!.Token);
+
+        IndicationUserDto indicationUser = await _helper.AddIndicationUser(endorsedUser);
+
+        UpdateIndicationUserEndorsedDto endorserDto = new UpdateIndicationUserEndorsedDto()
+        {
+            Status = IndicationStatusEnum.AcceptedAndVisible
+        };
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", endorsedUser.Tokens!.Token);
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_URL}/{indicationUser.Id}/By/Endorsed", endorserDto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<IndicationUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<IndicationUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().Be(indicationUser.Id);
+        http.Data.SkillRating.Should().Be(indicationUser.SkillRating);
+        http.Data.Status.Should().Be(endorserDto.Status);
+        http.Data.Content.Should().Be(indicationUser.Content);
+    }
+
+    [Fact]
+    public async Task PatchReturnForbiddenWhenEndorserTriesToUseEndorsedRoute()
+    {
+        UserResultTest endorserUser = await _helper.CreateAndGetUser(); 
+        UserResultTest endorsedUser = await _helper.CreateAndGetUser(); 
+        
+        _client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", endorserUser.Tokens!.Token);
+
+        IndicationUserDto indicationUser = await _helper.AddIndicationUser(endorsedUser); 
+
+        UpdateIndicationUserEndorsedDto endorsedDto = new UpdateIndicationUserEndorsedDto()
+        {
+            Status = IndicationStatusEnum.AcceptedAndVisible 
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync(
+            $"{_URL}/{indicationUser.Id}/By/Endorsed",
+            endorsedDto
+        );
+
+        message.StatusCode.Should().Be(HttpStatusCode.Forbidden); 
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        
+        http.Code.Should().Be((int)HttpStatusCode.Forbidden); 
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+        http.Data.Should().BeNull();
+    }
+
+    
 }
