@@ -901,6 +901,92 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("UserSkill");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.VacancyEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ApplicationDeadLine")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("AreaId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Benefits")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("character varying(3000)");
+
+                    b.Property<int?>("EducationLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EmploymentType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ExperienceLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastApplication")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Opening")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Requirements")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<string>("Responsibilities")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<decimal?>("SalaryMax")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SalaryMin")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("Seniority")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("WorkplaceType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.ToTable("Vacancies", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -1330,6 +1416,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.VacancyEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.AreaEntity", "Area")
+                        .WithMany("Vacancies")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("Vacancies")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Area");
+
+                    b.Navigation("Enterprise");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
@@ -1465,6 +1570,11 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.AreaEntity", b =>
+                {
+                    b.Navigation("Vacancies");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
                 {
                     b.Navigation("FavoriteCommentEntities");
@@ -1490,6 +1600,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Vacancies");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>

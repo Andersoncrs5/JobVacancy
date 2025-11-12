@@ -32,6 +32,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<ReviewEnterpriseEntity> ReviewEnterpriseEntities { get; set; }
     public new DbSet<IndicationUserEntity> IndicationUsers { get; set; }
     public new DbSet<AreaEntity> AreaEntities { get; set; }
+    public new DbSet<VacancyEntity> VacancyEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -70,6 +71,45 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<VacancyEntity>(options =>
+        {
+            options.ToTable("Vacancies");
+            options.HasKey(x => x.Id);
+            
+            options.Property(x => x.Title).HasMaxLength(300).IsRequired();
+            options.Property(x => x.Description).HasMaxLength(3000).IsRequired();
+            options.Property(x => x.Requirements).HasMaxLength(1500).IsRequired(false);
+            options.Property(x => x.Responsibilities).HasMaxLength(1500).IsRequired(false);
+            options.Property(x => x.Benefits).HasMaxLength(1500).IsRequired(false);
+
+            options.Property(x => x.EmploymentType).IsRequired();
+            options.Property(x => x.ExperienceLevel).IsRequired(false);
+            options.Property(x => x.EducationLevel).IsRequired(false);
+            options.Property(x => x.WorkplaceType).IsRequired(false);
+            options.Property(x => x.Currency).IsRequired(false);
+            options.Property(x => x.Status).IsRequired();
+            
+            options.Property(x => x.Seniority).IsRequired(false);
+            options.Property(x => x.Opening).IsRequired();
+
+            options.Property(x => x.SalaryMin).IsRequired(false);
+            options.Property(x => x.SalaryMax).IsRequired(false);
+
+            options.HasOne(x => x.Enterprise)
+                .WithMany(x => x.Vacancies)
+                .HasForeignKey(x => x.EnterpriseId)
+                .IsRequired();
+
+            options.HasOne(x => x.Area)
+                .WithMany(x => x.Vacancies)
+                .HasForeignKey(x => x.AreaId)
+                .IsRequired();
+            
+            options.Property(x => x.ApplicationDeadLine).IsRequired(false);
+            options.Property(x => x.LastApplication).IsRequired(false);
+            
+        });
+        
         modelBuilder.Entity<AreaEntity>(options =>
         {
             options.HasIndex(x => x.Name).IsUnique();
