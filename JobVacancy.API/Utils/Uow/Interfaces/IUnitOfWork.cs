@@ -29,6 +29,7 @@ public interface IUnitOfWork: IDisposable
     IReviewEnterpriseRepository ReviewEnterpriseRepository { get; }
     IIndicationUserRepository IndicationUserRepository { get; }
     IAreaRepository AreaRepository { get; }
+    IVacancyRepository VacancyRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
