@@ -254,6 +254,7 @@ builder.Services.AddScoped<IEmployeeEnterpriseService, EmployeeEnterpriseService
 builder.Services.AddScoped<IReviewEnterpriseService, ReviewEnterpriseService>();
 builder.Services.AddScoped<IIndicationUserService, IndicationUserService>();
 builder.Services.AddScoped<IAreaService, AreaService>();
+builder.Services.AddScoped<IVacancyService, VacancyService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
