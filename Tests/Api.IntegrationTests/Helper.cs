@@ -35,6 +35,28 @@ public class Helper(
     )
 {
 
+    public async Task<VacancyDto> ChangeStatusVacancy( string vacancyId, VacancyStatusEnum? status = null, DateTime? deadLine = null)
+    {
+        UpdateVacancyDto dto = new UpdateVacancyDto
+        {
+            Status = status,
+            ApplicationDeadLine = deadLine
+        };
+        
+        HttpResponseMessage message = await client.PatchAsJsonAsync($"/api/v1/Vacancy/{vacancyId}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<VacancyDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<VacancyDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.OK);
+        http.Status.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        
+        return http.Data;
+    }
+    
     public async Task<VacancySkillDto> AddVacancySkillToVacancy(VacancyDto vacancyDto, SkillDto skillDto)
     {
         CreateVacancySkillDto dto = new CreateVacancySkillDto
