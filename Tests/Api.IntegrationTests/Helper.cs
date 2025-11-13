@@ -22,6 +22,7 @@ using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
+using JobVacancy.API.models.dtos.Vacancy;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,59 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<VacancyDto> CreateVacancy(AreaDto areaDto)
+    {
+        CreateVacancyDto dto = new CreateVacancyDto()
+        {
+            Title = string.Concat(Enumerable.Repeat(Guid.NewGuid().ToString(), 5)),
+            Description = string.Concat(Enumerable.Repeat(Guid.NewGuid().ToString(), 15)),
+            AreaId = areaDto.Id,
+            Benefits = string.Concat(Enumerable.Repeat(Guid.NewGuid().ToString(), 15)),
+            Currency = CurrencyEnum.Usd,
+            EducationLevel = EducationLevelEnum.Technical,
+            EmploymentType = EmploymentTypeEnum.PartTime,
+            ExperienceLevel = ExperienceLevelEnum.Junior,
+            Opening = 1,
+            Requirements = string.Concat(Enumerable.Repeat(Guid.NewGuid().ToString(), 15)),
+            Responsibilities = string.Concat(Enumerable.Repeat(Guid.NewGuid().ToString(), 15)),
+            SalaryMin = 2000.8m,
+            SalaryMax = 4000.8m,
+            Seniority = 3,
+            WorkplaceType = WorkplaceTypeEnum.Hybrid,
+            ApplicationDeadLine = DateTime.UtcNow.AddMonths(1),
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/Vacancy", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<VacancyDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<VacancyDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Description.Should().Be(dto.Description);
+        http.Data.AreaId.Should().Be(areaDto.Id);
+        http.Data.Benefits.Should().Be(dto.Benefits);
+        http.Data.Currency.Should().Be(dto.Currency);
+        http.Data.EducationLevel.Should().Be(dto.EducationLevel);
+        http.Data.EmploymentType.Should().Be(dto.EmploymentType);
+        http.Data.ExperienceLevel.Should().Be(dto.ExperienceLevel);
+        http.Data.Opening.Should().Be(dto.Opening);
+        http.Data.Requirements.Should().Be(dto.Requirements);
+        http.Data.SalaryMin.Should().Be(dto.SalaryMin);
+        http.Data.SalaryMax.Should().Be(dto.SalaryMax);
+        http.Data.Seniority.Should().Be(dto.Seniority);
+        http.Data.WorkplaceType.Should().Be(dto.WorkplaceType);
+        http.Data.Responsibilities.Should().Be(dto.Responsibilities);
+        http.Data.ApplicationDeadLine.Should().BeCloseTo(dto.ApplicationDeadLine.Value, TimeSpan.FromSeconds(1));
+        
+        return http.Data;
+    }
+    
     public async Task<AreaDto> CreateArea(bool isActive = true)
     {
         CreateAreaDto dto = new CreateAreaDto
