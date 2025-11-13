@@ -231,6 +231,7 @@ builder.Services.AddScoped<IIndicationUserRepository, IndicationUserRepository>(
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 builder.Services.AddScoped<IVacancyRepository, VacancyRepository>();
 builder.Services.AddScoped<IVacancySkillRepository, VacancySkillRepository>();
+builder.Services.AddScoped<IApplicationVacancyRepository, ApplicationVacancyRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
