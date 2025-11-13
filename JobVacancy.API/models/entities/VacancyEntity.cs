@@ -32,4 +32,6 @@ public class VacancyEntity: BaseEntity
 
     public DateTime? ApplicationDeadLine { get; set; }
     public DateTime? LastApplication { get; set; } 
+    
+    public ICollection<VacancySkillEntity>? VacancySkills { get; set; }
 }

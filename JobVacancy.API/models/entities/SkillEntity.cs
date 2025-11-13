@@ -7,5 +7,5 @@ public class SkillEntity: BaseEntity
     public bool IsActive { get; set; }
     public string? IconUrl { get; set; }
     public ICollection<UserSkillEntity>? UserSkill { get; set; } 
-    
+    public ICollection<VacancySkillEntity>? VacancySkills { get; set; }
 }
