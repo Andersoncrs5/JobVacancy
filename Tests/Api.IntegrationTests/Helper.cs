@@ -23,6 +23,7 @@ using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.dtos.Vacancy;
+using JobVacancy.API.models.dtos.VacancySkill;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Utils.Res;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,41 @@ public class Helper(
     HttpClient client
     )
 {
+
+    public async Task<VacancySkillDto> AddVacancySkillToVacancy(VacancyDto vacancyDto, SkillDto skillDto)
+    {
+        CreateVacancySkillDto dto = new CreateVacancySkillDto
+        {
+            VacancyId = vacancyDto.Id,
+            SkillId = skillDto.Id,
+            IsMandatory = true,
+            RequiredLevel = SkillProficiencyLevelEnum.Beginner,
+            Weight = 4,
+            YearsOfExperienceRequired = 2
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/VacancySkill", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<VacancySkillDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<VacancySkillDto>>();
+        http.Should().NotBeNull();
+        
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.SkillId.Should().Be(dto.SkillId);
+        http.Data.VacancyId.Should().Be(dto.VacancyId);
+        http.Data.IsMandatory.Should().Be(dto.IsMandatory);
+        http.Data.RequiredLevel.Should().Be(dto.RequiredLevel);
+        http.Data.Weight.Should().Be(dto.Weight);
+        http.Data.YearsOfExperienceRequired.Should().Be(dto.YearsOfExperienceRequired);
+        
+        return http.Data;
+    }
+    
     public async Task<VacancyDto> CreateVacancy(AreaDto areaDto)
     {
         CreateVacancyDto dto = new CreateVacancyDto()
