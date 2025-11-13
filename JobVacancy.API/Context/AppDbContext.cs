@@ -82,6 +82,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             
             options.Property(x => x.IsMandatory).IsRequired();
             options.Property(x => x.Weight).HasColumnType("SMALLINT").IsRequired();
+            options.Property(x => x.Order).HasColumnType("SMALLINT").IsRequired(false);
             options.Property(x => x.YearsOfExperienceRequired).HasColumnType("SMALLINT").IsRequired(false);
 
             options.Property(x => x.Notes).HasMaxLength(1500).IsRequired(false);

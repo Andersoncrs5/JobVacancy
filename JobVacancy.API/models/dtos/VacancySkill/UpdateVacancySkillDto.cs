@@ -9,5 +9,7 @@ public class UpdateVacancySkillDto
     public bool? IsMandatory { get; set; }
     public int? Weight { get; set; }
     public int? YearsOfExperienceRequired { get; set; }
+    public int? Order { get; set; }
     public string? Notes { get; set; }
+    
 }

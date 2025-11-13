@@ -9,22 +9,23 @@ public class CreateVacancySkillDto
 {
     [Required]
     [ExistsVacancyById]
-    public required string VacancyId { get; set; }
+    public required string VacancyId { get; init; }
     
     [Required]
     [ExistsSkillById]
-    public required string SkillId { get; set; }
+    public required string SkillId { get; init; }
     
     [Required]
-    public SkillProficiencyLevelEnum RequiredLevel { get; set; }
+    public SkillProficiencyLevelEnum RequiredLevel { get; init; }
     
     [Required]
-    public bool IsMandatory { get; set; }
+    public bool IsMandatory { get; init; }
     
     [Required]
-    public int Weight { get; set; }
+    public int Weight { get; init; }
     
-    public int? YearsOfExperienceRequired { get; set; }
+    public int? YearsOfExperienceRequired { get; init; }
+    public int? Order { get; set; }
     public string? Notes { get; set; }
 
 }

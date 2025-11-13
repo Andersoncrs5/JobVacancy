@@ -55,6 +55,9 @@ public class VacancySkillService(IUnitOfWork uow): IVacancySkillService
         if (skillDto.Weight.HasValue)
             entity.Weight = skillDto.Weight.Value;
         
+        if (skillDto.Order.HasValue)
+            entity.Order = skillDto.Order.Value;
+        
         if (skillDto.YearsOfExperienceRequired.HasValue)
             entity.YearsOfExperienceRequired = skillDto.YearsOfExperienceRequired.Value;
         

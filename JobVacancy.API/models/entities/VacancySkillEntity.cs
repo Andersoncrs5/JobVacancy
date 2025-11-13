@@ -16,6 +16,7 @@ public class VacancySkillEntity: BaseEntity
     
     public int Weight { get; set; } = 1; 
     public int? YearsOfExperienceRequired { get; set; }
+    public int? Order { get; set; }
     
     public string? Notes { get; set; }
 }
