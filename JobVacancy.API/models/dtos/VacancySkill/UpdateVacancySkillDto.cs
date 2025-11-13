@@ -2,7 +2,7 @@ using JobVacancy.API.models.entities.Enums;
 
 namespace JobVacancy.API.models.dtos.VacancySkill;
 
-public class UpdateVacancyDto
+public class UpdateVacancySkillDto
 {
     public string? SkillId { get; set; }
     public SkillProficiencyLevelEnum? RequiredLevel { get; set; }

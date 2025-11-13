@@ -38,25 +38,25 @@ public class VacancySkillService(IUnitOfWork uow): IVacancySkillService
         return skillAdded;
     }
 
-    public async Task<VacancySkillEntity> UpdateAsync(UpdateVacancyDto dto, VacancySkillEntity entity)
+    public async Task<VacancySkillEntity> UpdateAsync(UpdateVacancySkillDto skillDto, VacancySkillEntity entity)
     {
-        if (!string.IsNullOrWhiteSpace(dto.SkillId))
-            entity.SkillId = dto.SkillId;
+        if (!string.IsNullOrWhiteSpace(skillDto.SkillId))
+            entity.SkillId = skillDto.SkillId;
         
-        if (!string.IsNullOrWhiteSpace(dto.Notes))
-            entity.Notes = dto.Notes;
+        if (!string.IsNullOrWhiteSpace(skillDto.Notes))
+            entity.Notes = skillDto.Notes;
         
-        if (dto.RequiredLevel.HasValue)
-            entity.RequiredLevel = dto.RequiredLevel.Value;
+        if (skillDto.RequiredLevel.HasValue)
+            entity.RequiredLevel = skillDto.RequiredLevel.Value;
         
-        if (dto.IsMandatory.HasValue)
-            entity.IsMandatory = dto.IsMandatory.Value;
+        if (skillDto.IsMandatory.HasValue)
+            entity.IsMandatory = skillDto.IsMandatory.Value;
         
-        if (dto.Weight.HasValue)
-            entity.Weight = dto.Weight.Value;
+        if (skillDto.Weight.HasValue)
+            entity.Weight = skillDto.Weight.Value;
         
-        if (dto.YearsOfExperienceRequired.HasValue)
-            entity.YearsOfExperienceRequired = dto.YearsOfExperienceRequired.Value;
+        if (skillDto.YearsOfExperienceRequired.HasValue)
+            entity.YearsOfExperienceRequired = skillDto.YearsOfExperienceRequired.Value;
         
         VacancySkillEntity update = await uow.VacancySkillRepository.Update(entity);
         await uow.Commit();

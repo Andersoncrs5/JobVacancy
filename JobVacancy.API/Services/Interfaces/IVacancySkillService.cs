@@ -12,5 +12,5 @@ public interface IVacancySkillService
     Task<VacancySkillEntity?> GetById(string id);
     Task Delete(VacancySkillEntity entity);
     Task<VacancySkillEntity> CreateAsync(CreateVacancySkillDto dto);
-    Task<VacancySkillEntity> UpdateAsync(UpdateVacancyDto dto, VacancySkillEntity entity);
+    Task<VacancySkillEntity> UpdateAsync(UpdateVacancySkillDto skillDto, VacancySkillEntity entity);
 }
