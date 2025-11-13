@@ -41,6 +41,7 @@ public class UnitOfWork(
     private AreaRepository? _areaRepository;
     private VacancyRepository? _vacancyRepository;
     private VacancySkillRepository? _vacancySkillRepository;
+    private ApplicationVacancyRepository? _applicationVacancyRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -91,6 +92,8 @@ public class UnitOfWork(
         => _vacancyRepository ??= new VacancyRepository(context);
     public IVacancySkillRepository VacancySkillRepository
         =>  _vacancySkillRepository ??= new VacancySkillRepository(context);
+    public IApplicationVacancyRepository ApplicationVacancyRepository
+        =>  _applicationVacancyRepository ??= new ApplicationVacancyRepository(context);
     
     public async Task Commit() 
     {

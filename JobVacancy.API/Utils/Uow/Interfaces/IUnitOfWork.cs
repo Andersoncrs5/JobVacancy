@@ -31,6 +31,7 @@ public interface IUnitOfWork: IDisposable
     IAreaRepository AreaRepository { get; }
     IVacancyRepository VacancyRepository { get; }
     IVacancySkillRepository VacancySkillRepository { get; }
+    IApplicationVacancyRepository ApplicationVacancyRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
