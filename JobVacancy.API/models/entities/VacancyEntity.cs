@@ -34,4 +34,5 @@ public class VacancyEntity: BaseEntity
     public DateTime? LastApplication { get; set; } 
     
     public ICollection<VacancySkillEntity>? VacancySkills { get; set; }
+    public ICollection<ApplicationVacancyEntity>? ApplicationVacancies { get; set; }
 }

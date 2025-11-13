@@ -25,6 +25,7 @@ public class UserEntity: IdentityUser
     public ICollection<ReviewEnterpriseEntity>? Reviews { get; set; }
     public ICollection<IndicationUserEntity>? SentEndors { get; set; }
     public ICollection<IndicationUserEntity>? ReceivedEndors { get; set; }
+    public ICollection<ApplicationVacancyEntity>? ApplicationVacancies { get; set; }
     
     
 }
