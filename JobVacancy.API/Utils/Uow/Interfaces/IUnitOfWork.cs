@@ -30,6 +30,7 @@ public interface IUnitOfWork: IDisposable
     IIndicationUserRepository IndicationUserRepository { get; }
     IAreaRepository AreaRepository { get; }
     IVacancyRepository VacancyRepository { get; }
+    IVacancySkillRepository VacancySkillRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
