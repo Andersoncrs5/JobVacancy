@@ -22,6 +22,50 @@ namespace JobVacancy.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ApplicationVacancyEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool?>("IsViewedByRecruiter")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastStatusUpdateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VacancyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VacancyId");
+
+                    b.ToTable("ApplicationVacancies");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.AreaEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -971,6 +1015,9 @@ namespace JobVacancy.API.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
+                    b.Property<short?>("Order")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<int>("RequiredLevel")
                         .HasColumnType("integer");
 
@@ -1169,6 +1216,25 @@ namespace JobVacancy.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PostUsers", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.ApplicationVacancyEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("ApplicationVacancies")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.VacancyEntity", "Vacancy")
+                        .WithMany("ApplicationVacancies")
+                        .HasForeignKey("VacancyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Vacancy");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.Base.CommentBaseEntity", b =>
@@ -1643,6 +1709,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
                 {
+                    b.Navigation("ApplicationVacancies");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Employee");
@@ -1672,6 +1740,8 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.VacancyEntity", b =>
                 {
+                    b.Navigation("ApplicationVacancies");
+
                     b.Navigation("VacancySkills");
                 });
 

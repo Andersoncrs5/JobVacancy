@@ -34,6 +34,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<AreaEntity> AreaEntities { get; set; }
     public new DbSet<VacancyEntity> VacancyEntities { get; set; }
     public new DbSet<VacancySkillEntity> VacancySkillEntities { get; set; }
+    public new DbSet<ApplicationVacancyEntity> ApplicationVacancies { get; set; }
     
     public override int SaveChanges()
     {
@@ -72,6 +73,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<ApplicationVacancyEntity>(options =>
+        {
+            options.HasKey(x => x.Id);
+            options.Property(x => x.Status).IsRequired();
+            options.Property(x => x.LastStatusUpdateDate).IsRequired(false);
+            options.Property(x => x.CoverLetter).HasMaxLength(500).IsRequired(false);
+            options.Property(x => x.Score).IsRequired(false);
+            options.Property(x => x.IsViewedByRecruiter).IsRequired(false);
+
+            options.HasOne(x => x.Vacancy)
+                .WithMany(x => x.ApplicationVacancies)
+                .HasForeignKey(x => x.VacancyId)
+                .IsRequired();
+            
+            options.HasOne(x => x.User)
+                .WithMany(x => x.ApplicationVacancies)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<VacancySkillEntity>(options =>
         {
             options.ToTable("VacancySkills");
