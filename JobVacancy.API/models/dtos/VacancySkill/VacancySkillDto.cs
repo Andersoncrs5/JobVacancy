@@ -7,10 +7,10 @@ namespace JobVacancy.API.models.dtos.VacancySkill;
 public class VacancySkillDto: BaseDto
 {
     public required string VacancyId { get; set; }
-    public VacancyDto? VacancyDto { get; set; }
+    public VacancyDto? Vacancy { get; set; }
     
     public required string SkillId { get; set; }
-    public SkillDto? SkillDto { get; set; }
+    public SkillDto? Skill { get; set; }
     
     public SkillProficiencyLevelEnum RequiredLevel { get; set; } 
     
