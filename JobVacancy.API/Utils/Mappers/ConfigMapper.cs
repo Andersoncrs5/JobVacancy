@@ -24,6 +24,7 @@ using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.dtos.Vacancy;
+using JobVacancy.API.models.dtos.VacancySkill;
 using JobVacancy.API.models.entities.Base;
 using JobVacancy.API.Utils.Page;
 
@@ -149,5 +150,9 @@ public class ConfigMapper: Profile
         CreateMap<VacancyEntity, VacancyDto>();
         CreateMap<VacancyDto, VacancyEntity>();
         CreateMap<CreateVacancyDto, VacancyEntity>();
+        
+        CreateMap<VacancySkillEntity, VacancySkillDto>();
+        CreateMap<CreateVacancySkillDto, VacancySkillEntity>();
+        CreateMap<UpdateVacancySkillDto, VacancySkillEntity>();
     }
 }
