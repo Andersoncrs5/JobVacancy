@@ -2,6 +2,7 @@ using JobVacancy.API.models.dtos;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.entities;
 using AutoMapper;
+using JobVacancy.API.models.dtos.ApplicationVacancy;
 using JobVacancy.API.models.dtos.Area;
 using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Category;
@@ -154,5 +155,9 @@ public class ConfigMapper: Profile
         CreateMap<VacancySkillEntity, VacancySkillDto>();
         CreateMap<CreateVacancySkillDto, VacancySkillEntity>();
         CreateMap<UpdateVacancySkillDto, VacancySkillEntity>();
+        
+        CreateMap<ApplicationVacancyEntity, ApplicationVacancyDto>();
+        CreateMap<ApplicationVacancyDto, ApplicationVacancyEntity>();
+        CreateMap<CreateApplicationVacancyDto, ApplicationVacancyEntity>();
     }
 }
