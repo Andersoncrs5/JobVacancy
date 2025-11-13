@@ -1,5 +1,6 @@
 using JobVacancy.API.models.dtos.Vacancy;
 using JobVacancy.API.models.entities;
+using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
 using JobVacancy.API.Utils.Uow.Interfaces;
 
@@ -26,6 +27,7 @@ public class VacancyService(IUnitOfWork uow): IVacancyService
     {
         VacancyEntity map = uow.Mapper.Map<VacancyEntity>(dto);
         map.EnterpriseId = enterpriseId;
+        map.Status = VacancyStatusEnum.Paused;
 
         VacancyEntity vacancy = await uow.VacancyRepository.AddAsync(map);
         await uow.Commit();
@@ -83,7 +85,8 @@ public class VacancyService(IUnitOfWork uow): IVacancyService
         if (dto.SalaryMax.HasValue)
             vacancy.SalaryMax = dto.SalaryMax.Value;
         
-        
+        if (dto.ApplicationDeadLine.HasValue)
+            vacancy.ApplicationDeadLine = dto.ApplicationDeadLine.Value;
         
         VacancyEntity update = await uow.VacancyRepository.Update(vacancy);
         
