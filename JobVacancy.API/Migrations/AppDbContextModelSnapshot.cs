@@ -913,8 +913,8 @@ namespace JobVacancy.API.Migrations
                     b.Property<DateTime?>("LastApplication")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Opening")
-                        .HasColumnType("integer");
+                    b.Property<short>("Opening")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("Requirements")
                         .HasMaxLength(1500)
@@ -930,8 +930,8 @@ namespace JobVacancy.API.Migrations
                     b.Property<decimal?>("SalaryMin")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("Seniority")
-                        .HasColumnType("integer");
+                    b.Property<short?>("Seniority")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -954,6 +954,51 @@ namespace JobVacancy.API.Migrations
                     b.HasIndex("EnterpriseId");
 
                     b.ToTable("Vacancies", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.VacancySkillEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.Property<int>("RequiredLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SkillId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VacancyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Weight")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("YearsOfExperienceRequired")
+                        .HasColumnType("SMALLINT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("VacancyId", "SkillId")
+                        .IsUnique();
+
+                    b.ToTable("VacancySkills", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1387,6 +1432,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Enterprise");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.VacancySkillEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.SkillEntity", "Skill")
+                        .WithMany("VacancySkills")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.VacancyEntity", "Vacancy")
+                        .WithMany("VacancySkills")
+                        .HasForeignKey("VacancyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skill");
+
+                    b.Navigation("Vacancy");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.RoleEntity", null)
@@ -1573,6 +1637,8 @@ namespace JobVacancy.API.Migrations
             modelBuilder.Entity("JobVacancy.API.models.entities.SkillEntity", b =>
                 {
                     b.Navigation("UserSkill");
+
+                    b.Navigation("VacancySkills");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
@@ -1602,6 +1668,11 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("SentEndors");
 
                     b.Navigation("UserSkill");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.VacancyEntity", b =>
+                {
+                    b.Navigation("VacancySkills");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>

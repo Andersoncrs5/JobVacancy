@@ -33,6 +33,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<IndicationUserEntity> IndicationUsers { get; set; }
     public new DbSet<AreaEntity> AreaEntities { get; set; }
     public new DbSet<VacancyEntity> VacancyEntities { get; set; }
+    public new DbSet<VacancySkillEntity> VacancySkillEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -71,6 +72,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<VacancySkillEntity>(options =>
+        {
+            options.ToTable("VacancySkills");
+            options.HasKey(e => e.Id);
+            options.HasIndex(e => new { e.VacancyId, e.SkillId }).IsUnique();
+
+            options.Property(x => x.RequiredLevel).IsRequired();
+            
+            options.Property(x => x.IsMandatory).IsRequired();
+            options.Property(x => x.Weight).HasColumnType("SMALLINT").IsRequired();
+            options.Property(x => x.YearsOfExperienceRequired).HasColumnType("SMALLINT").IsRequired(false);
+
+            options.Property(x => x.Notes).HasMaxLength(1500).IsRequired(false);
+        });
+
         modelBuilder.Entity<VacancyEntity>(options =>
         {
             options.ToTable("Vacancies");
@@ -89,8 +105,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.Property(x => x.Currency).IsRequired(false);
             options.Property(x => x.Status).IsRequired();
             
-            options.Property(x => x.Seniority).IsRequired(false);
-            options.Property(x => x.Opening).IsRequired();
+            options.Property(x => x.Seniority).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.Opening).HasColumnType("SMALLINT").IsRequired();
 
             options.Property(x => x.SalaryMin).IsRequired(false);
             options.Property(x => x.SalaryMax).IsRequired(false);
