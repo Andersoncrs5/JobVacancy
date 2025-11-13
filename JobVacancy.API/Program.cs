@@ -258,6 +258,7 @@ builder.Services.AddScoped<IIndicationUserService, IndicationUserService>();
 builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IVacancyService, VacancyService>();
 builder.Services.AddScoped<IVacancySkillService, VacancySkillService>();
+builder.Services.AddScoped<IApplicationVacancyService, ApplicationVacancyService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
