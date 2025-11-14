@@ -27,5 +27,7 @@ public class UserEntity: IdentityUser
     public ICollection<IndicationUserEntity>? ReceivedEndors { get; set; }
     public ICollection<ApplicationVacancyEntity>? ApplicationVacancies { get; set; }
     
+    public ICollection<FollowerRelationshipUserEntity>? Followers { get; set; }
+    public ICollection<FollowerRelationshipUserEntity>? Following { get; set; }
     
 }
