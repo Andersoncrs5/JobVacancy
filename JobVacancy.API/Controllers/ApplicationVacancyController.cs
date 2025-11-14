@@ -5,6 +5,8 @@ using JobVacancy.API.models.dtos.Vacancy;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.ApplicationVacancy;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +25,30 @@ public class ApplicationVacancyController(
     IMapper mapper
 ) : Controller
 {
+
+    [HttpGet("{vacancyId:required}/Exists")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<bool>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Authorize(Roles = "USER_ROLE")]
+    public async Task<IActionResult> Exists(string vacancyId)
+    {
+        string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+        if (userId == null) return Unauthorized();
+        
+        bool exists = await applicationVacancyService.ExistsByVacancyIdAndUserId(vacancyId, userId);
+        
+        return StatusCode(StatusCodes.Status200OK, new ResponseHttp<bool>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = true,
+            Data = exists,
+            Message = "",
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1,
+        });
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ResponseHttp<ApplicationVacancyDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -120,6 +146,125 @@ public class ApplicationVacancyController(
             TraceId = HttpContext.TraceIdentifier,
             Version = 1,
         });
+    }
+
+    [HttpGet("{id:required}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<ApplicationVacancyDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> Get(string id)
+    {
+        ApplicationVacancyEntity? app = await applicationVacancyService.GetById(id);
+        if (app == null) 
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Message = "Application not found",
+                Data = null,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+
+        return Ok(new ResponseHttp<object>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = true,
+            Data = mapper.Map<ApplicationVacancyDto>(app),
+            Message = "Application found",
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1
+        });
+    }
+    
+    [HttpPatch("{id:required}")]
+    [Authorize(Roles = "ENTERPRISE_ROLE")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<ApplicationVacancyDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> Patch(string id, [FromBody] UpdateApplicationVacancyDto dto)
+    {
+        ApplicationVacancyEntity? app = await applicationVacancyService.GetById(id);
+        if (app == null) 
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Message = "Application not found",
+                Data = null,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+
+        ApplicationVacancyEntity update = await applicationVacancyService.Update(dto, app);
+        
+        return Ok(new ResponseHttp<object>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = true,
+            Data = mapper.Map<ApplicationVacancyDto>(update),
+            Message = "Application found",
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1
+        });
+    }
+    
+    [HttpDelete("{id:required}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [Authorize(Roles = "USER_ROLE")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        ApplicationVacancyEntity? app = await applicationVacancyService.GetById(id);
+        if (app == null) 
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Message = "Application not found",
+                Data = null,
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+
+        await applicationVacancyService.Delete(app);
+        
+        return StatusCode(StatusCodes.Status204NoContent, new ResponseHttp<object>
+        {
+            Code = StatusCodes.Status204NoContent,
+            Status = true,
+            Data = null,
+            Message = "Application removed",
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1
+        });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<ApplicationVacancyDto>))]
+    public async Task<IActionResult> GetAll([FromQuery] ApplicationVacancyFilterParams filter)
+    {
+        IQueryable<ApplicationVacancyEntity> iQueryable = applicationVacancyService.Query();
+        IQueryable<ApplicationVacancyEntity> appliedFilter = ApplicationVacancyFilterQuery.ApplyFilter(iQueryable, filter);
+        PaginatedList<ApplicationVacancyEntity> paginatedList = await PaginatedList<ApplicationVacancyEntity>.CreateAsync(
+            source: appliedFilter,
+            pageSize: filter.PageSize,
+            pageIndex: filter.PageNumber
+        );
+        
+        Page<ApplicationVacancyDto> dtos = mapper.Map<Page<ApplicationVacancyDto>>(paginatedList);
+        
+        return Ok(dtos);
     }
     
 }
