@@ -14,3 +14,5 @@ table IndicationSkillEntity
 notify both user about a new indication
 notify enterprise about new application 
 notify user about application success to vacancy 
+notify user about change in application
+table curriculum with s3
