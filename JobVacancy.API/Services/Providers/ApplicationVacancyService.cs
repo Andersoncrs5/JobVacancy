@@ -42,8 +42,11 @@ public class ApplicationVacancyService(IUnitOfWork uow): IApplicationVacancyServ
 
     public async Task<ApplicationVacancyEntity> Update(UpdateApplicationVacancyDto dto, ApplicationVacancyEntity app)
     {
-        if (dto.Status.HasValue)
+        if (dto.Status.HasValue) 
+        {
             app.Status = dto.Status.Value;
+            app.LastStatusUpdateDate = DateTime.UtcNow;
+        }
         
         if (dto.IsViewedByRecruiter.HasValue)
             app.IsViewedByRecruiter = dto.IsViewedByRecruiter.Value;
