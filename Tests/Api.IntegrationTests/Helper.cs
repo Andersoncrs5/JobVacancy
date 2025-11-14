@@ -1,8 +1,10 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using JobVacancy.API.IntegrationTests.Utils;
+using JobVacancy.API.models.dtos.ApplicationVacancy;
 using JobVacancy.API.models.dtos.Area;
 using JobVacancy.API.models.dtos.Category;
 using JobVacancy.API.models.dtos.CommentPostEnterprise;
@@ -34,6 +36,34 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<ApplicationVacancyDto> CreateApplication(VacancyDto vacancy, UserResultTest candidate)
+    {
+        
+        CreateApplicationVacancyDto dto = new CreateApplicationVacancyDto
+        {
+            VacancyId = vacancy.Id,
+            CoverLetter = string.Concat(Enumerable.Repeat("AnyMessage", 20)),
+        };
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", candidate.Tokens!.Token!);
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/ApplicationVacancy", dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<ApplicationVacancyDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ApplicationVacancyDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.VacancyId.Should().Be(vacancy.Id);
+        http.Data.UserId.Should().Be(candidate.User!.Id);
+        
+        return http.Data;
+    }
 
     public async Task<VacancyDto> ChangeStatusVacancy( string vacancyId, VacancyStatusEnum? status = null, DateTime? deadLine = null)
     {
