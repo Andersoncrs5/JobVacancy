@@ -16,6 +16,7 @@ using JobVacancy.API.models.dtos.FavoriteCommentPostEnterprise;
 using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
+using JobVacancy.API.models.dtos.FollowerRelationshipUser;
 using JobVacancy.API.models.dtos.IndicationUser;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
@@ -116,7 +117,6 @@ public class ConfigMapper: Profile
         
         CreateMap<CreateEmployeeInvitationDto, EmployeeInvitationEntity>();
         CreateMap<UpdateEmployeeInvitationDto, EmployeeInvitationEntity>()
-
             .ForMember(dest => dest.UserId, opt => opt.Ignore())
             .ForMember(dest => dest.EnterpriseId, opt => opt.Ignore())
             .ForMember(dest => dest.InviteSenderId, opt => opt.Ignore())
@@ -159,5 +159,8 @@ public class ConfigMapper: Profile
         CreateMap<ApplicationVacancyEntity, ApplicationVacancyDto>();
         CreateMap<ApplicationVacancyDto, ApplicationVacancyEntity>();
         CreateMap<CreateApplicationVacancyDto, ApplicationVacancyEntity>();
+        
+        CreateMap<FollowerRelationshipUserDto, FollowerRelationshipUserEntity>();
+        CreateMap<FollowerRelationshipUserEntity, FollowerRelationshipUserDto>();
     }
 }
