@@ -15,6 +15,7 @@ using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
+using JobVacancy.API.models.dtos.FollowerRelationshipUser;
 using JobVacancy.API.models.dtos.IndicationUser;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
@@ -36,6 +37,24 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<FollowerRelationshipUserDto> CreateFollowerRelationshipUser(UserResultTest follower, UserResultTest followed)
+    {
+        HttpResponseMessage message = await client.PostAsync($"/api/v1/FollowerRelationshipUser/{followed.User!.Id}/Toggle", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<FollowerRelationshipUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<FollowerRelationshipUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.FollowedId.Should().Be(followed.User.Id);
+        http.Data.FollowerId.Should().Be(follower.User!.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<ApplicationVacancyDto> CreateApplication(VacancyDto vacancy, UserResultTest candidate)
     {
         
