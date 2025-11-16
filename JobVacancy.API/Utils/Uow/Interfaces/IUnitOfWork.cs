@@ -33,6 +33,7 @@ public interface IUnitOfWork: IDisposable
     IVacancySkillRepository VacancySkillRepository { get; }
     IApplicationVacancyRepository ApplicationVacancyRepository { get; }
     IFollowerRelationshipUserRepository FollowerRelationshipUserRepository { get; }
+    IFollowerUserRelationshipEnterpriseRepository FollowerUserRelationshipEnterpriseRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
