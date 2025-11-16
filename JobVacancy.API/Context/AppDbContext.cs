@@ -37,6 +37,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<ApplicationVacancyEntity> ApplicationVacancies { get; set; }
     public new DbSet<FollowerRelationshipUserEntity> FollowerRelationshipUsers { get; set; }
     public new DbSet<FollowerUserRelationshipEnterpriseEntity> FollowerUserRelationshipEnterpriseEntities { get; set; }
+    public new DbSet<EnterpriseFollowsUserEntity> EnterpriseFollowsUserEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -75,11 +76,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<EnterpriseFollowsUserEntity>(options =>
+        {
+            options.ToTable("EnterpriseFollowsUser");
+            options.HasKey(e => new { e.EnterpriseId, e.UserId });
+            options.HasIndex(e => e.UserId);
+            options.HasIndex(e => e.EnterpriseId);
+
+            options.HasOne(e => e.Enterprise) 
+                .WithMany(e => e.UsersFollowing) 
+                .HasForeignKey(e => e.EnterpriseId) 
+                .OnDelete(DeleteBehavior.Cascade) 
+                .IsRequired();
+
+            options.HasOne(e => e.User) 
+                .WithMany(u => u.FollowedByEnterprises) 
+                .HasForeignKey(e => e.UserId) 
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<FollowerUserRelationshipEnterpriseEntity>(options =>
         {
             options.ToTable("FollowerUserRelationshipEnterprise");
             options.HasKey(x => x.Id);
             options.HasIndex(x => new { x.UserId, x.EnterpriseId }).IsUnique();
+            options.HasIndex(e => e.UserId);
+            options.HasIndex(e => e.EnterpriseId);
 
             options.HasOne(x => x.Enterprise)
                 .WithMany(x => x.FollowedEnterprise)
