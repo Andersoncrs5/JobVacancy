@@ -46,17 +46,37 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
         return data.Entity;
     }
 
+    public async Task AddRangeAsync(IEnumerable<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+    }
+    
     public async Task<T> Update(T entity)
     {
         EntityEntry<T> update = _dbSet.Update(entity);
         return update.Entity;
     }
 
+    public async Task UpdateRangeAsync(IEnumerable<T> entities)
+    {
+        await Task.Run(() => _dbSet.UpdateRange(entities));
+    }
+    
     public void Delete(T entity)
     {
         _dbSet.Remove(entity);
     }
 
+    public async Task DeleteAsync(T entity)
+    {
+        await Task.Run(() => _dbSet.Remove(entity));
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<T> entities)
+    {
+        await Task.Run(() => _dbSet.RemoveRange(entities));
+    }
+    
     public async Task SaveChangesAsync()
     {
         await Context.SaveChangesAsync();
