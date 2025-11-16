@@ -233,6 +233,7 @@ builder.Services.AddScoped<IVacancyRepository, VacancyRepository>();
 builder.Services.AddScoped<IVacancySkillRepository, VacancySkillRepository>();
 builder.Services.AddScoped<IApplicationVacancyRepository, ApplicationVacancyRepository>();
 builder.Services.AddScoped<IFollowerRelationshipUserRepository, FollowerRelationshipUserRepository>();
+builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseRepository, FollowerUserRelationshipEnterpriseRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -261,6 +262,7 @@ builder.Services.AddScoped<IVacancyService, VacancyService>();
 builder.Services.AddScoped<IVacancySkillService, VacancySkillService>();
 builder.Services.AddScoped<IApplicationVacancyService, ApplicationVacancyService>();
 builder.Services.AddScoped<IFollowerRelationshipUserService, FollowerRelationshipUserService>();
+builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseService, FollowerUserRelationshipEnterpriseService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
