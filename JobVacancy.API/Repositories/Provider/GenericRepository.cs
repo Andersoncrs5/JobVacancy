@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using IdGen;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
@@ -22,6 +23,12 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
     {
         return await _dbSet
             .AnyAsync(c => c.Id == Id);
+    }
+    
+    public async Task<int> CountByIdAsync(string Id)
+    {
+        return await _dbSet
+            .CountAsync(c => c.Id == Id);
     }
     
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -81,4 +88,23 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
     {
         await Context.SaveChangesAsync();
     }
+    
+    public async Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.SingleOrDefaultAsync(predicate);
+    }
+    
+    public async Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.Where(predicate).ToListAsync();
+    }
+
+    public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
+    {
+        if (predicate == null)
+            return await _dbSet.CountAsync();
+            
+        return await _dbSet.CountAsync(predicate);
+    }
+    
 }
