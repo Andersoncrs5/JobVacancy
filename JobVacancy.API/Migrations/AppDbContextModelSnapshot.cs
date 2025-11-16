@@ -421,6 +421,44 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Enterprises");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseFollowsUserEntity", b =>
+                {
+                    b.Property<string>("EnterpriseId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("WishReceiveNotifyByNewEndorsement")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByNewInteraction")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByNewPost")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByProfileUpdate")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("EnterpriseId", "UserId");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EnterpriseFollowsUser", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseIndustryEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -629,6 +667,8 @@ namespace JobVacancy.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("UserId", "EnterpriseId")
                         .IsUnique();
@@ -1413,6 +1453,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseFollowsUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("UsersFollowing")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("FollowedByEnterprises")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseIndustryEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -1802,6 +1861,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Navigation("Reviews");
 
+                    b.Navigation("UsersFollowing");
+
                     b.Navigation("Vacancies");
                 });
 
@@ -1839,6 +1900,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("FavoritePosts");
 
                     b.Navigation("FavoritePostsEnterprise");
+
+                    b.Navigation("FollowedByEnterprises");
 
                     b.Navigation("Followers");
 
