@@ -16,6 +16,7 @@ using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
 using JobVacancy.API.models.dtos.FollowerRelationshipUser;
+using JobVacancy.API.models.dtos.FollowerUserRelationshipEnterprise;
 using JobVacancy.API.models.dtos.IndicationUser;
 using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
@@ -37,6 +38,27 @@ public class Helper(
     HttpClient client
     )
 {
+    public async Task<FollowerUserRelationshipEnterpriseDto> AddUserFollowEnterprise(EnterpriseDto enterprise, UserResultTest userFollowed)
+    {
+        HttpResponseMessage message = await client.PostAsync($"/api/v1/FollowerUserRelationshipEnterprise/{enterprise.Id}/Toggle", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<FollowerUserRelationshipEnterpriseDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<FollowerUserRelationshipEnterpriseDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.UserId.Should().Be(userFollowed.User!.Id);
+        http.Data.EnterpriseId.Should().Be(enterprise.Id);
+        http.Data.WishReceiveNotifyByNewComment.Should().BeTrue();
+        http.Data.WishReceiveNotifyByNewPost.Should().BeTrue();
+        http.Data.WishReceiveNotifyByNewVacancy.Should().BeTrue();
+        http.Data.WishReceiveNotifyByNewInteraction.Should().BeFalse();
+        
+        return http.Data;
+    }
+    
     public async Task<FollowerRelationshipUserDto> CreateFollowerRelationshipUser(UserResultTest follower, UserResultTest followed)
     {
         HttpResponseMessage message = await client.PostAsync($"/api/v1/FollowerRelationshipUser/{followed.User!.Id}/Toggle", null);
