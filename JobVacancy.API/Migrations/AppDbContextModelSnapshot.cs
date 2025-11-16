@@ -595,6 +595,47 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("FollowerRelationshipUsers", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FollowerUserRelationshipEnterpriseEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("WishReceiveNotifyByNewComment")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByNewInteraction")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByNewPost")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WishReceiveNotifyByNewVacancy")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnterpriseId");
+
+                    b.HasIndex("UserId", "EnterpriseId")
+                        .IsUnique();
+
+                    b.ToTable("FollowerUserRelationshipEnterprise", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1471,6 +1512,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Follower");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.FollowerUserRelationshipEnterpriseEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
+                        .WithMany("FollowedEnterprise")
+                        .HasForeignKey("EnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("FollowingEnterprise")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enterprise");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.IndicationUserEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.UserEntity", "Endorsed")
@@ -1734,6 +1794,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Navigation("EmployeeInvitations");
 
+                    b.Navigation("FollowedEnterprise");
+
                     b.Navigation("IndustryLinks");
 
                     b.Navigation("Posts");
@@ -1781,6 +1843,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Following");
+
+                    b.Navigation("FollowingEnterprise");
 
                     b.Navigation("InvitationsEnterprise");
 

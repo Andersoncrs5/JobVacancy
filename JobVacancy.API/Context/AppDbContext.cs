@@ -36,6 +36,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<VacancySkillEntity> VacancySkillEntities { get; set; }
     public new DbSet<ApplicationVacancyEntity> ApplicationVacancies { get; set; }
     public new DbSet<FollowerRelationshipUserEntity> FollowerRelationshipUsers { get; set; }
+    public new DbSet<FollowerUserRelationshipEnterpriseEntity> FollowerUserRelationshipEnterpriseEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -74,6 +75,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<FollowerUserRelationshipEnterpriseEntity>(options =>
+        {
+            options.ToTable("FollowerUserRelationshipEnterprise");
+            options.HasKey(x => x.Id);
+            options.HasIndex(x => new { x.UserId, x.EnterpriseId }).IsUnique();
+
+            options.HasOne(x => x.Enterprise)
+                .WithMany(x => x.FollowedEnterprise)
+                .HasForeignKey(x => x.EnterpriseId)
+                .IsRequired();
+            
+            options.HasOne(x => x.User)
+                .WithMany(x => x.FollowingEnterprise)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+            
+            options.Property(x => x.WishReceiveNotifyByNewPost).IsRequired();
+            options.Property(x => x.WishReceiveNotifyByNewVacancy).IsRequired();
+            options.Property(x => x.WishReceiveNotifyByNewComment).IsRequired();
+            options.Property(x => x.WishReceiveNotifyByNewInteraction).IsRequired();
+        });
+        
         modelBuilder.Entity<FollowerRelationshipUserEntity>(options =>
         {
             options.ToTable("FollowerRelationshipUsers");
