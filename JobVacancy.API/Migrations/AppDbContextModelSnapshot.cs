@@ -423,20 +423,22 @@ namespace JobVacancy.API.Migrations
 
             modelBuilder.Entity("JobVacancy.API.models.entities.EnterpriseFollowsUserEntity", b =>
                 {
-                    b.Property<string>("EnterpriseId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Id")
+                    b.Property<string>("EnterpriseId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("WishReceiveNotifyByNewEndorsement")
                         .HasColumnType("boolean");
@@ -450,11 +452,14 @@ namespace JobVacancy.API.Migrations
                     b.Property<bool>("WishReceiveNotifyByProfileUpdate")
                         .HasColumnType("boolean");
 
-                    b.HasKey("EnterpriseId", "UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EnterpriseId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("EnterpriseId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("EnterpriseFollowsUser", (string)null);
                 });

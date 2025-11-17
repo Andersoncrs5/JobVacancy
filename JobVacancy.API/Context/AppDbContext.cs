@@ -79,7 +79,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         modelBuilder.Entity<EnterpriseFollowsUserEntity>(options =>
         {
             options.ToTable("EnterpriseFollowsUser");
-            options.HasKey(e => new { e.EnterpriseId, e.UserId });
+            options.HasIndex(e => new { e.EnterpriseId, e.UserId }).IsUnique();
             options.HasIndex(e => e.UserId);
             options.HasIndex(e => e.EnterpriseId);
 
