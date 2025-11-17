@@ -34,6 +34,7 @@ public interface IUnitOfWork: IDisposable
     IApplicationVacancyRepository ApplicationVacancyRepository { get; }
     IFollowerRelationshipUserRepository FollowerRelationshipUserRepository { get; }
     IFollowerUserRelationshipEnterpriseRepository FollowerUserRelationshipEnterpriseRepository { get; }
+    IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();

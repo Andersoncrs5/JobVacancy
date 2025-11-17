@@ -43,7 +43,8 @@ public class UnitOfWork(
     private VacancySkillRepository? _vacancySkillRepository;
     private ApplicationVacancyRepository? _applicationVacancyRepository;
     private FollowerRelationshipUserRepository? _followerRelationshipUserRepository;
-    public FollowerUserRelationshipEnterpriseRepository? _followerUserRelationshipEnterpriseRepository;
+    private FollowerUserRelationshipEnterpriseRepository? _followerUserRelationshipEnterpriseRepository;
+    private EnterpriseFollowsUserRepository? _enterpriseFollowsUserRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -100,6 +101,8 @@ public class UnitOfWork(
         => _followerRelationshipUserRepository ??= new FollowerRelationshipUserRepository(context);
     public IFollowerUserRelationshipEnterpriseRepository FollowerUserRelationshipEnterpriseRepository
         => _followerUserRelationshipEnterpriseRepository ??= new FollowerUserRelationshipEnterpriseRepository(context);
+    public IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository
+        =>  _enterpriseFollowsUserRepository ??= new EnterpriseFollowsUserRepository(context); 
     
     public async Task Commit() 
     {
