@@ -12,6 +12,7 @@ using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.EmployeeEnterprise;
 using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
+using JobVacancy.API.models.dtos.EnterpriseFollowsUser;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoritePost;
 using JobVacancy.API.models.dtos.FavoritePostEnterprise;
@@ -38,6 +39,26 @@ public class Helper(
     HttpClient client
     )
 {
+
+    public async Task<EnterpriseFollowsUserDto> AddEnterpriseFollowsUser(UserResultTest userToFollow, EnterpriseDto enterprise)
+    {
+        HttpResponseMessage message = await client.PostAsync($"/api/v1/EnterpriseFollowsUser/{userToFollow.User!.Id}", null);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<EnterpriseFollowsUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<EnterpriseFollowsUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.EnterpriseId.Should().Be(enterprise.Id);
+        http.Data.UserId.Should().Be(userToFollow.User.Id);
+        
+        return http.Data;
+    }
+    
     public async Task<FollowerUserRelationshipEnterpriseDto> AddUserFollowEnterprise(EnterpriseDto enterprise, UserResultTest userFollowed)
     {
         HttpResponseMessage message = await client.PostAsync($"/api/v1/FollowerUserRelationshipEnterprise/{enterprise.Id}/Toggle", null);
