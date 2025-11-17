@@ -28,12 +28,16 @@ public class EnterpriseController(
     [HttpDelete("{id:required}")]
     [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(ResponseHttp<object>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
     [Authorize(Roles = "ENTERPRISE_ROLE")]
     public async Task<IActionResult> Del(string id)
     {
         try
         {
+            string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Forbid();
+            
             EnterpriseEntity? entity = await enterpriseService.GetById(id);
             if (entity == null)
             {
@@ -41,6 +45,20 @@ public class EnterpriseController(
                 {
                     Code = StatusCodes.Status404NotFound,
                     Message = "Enterprise not found",
+                    Data = null,
+                    Status = false,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+            
+            if (entity.UserId != userId) 
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ResponseHttp<object>
+                {
+                    Code = StatusCodes.Status403Forbidden,
+                    Message = "You do not have permission to delete this enterprise",
                     Data = null,
                     Status = false,
                     Timestamp = DateTimeOffset.UtcNow,
