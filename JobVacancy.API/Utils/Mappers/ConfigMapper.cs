@@ -11,6 +11,7 @@ using JobVacancy.API.models.dtos.CommentPostUser;
 using JobVacancy.API.models.dtos.EmployeeEnterprise;
 using JobVacancy.API.models.dtos.EmployeeInvitation;
 using JobVacancy.API.models.dtos.Enterprise;
+using JobVacancy.API.models.dtos.EnterpriseFollowsUser;
 using JobVacancy.API.models.dtos.EnterpriseIndustry;
 using JobVacancy.API.models.dtos.FavoriteCommentPostEnterprise;
 using JobVacancy.API.models.dtos.FavoriteCommentPostUser;
@@ -166,6 +167,10 @@ public class ConfigMapper: Profile
         
         CreateMap<FollowerUserRelationshipEnterpriseDto, FollowerUserRelationshipEnterpriseEntity>();
         CreateMap<FollowerUserRelationshipEnterpriseEntity, FollowerUserRelationshipEnterpriseDto>();
+        
+        
+        CreateMap<EnterpriseFollowsUserDto, EnterpriseFollowsUserEntity>();
+        CreateMap<EnterpriseFollowsUserEntity, EnterpriseFollowsUserDto>();
         
         
     }
