@@ -35,6 +35,7 @@ public interface IUnitOfWork: IDisposable
     IFollowerRelationshipUserRepository FollowerRelationshipUserRepository { get; }
     IFollowerUserRelationshipEnterpriseRepository FollowerUserRelationshipEnterpriseRepository { get; }
     IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository { get; }
+    IReviewUserRepository ReviewUserRepository { get;  }
     IMapper Mapper { get; }
     
     Task Commit();

@@ -45,6 +45,7 @@ public class UnitOfWork(
     private FollowerRelationshipUserRepository? _followerRelationshipUserRepository;
     private FollowerUserRelationshipEnterpriseRepository? _followerUserRelationshipEnterpriseRepository;
     private EnterpriseFollowsUserRepository? _enterpriseFollowsUserRepository;
+    private ReviewUserRepository? _reviewUserRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -103,6 +104,8 @@ public class UnitOfWork(
         => _followerUserRelationshipEnterpriseRepository ??= new FollowerUserRelationshipEnterpriseRepository(context);
     public IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository
         =>  _enterpriseFollowsUserRepository ??= new EnterpriseFollowsUserRepository(context); 
+    public IReviewUserRepository ReviewUserRepository
+        =>  _reviewUserRepository ??= new ReviewUserRepository(context);
     
     public async Task Commit() 
     {
