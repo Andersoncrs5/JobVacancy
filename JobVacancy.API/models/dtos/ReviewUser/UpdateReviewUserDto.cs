@@ -21,4 +21,5 @@ public class UpdateReviewUserDto
     public int? RatingWorkLifeBalance { get; set; }
     
     public bool? IsAnonymous { get; set; }
+    public bool? Recommendation { get; set; }
 }
