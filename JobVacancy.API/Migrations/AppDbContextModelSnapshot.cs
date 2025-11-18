@@ -854,6 +854,66 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("review_enterprise", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ReviewUserEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ActorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
+                    b.Property<short?>("RatingCompensation")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingCulture")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingManagement")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short>("RatingOverall")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<short?>("RatingWorkLifeBalance")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<bool?>("Recommendation")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TargetUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetUserId");
+
+                    b.HasIndex("ActorId", "TargetUserId")
+                        .IsUnique();
+
+                    b.ToTable("ReviewUser", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.RoleEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1641,6 +1701,25 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ReviewUserEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "Actor")
+                        .WithMany("ReviewsWritten")
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "TargetUser")
+                        .WithMany("ReviewsReceived")
+                        .HasForeignKey("TargetUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("TargetUser");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.UserSkillEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.SkillEntity", "Skill")
@@ -1925,6 +2004,10 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("ReceivedEndors");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("ReviewsReceived");
+
+                    b.Navigation("ReviewsWritten");
 
                     b.Navigation("SentEndors");
 
