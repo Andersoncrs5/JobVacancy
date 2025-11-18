@@ -21,7 +21,7 @@ public class CreateReviewUserDto
     [Range(0 , 5)]   
     public int? RatingWorkLifeBalance { get; set; }
 
-    public bool? Recommendation { get; set; }
+    public bool Recommendation { get; set; }
     public bool IsAnonymous { get; set; }
     
     [ExistsUserById]
