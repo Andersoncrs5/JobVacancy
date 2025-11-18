@@ -25,6 +25,7 @@ using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
+using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.dtos.Vacancy;
@@ -168,10 +169,11 @@ public class ConfigMapper: Profile
         CreateMap<FollowerUserRelationshipEnterpriseDto, FollowerUserRelationshipEnterpriseEntity>();
         CreateMap<FollowerUserRelationshipEnterpriseEntity, FollowerUserRelationshipEnterpriseDto>();
         
-        
         CreateMap<EnterpriseFollowsUserDto, EnterpriseFollowsUserEntity>();
         CreateMap<EnterpriseFollowsUserEntity, EnterpriseFollowsUserDto>();
         
+        CreateMap<ReviewUserEntity, ReviewUserDto>();
+        CreateMap<CreateReviewUserDto, ReviewUserEntity>();
         
     }
 }
