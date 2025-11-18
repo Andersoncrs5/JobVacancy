@@ -61,6 +61,9 @@ public class ReviewUserService(IUnitOfWork uow): IReviewUserService
         if (dto.IsAnonymous.HasValue)
             review.IsAnonymous = dto.IsAnonymous.Value;
         
+        if (dto.Recommendation.HasValue)
+            review.Recommendation = dto.Recommendation.Value;
+        
         ReviewUserEntity update = await uow.ReviewUserRepository.Update(review);
         await uow.Commit();
         return update;
