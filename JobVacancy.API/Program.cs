@@ -235,6 +235,7 @@ builder.Services.AddScoped<IApplicationVacancyRepository, ApplicationVacancyRepo
 builder.Services.AddScoped<IFollowerRelationshipUserRepository, FollowerRelationshipUserRepository>();
 builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseRepository, FollowerUserRelationshipEnterpriseRepository>();
 builder.Services.AddScoped<IEnterpriseFollowsUserRepository, EnterpriseFollowsUserRepository>();
+builder.Services.AddScoped<IReviewUserRepository, ReviewUserRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -265,6 +266,7 @@ builder.Services.AddScoped<IApplicationVacancyService, ApplicationVacancyService
 builder.Services.AddScoped<IFollowerRelationshipUserService, FollowerRelationshipUserService>();
 builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseService, FollowerUserRelationshipEnterpriseService>();
 builder.Services.AddScoped<IEnterpriseFollowsUserService, EnterpriseFollowsUserService>();
+builder.Services.AddScoped<IReviewUserService, ReviewUserService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
