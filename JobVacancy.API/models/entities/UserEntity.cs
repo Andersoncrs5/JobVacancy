@@ -31,6 +31,8 @@ public class UserEntity: IdentityUser
     public ICollection<FollowerRelationshipUserEntity>? Following { get; set; }
     public ICollection<FollowerUserRelationshipEnterpriseEntity>? FollowingEnterprise { get; init; }
     public ICollection<EnterpriseFollowsUserEntity>? FollowedByEnterprises { get; init; }
+    public ICollection<ReviewUserEntity>? ReviewsWritten { get; set; }
+    public ICollection<ReviewUserEntity>? ReviewsReceived { get; set; }
     
     
 }
