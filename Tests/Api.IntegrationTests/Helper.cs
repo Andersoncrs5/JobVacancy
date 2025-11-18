@@ -24,6 +24,7 @@ using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
+using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
@@ -40,6 +41,50 @@ public class Helper(
     )
 {
 
+    public async Task<ReviewUserDto> CreateReviewToUser(UserResultTest target, UserResultTest actor)
+    {
+        
+        CreateReviewUserDto dto = new CreateReviewUserDto()
+        {
+            TargetUserId = target.User!.Id,
+            Content = string.Concat(Enumerable.Repeat("Content", 20)),
+            IsAnonymous = false,
+            RatingCompensation = 4,
+            RatingCulture = 4,
+            RatingManagement = 4,
+            RatingOverall = 4,
+            RatingWorkLifeBalance = 4,
+            Recommendation = true,
+            Title = string.Concat(Enumerable.Repeat("Title", 10)),
+        };
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", actor.Tokens!.Token!);
+
+        HttpResponseMessage message = await client.PostAsJsonAsync($"/api/v1/ReviewUser", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<ReviewUserDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<ReviewUserDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Status.Should().BeTrue();
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.IsAnonymous.Should().Be(dto.IsAnonymous);
+        http.Data.RatingCompensation.Should().Be(dto.RatingCompensation);
+        http.Data.RatingCulture.Should().Be(dto.RatingCulture);
+        http.Data.RatingManagement.Should().Be(dto.RatingManagement);
+        http.Data.RatingOverall.Should().Be(dto.RatingOverall);
+        http.Data.RatingWorkLifeBalance.Should().Be(dto.RatingWorkLifeBalance);
+        http.Data.Recommendation.Should().Be(dto.Recommendation);
+        http.Data.TargetUserId.Should().Be(dto.TargetUserId);
+        http.Data.Content.Should().Be(dto.Content);
+        
+        return http.Data;
+    }
+    
     public async Task<EnterpriseFollowsUserDto> AddEnterpriseFollowsUser(UserResultTest userToFollow, EnterpriseDto enterprise)
     {
         HttpResponseMessage message = await client.PostAsync($"/api/v1/EnterpriseFollowsUser/{userToFollow.User!.Id}", null);
