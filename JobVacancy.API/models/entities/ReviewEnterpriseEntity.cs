@@ -1,18 +1,9 @@
+using JobVacancy.API.models.entities.Base;
+
 namespace JobVacancy.API.models.entities;
 
-public class ReviewEnterpriseEntity: BaseEntity
+public class ReviewEnterpriseEntity: ReviewBase
 {
-    public string Title { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
-    public int RatingOverall { get; set; }
-    
-    public int? RatingCulture { get; set; }
-    public int? RatingCompensation { get; set; }
-    public int? RatingManagement { get; set; }
-    public int? RatingWorkLifeBalance { get; set; }
-    
-    public bool IsAnonymous { get; set; }
-    
     public string PositionId { get; set; } = string.Empty;
     public PositionEntity? Position { get; set; }
     
