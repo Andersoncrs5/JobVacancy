@@ -64,7 +64,7 @@ public class UserSkillService(IUnitOfWork uow, IMapper  mapper): IUserSkillServi
 
     public IQueryable<UserSkillEntity> Query()
     {
-        return uow.UserSkillRepository.ReturnIQueryable();
+        return uow.UserSkillRepository.Query();
     }
     
 }

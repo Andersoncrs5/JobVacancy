@@ -60,7 +60,7 @@ public class SkillService(IUnitOfWork uow, IMapper  mapper): ISkillService
 
     public IQueryable<SkillEntity> Query()
     {
-        return uow.SkillRepository.ReturnIQueryable();
+        return uow.SkillRepository.Query();
     }
     
 }

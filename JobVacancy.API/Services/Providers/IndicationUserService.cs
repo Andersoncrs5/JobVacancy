@@ -65,7 +65,7 @@ public class IndicationUserService(IUnitOfWork uow): IIndicationUserService
 
     public IQueryable<IndicationUserEntity> Query() 
     {
-        return uow.IndicationUserRepository.ReturnIQueryable();
+        return uow.IndicationUserRepository.Query();
     }
     
 }

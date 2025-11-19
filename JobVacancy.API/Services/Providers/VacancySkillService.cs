@@ -14,7 +14,7 @@ public class VacancySkillService(IUnitOfWork uow): IVacancySkillService
         => await uow.VacancySkillRepository.GetByVacancyIdAndSkillId(vacancyId, skillId);
     
     public IQueryable<VacancySkillEntity> Query()
-        => uow.VacancySkillRepository.ReturnIQueryable();
+        => uow.VacancySkillRepository.Query();
     
     public async Task<bool> ExistsById(string id)
         => await uow.VacancySkillRepository.ExistsById(id);

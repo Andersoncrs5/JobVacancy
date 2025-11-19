@@ -38,7 +38,7 @@ public class IndustryService(IUnitOfWork uow, IMapper mapper): IIndustryService
 
     public IQueryable<IndustryEntity> GetIQueryable()
     {
-        return uow.IndustryRepository.ReturnIQueryable();
+        return uow.IndustryRepository.Query();
     }
 
     public async Task<bool> ExistsByName(string name)

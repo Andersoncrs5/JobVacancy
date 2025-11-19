@@ -21,7 +21,7 @@ public class VacancyService(IUnitOfWork uow): IVacancyService
     }
 
     public IQueryable<VacancyEntity> Query()
-        => uow.VacancyRepository.ReturnIQueryable();
+        => uow.VacancyRepository.Query();
     
     public async Task<VacancyEntity> Create(CreateVacancyDto dto, string enterpriseId)
     {

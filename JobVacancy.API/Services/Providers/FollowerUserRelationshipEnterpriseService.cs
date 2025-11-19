@@ -20,7 +20,7 @@ public class FollowerUserRelationshipEnterpriseService(IUnitOfWork uow): IFollow
         => await uow.FollowerUserRelationshipEnterpriseRepository.GetByIdAsync(id);
 
     public IQueryable<FollowerUserRelationshipEnterpriseEntity> Query()
-        => uow.FollowerUserRelationshipEnterpriseRepository.ReturnIQueryable();
+        => uow.FollowerUserRelationshipEnterpriseRepository.Query();
     
     public async Task Delete(FollowerUserRelationshipEnterpriseEntity entity)
     {

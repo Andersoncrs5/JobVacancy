@@ -15,7 +15,7 @@ public class FollowerRelationshipUserService(IUnitOfWork uow): IFollowerRelation
         => await uow.FollowerRelationshipUserRepository.GetByFollowerIdAndFollowedId(followerId, followedId);
 
     public IQueryable<FollowerRelationshipUserEntity> Query()
-        => uow.FollowerRelationshipUserRepository.ReturnIQueryable();
+        => uow.FollowerRelationshipUserRepository.Query();
 
     public async Task<FollowerRelationshipUserEntity?> GetById(string id)
         => await uow.FollowerRelationshipUserRepository.GetByIdAsync(id);

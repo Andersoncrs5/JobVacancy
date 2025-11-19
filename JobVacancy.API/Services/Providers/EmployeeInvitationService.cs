@@ -118,7 +118,7 @@ public class EmployeeInvitationService(IUnitOfWork uow, IMapper mapper): IEmploy
 
     public IQueryable<EmployeeInvitationEntity> Query()
     {
-        return uow.EmployeeInvitationRepository.ReturnIQueryable();
+        return uow.EmployeeInvitationRepository.Query();
     }
     
 }

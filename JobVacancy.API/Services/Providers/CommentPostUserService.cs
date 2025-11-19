@@ -37,7 +37,7 @@ public class CommentPostUserService(IUnitOfWork work, IMapper mapper): ICommentP
 
     public IQueryable<CommentPostUserEntity> Query()
     {
-        return work.CommentPostUserRepository.ReturnIQueryable();
+        return work.CommentPostUserRepository.Query();
     }
 
     public async Task<CommentPostUserEntity> Update(CommentPostUserEntity comment, UpdateCommentPostUserDto dto)

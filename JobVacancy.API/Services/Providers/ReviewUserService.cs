@@ -17,7 +17,7 @@ public class ReviewUserService(IUnitOfWork uow): IReviewUserService
         => await uow.ReviewUserRepository.ExistsByActorIdAndTargetId(actorId, targetId);
     
     public IQueryable<ReviewUserEntity> Query()
-        => uow.ReviewUserRepository.ReturnIQueryable();
+        => uow.ReviewUserRepository.Query();
 
     public async Task Delete(ReviewUserEntity review)
     {

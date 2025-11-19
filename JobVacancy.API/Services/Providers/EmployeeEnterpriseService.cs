@@ -120,7 +120,7 @@ public class EmployeeEnterpriseService(IUnitOfWork uow): IEmployeeEnterpriseServ
 
     public IQueryable<EmployeeEnterpriseEntity> Query()
     {
-        return uow.EmployeeEnterpriseRepository.ReturnIQueryable();
+        return uow.EmployeeEnterpriseRepository.Query();
     }
     
 }

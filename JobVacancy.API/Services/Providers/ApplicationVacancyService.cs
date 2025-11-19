@@ -21,7 +21,7 @@ public class ApplicationVacancyService(IUnitOfWork uow): IApplicationVacancyServ
         => await uow.ApplicationVacancyRepository.GetByVacancyIdAndUserId(vacancyId, userId);
     
     public IQueryable<ApplicationVacancyEntity> Query()
-        => uow.ApplicationVacancyRepository.ReturnIQueryable();
+        => uow.ApplicationVacancyRepository.Query();
 
     public async Task Delete(ApplicationVacancyEntity app)
     {

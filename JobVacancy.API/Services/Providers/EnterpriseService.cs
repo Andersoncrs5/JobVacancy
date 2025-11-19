@@ -40,7 +40,7 @@ public class EnterpriseService(IUnitOfWork uow, IMapper mapper): IEnterpriseServ
 
     public IQueryable<EnterpriseEntity> Query()
     {
-        return uow.EnterpriseRepository.ReturnIQueryable();
+        return uow.EnterpriseRepository.Query();
     }
 
     public async Task<EnterpriseEntity> CreateAsync(CreateEnterpriseDto dto, string userId)

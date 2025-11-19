@@ -37,7 +37,7 @@ public class CategoryService(IUnitOfWork uow, IMapper mapper): ICategoryService
 
     public  IQueryable<CategoryEntity> GetIQueryable()
     {
-        return uow.CategoryRepository.ReturnIQueryable();
+        return uow.CategoryRepository.Query();
     }
 
     public async Task<bool> ExistsByName(string name)

@@ -9,8 +9,6 @@ kubectl port-forward service/kafka-job-vacancy-kafka-bootstrap 9092:9092 -n kafk
 sudo systemctl start k3s
 
 
-
-
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:

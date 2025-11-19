@@ -35,7 +35,7 @@ public class PostUserService(IUnitOfWork uow, IMapper mapper): IPostUserService
     
     public IQueryable<PostUserEntity> Query() 
     {
-        return uow.PostUserRepository.ReturnIQueryable();
+        return uow.PostUserRepository.Query();
     }
 
     public async Task<PostUserEntity> Update(UpdatePostUserDto dto, PostUserEntity postUser) 

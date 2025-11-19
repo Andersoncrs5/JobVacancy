@@ -30,7 +30,7 @@ public class FavoritePostEnterpriseService(IUnitOfWork uow, IMapper mapper): IFa
     
     public IQueryable<FavoritePostEnterpriseEntity> Query()
     {
-        return uow.FavoritePostEnterpriseRepository.ReturnIQueryable();
+        return uow.FavoritePostEnterpriseRepository.Query();
     }
     
     public async Task<FavoritePostEnterpriseEntity> Create(string userId, string postId)

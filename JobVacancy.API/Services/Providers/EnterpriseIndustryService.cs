@@ -56,7 +56,7 @@ public class EnterpriseIndustryService(IUnitOfWork uow, IMapper mapper): IEnterp
 
     public IQueryable<EnterpriseIndustryEntity> GetQuery()
     {
-        return uow.EnterpriseIndustryRepository.ReturnIQueryable();
+        return uow.EnterpriseIndustryRepository.Query();
     }
     
     public async Task<EnterpriseIndustryEntity> UpdateSimple(EnterpriseIndustryEntity entity)

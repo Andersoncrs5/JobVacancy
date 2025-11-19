@@ -20,7 +20,7 @@ public class EnterpriseFollowsUserService(IUnitOfWork uow): IEnterpriseFollowsUs
         => await uow.EnterpriseFollowsUserRepository.GetByIdAsync(id);
     
     public IQueryable<EnterpriseFollowsUserEntity> Query()
-        => uow.EnterpriseFollowsUserRepository.ReturnIQueryable();
+        => uow.EnterpriseFollowsUserRepository.Query();
 
     public async Task Delete(EnterpriseFollowsUserEntity entity)
     {

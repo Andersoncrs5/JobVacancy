@@ -44,7 +44,7 @@ public class FavoritePostUserService(IUnitOfWork uow, IMapper mapper): IFavorite
 
     public IQueryable<FavoritePostUserEntity> Query()
     {
-        return uow.FavoritePostUserRepository.ReturnIQueryable();
+        return uow.FavoritePostUserRepository.Query();
     }
 
     public async Task<FavoritePostUserEntity> Create(string userId, string postUserId)

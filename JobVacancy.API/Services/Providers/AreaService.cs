@@ -49,7 +49,7 @@ public class AreaService(IUnitOfWork uow): IAreaService
 
     public IQueryable<AreaEntity> Query()
     {
-        return uow.AreaRepository.ReturnIQueryable();
+        return uow.AreaRepository.Query();
     }
     
 }

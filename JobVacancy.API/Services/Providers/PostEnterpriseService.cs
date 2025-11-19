@@ -35,7 +35,7 @@ public class PostEnterpriseService(IUnitOfWork uow, IMapper mapper): IPostEnterp
     
     public IQueryable<PostEnterpriseEntity> Query() 
     {
-        return uow.PostEnterpriseRepository.ReturnIQueryable();
+        return uow.PostEnterpriseRepository.Query();
     }
 
     public async Task<PostEnterpriseEntity> Update(UpdatePostEnterpriseDto dto, PostEnterpriseEntity postEnterprise) 

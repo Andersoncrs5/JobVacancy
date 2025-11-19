@@ -38,7 +38,7 @@ public class ReviewEnterpriseService(IUnitOfWork uow): IReviewEnterpriseService
 
     public IQueryable<ReviewEnterpriseEntity> Query()
     {
-        return uow.ReviewEnterpriseRepository.ReturnIQueryable();
+        return uow.ReviewEnterpriseRepository.Query();
     }
 
     public async Task<ReviewEnterpriseEntity> Update(UpdateReviewEnterpriseDto dto, ReviewEnterpriseEntity review)
