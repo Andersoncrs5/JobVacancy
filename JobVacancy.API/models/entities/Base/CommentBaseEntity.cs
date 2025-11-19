@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace JobVacancy.API.models.entities.Base;
 
 public class CommentBaseEntity: BaseEntity
@@ -8,10 +10,10 @@ public class CommentBaseEntity: BaseEntity
     public int? Depth { get; set; }
     public string? ParentCommentId { get; set; }
 
-    public string UserId { get; set; } = string.Empty;
+    [MaxLength(450)] public required string UserId { get; set; } 
 
-    public virtual UserEntity? User { get; set; }
-    public virtual CommentBaseEntity? ParentComment { get; set; }
-    public virtual ICollection<CommentBaseEntity> Replies { get; set; } = new List<CommentBaseEntity>();
-    public virtual ICollection<FavoriteCommentEntity> FavoriteCommentEntities { get; set; } = new List<FavoriteCommentEntity>();
+    public UserEntity? User { get; set; }
+    public CommentBaseEntity? ParentComment { get; set; }
+    public ICollection<CommentBaseEntity> Replies { get; set; } = new List<CommentBaseEntity>();
+    public ICollection<FavoriteCommentEntity> FavoriteCommentEntities { get; set; } = new List<FavoriteCommentEntity>();
 }
