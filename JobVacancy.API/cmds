@@ -4,5 +4,22 @@ dotnet ef database update --project Api/Api.csproj --startup-project Api/Api.csp
 
 k port-forward service/postgres-headless 5432:5432
 k port-forward service/redis-cluster 6379:6379
+kubectl port-forward service/kafka-job-vacancy-kafka-bootstrap 9092:9092 -n kafka
 
 sudo systemctl start k3s
+
+
+
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: my-topic
+  labels:
+    strimzi.io/cluster: my-kraft-cluster
+spec:
+  partitions: 5
+  replicas: 3
+  config:
+    retention.ms: 604800000
+    
