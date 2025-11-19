@@ -22,6 +22,7 @@ public class CategoryController(
     ICategoryService categoryService,
     IRolesService rolesService,
     IConfiguration configuration,
+    IRedisService redisService,
     IMapper mapper
     ) : Controller
 {
@@ -87,6 +88,21 @@ public class CategoryController(
     {
         try
         {
+            CategoryEntity? exists = await redisService.GetAsync<CategoryEntity>(id);
+            if (exists != null) 
+            {
+                return StatusCode(StatusCodes.Status200OK, new ResponseHttp<CategoryDto>
+                {
+                    Code = 200,
+                    Data = mapper.Map<CategoryDto>(exists),
+                    Message = "Category found with success.",
+                    Status = true,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
             CategoryEntity? category = await categoryService.GetByIdAsync(id);
             if (category is null)
             {
@@ -102,7 +118,7 @@ public class CategoryController(
                 });
             }
             
-            CategoryDto dto = mapper.Map<CategoryDto>(category);
+            await redisService.CreateAsync(id, category);
             
             return StatusCode(StatusCodes.Status200OK, new ResponseHttp<CategoryDto>
             {

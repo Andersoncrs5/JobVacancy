@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using StackExchange.Redis;
 
 namespace JobVacancy.API.Controllers;
 
@@ -18,6 +19,7 @@ namespace JobVacancy.API.Controllers;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AreaController(
     IAreaService areaService,
+    IRedisService redisService,
     IMapper mapper
 ) : Controller
 {
@@ -47,6 +49,22 @@ public class AreaController(
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
     public async Task<IActionResult> Get(string id)
     {
+        AreaEntity? exists = await redisService.GetAsync<AreaEntity>((RedisKey) id);
+
+        if (exists != null) 
+        {
+            return StatusCode(StatusCodes.Status200OK, new ResponseHttp<AreaDto>
+            {
+                Data = mapper.Map<AreaDto>(exists),
+                Message = "Area found.",
+                Status = true,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1,
+                Code = StatusCodes.Status200OK
+            });
+        }
+        
         AreaEntity? area = await areaService.GetById(id);
         if (area == null) 
         {
@@ -62,6 +80,8 @@ public class AreaController(
             });
         }
 
+        await redisService.CreateAsync((RedisKey) id, area);
+        
         return StatusCode(StatusCodes.Status200OK, new ResponseHttp<AreaDto>
         {
             Data = mapper.Map<AreaDto>(area),

@@ -8,6 +8,7 @@ using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace JobVacancy.API.Controllers;
 
@@ -18,7 +19,8 @@ namespace JobVacancy.API.Controllers;
 public class PositionController(
     IConfiguration configuration,
     IPositionService positionService,
-    IMapper mapper
+    IMapper mapper,
+    IRedisService redisService
 ) : Controller
 {
 
@@ -66,6 +68,22 @@ public class PositionController(
     {
         try
         {
+            PositionEntity? exists = await redisService.GetAsync<PositionEntity>((RedisKey) id);
+
+            if (exists != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ResponseHttp<PositionDto>
+                {
+                    Data = mapper.Map<PositionDto>(exists),
+                    Message = "Position found with success.",
+                    Status = true,
+                    Code = StatusCodes.Status200OK,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
             PositionEntity? position = await positionService.GetById(id);
 
             if (position == null) 
@@ -82,6 +100,8 @@ public class PositionController(
                 });
             }
 
+            await redisService.CreateAsync((RedisKey) position.Id, position);
+            
             return StatusCode(StatusCodes.Status200OK, new ResponseHttp<PositionDto>
             {
                 Data = mapper.Map<PositionDto>(position),

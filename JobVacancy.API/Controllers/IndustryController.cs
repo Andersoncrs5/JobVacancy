@@ -24,6 +24,7 @@ public class IndustryController(
     IIndustryService industryService,
     IRolesService rolesService,
     IConfiguration configuration,
+    IRedisService redisService,
     IMapper mapper
     ) : Controller
 {
@@ -87,6 +88,21 @@ public class IndustryController(
     {
         try
         {
+            IndustryEntity? exists = await redisService.GetAsync<IndustryEntity>(id);
+            if (exists != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ResponseHttp<IndustryDto>
+                {
+                    Code = 200,
+                    Data = mapper.Map<IndustryDto>(exists),
+                    Message = "Category found with success.",
+                    Status = true,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
             IndustryEntity? industry = await industryService.GetByIdAsync(id);
             if (industry is null)
             {
@@ -102,12 +118,12 @@ public class IndustryController(
                 });
             }
             
-            IndustryDto dto = mapper.Map<IndustryDto>(industry);
+            await redisService.CreateAsync(industry.Id, industry);
             
             return StatusCode(StatusCodes.Status200OK, new ResponseHttp<IndustryDto>
             {
                 Code = 200,
-                Data = dto,
+                Data = mapper.Map<IndustryDto>(industry),
                 Message = "Category found with success.",
                 Status = true,
                 Timestamp = DateTimeOffset.UtcNow,

@@ -21,6 +21,7 @@ public class SkillController(
     ISkillService skillService,
     IRolesService rolesService,
     IConfiguration configuration,
+    IRedisService redisService,
     IMapper mapper
 ) : Controller
 {
@@ -118,6 +119,21 @@ public class SkillController(
     {
         try
         {
+            SkillEntity? exists = await redisService.GetAsync<SkillEntity>(id);
+            if (exists != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ResponseHttp<SkillDto>
+                {
+                    Data = mapper.Map<SkillDto>(exists),
+                    Code = StatusCodes.Status200OK,
+                    Message = "Skill found with success.",
+                    Status = true,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    TraceId = HttpContext.TraceIdentifier,
+                    Version = 1
+                });
+            }
+
             SkillEntity? skill = await skillService.GetById(id);
             if (skill == null)
             {
@@ -133,6 +149,8 @@ public class SkillController(
                 });
             }
 
+            await redisService.CreateAsync(id, skill);
+            
             return StatusCode(StatusCodes.Status200OK, new ResponseHttp<SkillDto>
             {
                 Data = mapper.Map<SkillDto>(skill),
