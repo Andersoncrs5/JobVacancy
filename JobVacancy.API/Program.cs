@@ -251,6 +251,7 @@ builder.Services.AddScoped<IFollowerRelationshipUserRepository, FollowerRelation
 builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseRepository, FollowerUserRelationshipEnterpriseRepository>();
 builder.Services.AddScoped<IEnterpriseFollowsUserRepository, EnterpriseFollowsUserRepository>();
 builder.Services.AddScoped<IReviewUserRepository, ReviewUserRepository>();
+builder.Services.AddScoped<IUserEvaluationRepository, UserEvaluationRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
