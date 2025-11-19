@@ -8,5 +8,5 @@ public class PositionEntity: BaseEntity
     public ICollection<EmployeeInvitationEntity>?  EmployeeInvitations { get; set; }
     public ICollection<EmployeeEnterpriseEntity>? EmployeeEnterprise { get; set; }
     public ICollection<ReviewEnterpriseEntity>? Reviews { get; set; }
-    
+    public ICollection<UserEvaluationEntity>? Evaluations { get; init; }
 }

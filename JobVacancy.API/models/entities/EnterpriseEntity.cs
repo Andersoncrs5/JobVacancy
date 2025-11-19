@@ -19,4 +19,5 @@ public class EnterpriseEntity: BaseEntity
     public ICollection<VacancyEntity>? Vacancies { get; set; }
     public ICollection<FollowerUserRelationshipEnterpriseEntity>? FollowedEnterprise { get; init; }
     public ICollection<EnterpriseFollowsUserEntity>? UsersFollowing { get; init; }
+    public ICollection<UserEvaluationEntity>? EvaluationsSent { get; init; }
 }
