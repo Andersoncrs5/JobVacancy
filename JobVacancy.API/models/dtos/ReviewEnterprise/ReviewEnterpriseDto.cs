@@ -1,22 +1,12 @@
+using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Enterprise;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.Users;
 
 namespace JobVacancy.API.models.dtos.ReviewEnterprise;
 
-public class ReviewEnterpriseDto: BaseDto
+public class ReviewEnterpriseDto: ReviewBaseDto
 {
-    public string Title { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
-    public int RatingOverall { get; set; }
-    
-    public int? RatingCulture { get; set; }
-    public int? RatingCompensation { get; set; }
-    public int? RatingManagement { get; set; }
-    public int? RatingWorkLifeBalance { get; set; }
-    
-    public bool IsAnonymous { get; set; }
-    
     public string PositionId { get; set; } = string.Empty;
     public PositionDto? Position { get; set; }
     

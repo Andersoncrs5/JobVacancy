@@ -1,20 +1,12 @@
+using JobVacancy.API.models.dtos.Base;
 using JobVacancy.API.models.dtos.Users;
 
 namespace JobVacancy.API.models.dtos.ReviewUser;
 
-public class ReviewUserDto: BaseDto
+public class ReviewUserDto: ReviewBaseDto
 {
-    public string Title { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
-    public int RatingOverall { get; set; }
-    
-    public int? RatingCulture { get; set; }
-    public int? RatingCompensation { get; set; }
-    public int? RatingManagement { get; set; }
-    public int? RatingWorkLifeBalance { get; set; }
 
     public bool? Recommendation { get; set; }
-    public bool IsAnonymous { get; set; }
 
     public required string ActorId { get; set; }
     public UserDto? Actor { get; set; }
