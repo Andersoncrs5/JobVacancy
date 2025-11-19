@@ -39,6 +39,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<FollowerUserRelationshipEnterpriseEntity> FollowerUserRelationshipEnterpriseEntities { get; set; }
     public new DbSet<EnterpriseFollowsUserEntity> EnterpriseFollowsUserEntities { get; set; }
     public new DbSet<ReviewUserEntity> ReviewUsers { get; set; }
+    public new DbSet<UserEvaluationEntity> UserEvaluationEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -77,6 +78,54 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<UserEvaluationEntity>(options =>
+        {
+            options.ToTable("UserEvaluations"); 
+            
+            options.HasKey(x => x.Id);
+            
+            options.Property(x => x.Title).HasMaxLength(300).IsRequired();
+            options.Property(x => x.Content).HasMaxLength(800).IsRequired();
+            options.Property(x => x.IsAnonymous).IsRequired();
+
+            options.Property(x => x.RatingOverall).HasColumnType("SMALLINT").IsRequired();
+            options.Property(x => x.RatingCulture).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingCompensation).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingManagement).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingWorkLifeBalance).HasColumnType("SMALLINT").IsRequired(false);
+            
+            options.Property(x => x.RecommendationTone).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingProfessionalism).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingSkillMatch).HasColumnType("SMALLINT").IsRequired(false);
+            options.Property(x => x.RatingTeamwork).HasColumnType("SMALLINT").IsRequired(false);
+            
+            options.Property(x => x.EmploymentStatus)
+                   .HasConversion<string>()
+                   .IsRequired();
+
+            options.HasOne(x => x.Enterprise)
+                .WithMany(e => e.EvaluationsSent)
+                .HasForeignKey(x => x.EnterpriseId)
+                .IsRequired();
+
+            options.HasOne(x => x.TargetUser)
+                .WithMany(u => u.EvaluationsReceived)
+                .HasForeignKey(x => x.TargetUserId)
+                .IsRequired();
+
+            options.HasOne(x => x.ReviewerUser)
+                .WithMany(u => u.EvaluationsSent)
+                .HasForeignKey(x => x.ReviewerUserId)
+                .IsRequired(false);
+
+            options.HasOne(x => x.Position)
+                .WithMany(p => p.Evaluations)
+                .HasForeignKey(x => x.PositionId)
+                .IsRequired();
+
+            options.HasIndex(x => new { x.EnterpriseId, x.TargetUserId }).IsUnique();
+        });
+        
         modelBuilder.Entity<ReviewUserEntity>(options =>
         {
             options.ToTable("ReviewUser");
