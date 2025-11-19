@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 maxRetryDelay: TimeSpan.FromSeconds(5),
                 errorCodesToAdd: null);
         });
+});
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var config = builder.Configuration["RedisConfiguration:ConnectionString"]
+                 ?? throw new Exception("Redis connection string is missing.");
+
+    return ConnectionMultiplexer.Connect(config);
+});
+
+builder.Services.AddScoped<IDatabase>(sp =>
+{
+    var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+    return multiplexer.GetDatabase();
 });
 
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
@@ -267,6 +282,7 @@ builder.Services.AddScoped<IFollowerRelationshipUserService, FollowerRelationshi
 builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseService, FollowerUserRelationshipEnterpriseService>();
 builder.Services.AddScoped<IEnterpriseFollowsUserService, EnterpriseFollowsUserService>();
 builder.Services.AddScoped<IReviewUserService, ReviewUserService>();
+builder.Services.AddScoped<IRedisService, RedisService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
