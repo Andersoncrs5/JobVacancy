@@ -10,4 +10,7 @@ public class UserEvaluationRepository(AppDbContext ctx) : GenericRepository<User
 {
     public async Task<bool> ExistsByEnterpriseIdAndTargetUserId(string enterpriseId, string targetUserId)
         => await ctx.UserEvaluationEntities.AnyAsync(x => x.EnterpriseId == enterpriseId && x.TargetUserId == targetUserId);
+    
+    public async Task<UserEvaluationEntity?> GetByEnterpriseIdAndTargetUserId(string enterpriseId, string targetUserId)
+        => await ctx.UserEvaluationEntities.FirstOrDefaultAsync(x => x.EnterpriseId == enterpriseId && x.TargetUserId == targetUserId);
 }
