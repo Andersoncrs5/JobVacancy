@@ -59,7 +59,7 @@ public class PositionService(IUnitOfWork uow): IPositionService
 
     public IQueryable<PositionEntity> Query()
     {
-        return uow.PositionRepository.ReturnIQueryable();
+        return uow.PositionRepository.Query();
     }
     
 }
