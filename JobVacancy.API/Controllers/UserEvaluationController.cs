@@ -3,6 +3,8 @@ using AutoMapper;
 using JobVacancy.API.models.dtos.UserEvaluation;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.UserEvaluation;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +21,7 @@ public class UserEvaluationController(
     IUserEvaluationService userEvaluationService,
     IEnterpriseService enterpriseService,
     IEmployeeEnterpriseService employeeEnterpriseService,
+    IPositionService positionService,
     IMapper mapper
     ): Controller
 {
@@ -101,6 +104,7 @@ public class UserEvaluationController(
     }
 
     [HttpGet("{id:required}")]
+    [Authorize(Roles = "ENTERPRISE_ROLE")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<UserEvaluationDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
     public async Task<IActionResult> Get(string id)
@@ -179,6 +183,87 @@ public class UserEvaluationController(
         });
     }
     
+    [HttpPatch("{id:required}")]
+    [Authorize(Roles = "ENTERPRISE_ROLE")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<UserEvaluationDto>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> Patch(string id, [FromBody] UpdateUserEvaluationDto dto)
+    {
+        string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        EnterpriseEntity? enterprise = await enterpriseService.GetByUserId(userId);
+
+        if (enterprise == null) return Forbid();
+        
+        UserEvaluationEntity? evaluation = await userEvaluationService.GetById(id);
+        
+        if (evaluation == null) 
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Data = null,
+                Message = "Review not found",
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+
+        if (evaluation.EnterpriseId != enterprise.Id) return Forbid();
+
+        if (
+            !string.IsNullOrWhiteSpace(dto.PositionId) && 
+            evaluation.PositionId != dto.PositionId &&
+            !await positionService.ExistsById(dto.PositionId)
+            )
+        {
+            return NotFound(new ResponseHttp<object>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Data = null,
+                Message = "Position not found",
+                Status = false,
+                Timestamp = DateTimeOffset.UtcNow,
+                TraceId = HttpContext.TraceIdentifier,
+                Version = 1
+            });
+        }
+
+        UserEvaluationEntity update = await userEvaluationService.Update(dto, evaluation);
+
+        return StatusCode(StatusCodes.Status200OK, new ResponseHttp<UserEvaluationDto>
+        {
+            Data = mapper.Map<UserEvaluationDto>(update),
+            Code = StatusCodes.Status200OK,
+            Message = "Review updated with success.",
+            Status = true,
+            Timestamp = DateTimeOffset.UtcNow,
+            TraceId = HttpContext.TraceIdentifier,
+            Version = 1
+        });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<UserEvaluationDto>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ResponseHttp<object>))]
+    public async Task<IActionResult> GetAll([FromQuery] UserEvaluationFilterParams filter)
+    {
+        IQueryable<UserEvaluationEntity> iQueryable = userEvaluationService.Query();
+        IQueryable<UserEvaluationEntity> appliedFilter = UserEvaluationFilterQuery.ApplyFilter(iQueryable, filter);
+        PaginatedList<UserEvaluationEntity> paginatedList = await PaginatedList<UserEvaluationEntity>.CreateAsync(
+            source: appliedFilter,
+            pageSize: filter.PageSize,
+            pageIndex: filter.PageNumber
+        );
     
+        Page<UserEvaluationDto> dtos = mapper.Map<Page<UserEvaluationDto>>(paginatedList);
+    
+        return Ok(dtos);
+    }
     
 }
