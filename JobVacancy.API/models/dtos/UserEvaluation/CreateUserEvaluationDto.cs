@@ -29,13 +29,8 @@ public class CreateUserEvaluationDto
     
     public EmploymentTypeEnum EmploymentStatus { get; set; } 
     
-    [ExistsPosition]
-    public required string EnterpriseId { get; set; }
-    
-    [ExistsPosition] 
+    [ExistsUserById] 
     public required string TargetUserId { get; set; }
-    
-    public string? ReviewerUserId { get; set; }
     
     [ExistsPosition]
     public string PositionId {get; set;} = string.Empty;
