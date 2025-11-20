@@ -7,21 +7,22 @@ namespace JobVacancy.API.Services.Providers;
 
 public class UserContentReactionService(IUnitOfWork uow): IUserContentReactionService
 {
+    public IQueryable<UserContentReactionEntity> Query()
+        => uow.UserContentReactionRepository.Query();
+    
     public async Task<bool> ExistsByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     )
-        => await uow.UserContentReactionRepository.ExistsByUserIdAndContentIdAndReaction(userId, contentId, reactionType, targetType);
+        => await uow.UserContentReactionRepository.ExistsByUserIdAndContentIdAndReaction(userId, contentId, targetType);
     
     public async Task<UserContentReactionEntity?> GetByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     )
-        => await uow.UserContentReactionRepository.GetByUserIdAndContentIdAndReaction(userId, contentId, reactionType, targetType);
+        => await uow.UserContentReactionRepository.GetByUserIdAndContentIdAndReaction(userId, contentId, targetType);
 
     public async Task<bool> ExistsById(string id) 
         => await uow.UserContentReactionRepository.ExistsById(id);
