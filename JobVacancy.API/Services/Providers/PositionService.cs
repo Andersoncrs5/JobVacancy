@@ -12,6 +12,9 @@ public class PositionService(IUnitOfWork uow): IPositionService
         return await uow.PositionRepository.GetByIdAsync(id);
     }
 
+    public async Task<PositionEntity?> GetByIdInCache(string id)
+        => await uow.PositionRepository.GetByIdInCache(id);
+
     public async Task<bool> ExistsByName(string name)
     {
         return await uow.PositionRepository.ExistsByName(name);
