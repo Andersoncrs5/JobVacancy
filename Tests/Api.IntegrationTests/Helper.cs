@@ -26,6 +26,7 @@ using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
+using JobVacancy.API.models.dtos.UserContentReaction;
 using JobVacancy.API.models.dtos.UserEvaluation;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
@@ -41,6 +42,35 @@ public class Helper(
     HttpClient client
     )
 {
+
+    public async Task<UserContentReactionDto> ReactionTo(string contentId, ReactionTypeEnum type, ReactionTargetEnum target, HttpStatusCode code)
+    {
+        CreateUserContentReactionDto dto = new CreateUserContentReactionDto
+        {
+            ContentId = contentId,
+            ReactionType = type,
+            TargetType = target
+        };
+        
+        HttpResponseMessage message = await client.PostAsJsonAsync($"/api/v1/UserContentReaction", dto);
+        message.StatusCode.Should().Be(code);
+
+        ResponseHttp<UserContentReactionDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserContentReactionDto>>();
+        
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) code);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeTrue();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.CommentUserId.Should().Be(dto.ContentId);
+        http.Data.ReactionType.Should().Be(dto.ReactionType);
+        http.Data.TargetType.Should().Be(dto.TargetType);
+        
+        return http.Data;
+    }
+    
 
     public async Task<UserEvaluationDto> CreateUserEvaluation(UserResultTest userGuest, PositionDto positionDto)
     {
