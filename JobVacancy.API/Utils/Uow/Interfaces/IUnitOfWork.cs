@@ -37,6 +37,8 @@ public interface IUnitOfWork: IDisposable
     IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository { get; }
     IReviewUserRepository ReviewUserRepository { get; }
     IUserEvaluationRepository UserEvaluationRepository { get; }
+    IUserContentReactionRepository UserContentReactionRepository { get; }
+
     IMapper Mapper { get; }
     
     Task Commit();
