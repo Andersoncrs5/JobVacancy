@@ -284,6 +284,8 @@ builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseService, FollowerU
 builder.Services.AddScoped<IEnterpriseFollowsUserService, EnterpriseFollowsUserService>();
 builder.Services.AddScoped<IReviewUserService, ReviewUserService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
+builder.Services.AddScoped<IUserEvaluationService, UserEvaluationService>();
+
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
