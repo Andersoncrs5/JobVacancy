@@ -41,6 +41,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<ReviewUserEntity> ReviewUsers { get; set; }
     public new DbSet<UserEvaluationEntity> UserEvaluationEntities { get; set; }
     public new DbSet<UserContentReactionEntity> UserContentReactionEntities { get; set; }
+    public new DbSet<PostUserMetricsEntity> PostUserMetricsEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -79,6 +80,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PostUserMetricsEntity>(options =>
+        {
+            options.ToTable("PostUserMetrics");
+            options.HasKey(x => x.Id);
+
+            options.Property(x => x.LikeCount).HasDefaultValue(0).IsRequired();
+            options.Property(x => x.DislikeCount).HasDefaultValue(0).IsRequired();
+            options.Property(x => x.CommentCount).HasDefaultValue(0).IsRequired();
+            options.Property(x => x.FavoriteCount).HasDefaultValue(0).IsRequired();
+            options.Property(x => x.RepublishedCount).HasDefaultValue(0).IsRequired();
+            options.Property(x => x.SharedCount).HasDefaultValue(0).IsRequired();
+
+            options.HasOne(x => x.Post)
+                .WithOne(x => x.PostUser)
+                .HasForeignKey<PostUserMetricsEntity>(x => x.PostId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<UserContentReactionEntity>(options =>
         {
             options.ToTable("UserContentReaction");

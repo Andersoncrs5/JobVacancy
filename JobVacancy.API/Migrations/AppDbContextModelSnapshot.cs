@@ -837,6 +837,60 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("Positions", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostUserMetricsEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<long>("CommentCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("DislikeCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<long>("FavoriteCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<long>("LikeCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<long>("RepublishedCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<long>("SharedCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("PostUserMetrics", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1886,6 +1940,17 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Endorser");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.PostUserMetricsEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.PostUserEntity", "Post")
+                        .WithOne("PostUser")
+                        .HasForeignKey("JobVacancy.API.models.entities.PostUserMetricsEntity", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -2339,6 +2404,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("CommentPostUser");
 
                     b.Navigation("FavoritePosts");
+
+                    b.Navigation("PostUser");
 
                     b.Navigation("Reactions");
                 });
