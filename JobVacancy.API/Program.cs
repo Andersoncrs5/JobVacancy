@@ -287,6 +287,7 @@ builder.Services.AddScoped<IReviewUserService, ReviewUserService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
 builder.Services.AddScoped<IUserEvaluationService, UserEvaluationService>();
 builder.Services.AddScoped<IUserContentReactionService, UserContentReactionService>();
+builder.Services.AddScoped<IKafkaProducerService, KafkaProducerService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
