@@ -252,6 +252,7 @@ builder.Services.AddScoped<IFollowerUserRelationshipEnterpriseRepository, Follow
 builder.Services.AddScoped<IEnterpriseFollowsUserRepository, EnterpriseFollowsUserRepository>();
 builder.Services.AddScoped<IReviewUserRepository, ReviewUserRepository>();
 builder.Services.AddScoped<IUserEvaluationRepository, UserEvaluationRepository>();
+builder.Services.AddScoped<IUserContentReactionRepository, UserContentReactionRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -285,7 +286,7 @@ builder.Services.AddScoped<IEnterpriseFollowsUserService, EnterpriseFollowsUserS
 builder.Services.AddScoped<IReviewUserService, ReviewUserService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
 builder.Services.AddScoped<IUserEvaluationService, UserEvaluationService>();
-
+builder.Services.AddScoped<IUserContentReactionService, UserContentReactionService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
