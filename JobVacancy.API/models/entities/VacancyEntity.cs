@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using JobVacancy.API.models.entities.Enums;
 
 namespace JobVacancy.API.models.entities;
@@ -24,10 +25,10 @@ public class VacancyEntity: BaseEntity
     public decimal? SalaryMin { get; set; }
     public decimal? SalaryMax { get; set; }
 
-    public string EnterpriseId { get; set; }
+    [MaxLength(450)] public required string EnterpriseId { get; set; }
     public EnterpriseEntity? Enterprise { get; set; }
 
-    public string AreaId { get; set; }
+    [MaxLength(450)] public required string AreaId { get; set; }
     public AreaEntity? Area { get; set; }
 
     public DateTime? ApplicationDeadLine { get; set; }

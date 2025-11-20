@@ -1,13 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 using JobVacancy.API.models.entities.Enums;
 
 namespace JobVacancy.API.models.entities;
 
 public class VacancySkillEntity: BaseEntity
 {
-    public string VacancyId { get; set; }
+    [MaxLength(450)] public required string VacancyId { get; set; }
     public VacancyEntity? Vacancy { get; set; }
     
-    public string SkillId { get; set; }
+    [MaxLength(450)] public required string SkillId { get; set; }
     public SkillEntity? Skill { get; set; }
     
     public SkillProficiencyLevelEnum RequiredLevel { get; set; } 

@@ -1,11 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace JobVacancy.API.models.entities;
 
 public class FavoritePostUserEntity: BaseEntity
 {
-    public string UserId { get; set; } = string.Empty;
+    [MaxLength(450)] public required string UserId { get; set; }
     public UserEntity? User { get; set; }
     
-    public string PostUserId { get; set; } = string.Empty;
+    [MaxLength(450)] public required string PostUserId { get; set; }
     public PostUserEntity? PostUser { get; set; }
     
     public string? UserNotes { get; set; }

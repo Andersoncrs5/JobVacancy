@@ -1,13 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 using JobVacancy.API.models.dtos;
 
 namespace JobVacancy.API.models.entities;
 
 public class FollowerRelationshipUserEntity: BaseEntity
 {
-    public required string FollowerId { get; set; }
+    [MaxLength(450)] public required string FollowerId { get; set; }
     public UserEntity? Follower { get; set; }
     
-    public required string FollowedId { get; set; }
+    [MaxLength(450)] public required string FollowedId { get; set; }
     public UserEntity? Followed { get; set; }
     
     public bool WishReceiveNotifyByNewPost { get; set; } = true; 

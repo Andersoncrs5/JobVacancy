@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using JobVacancy.API.models.entities.Enums;
 
 namespace JobVacancy.API.models.entities;
@@ -5,11 +6,11 @@ namespace JobVacancy.API.models.entities;
 public class IndicationUserEntity: BaseEntity
 {
     // Indicador
-    public string EndorserId { get; set; }
+    [MaxLength(450)] public required string EndorserId { get; set; }
     public UserEntity? Endorser { get; set; }
 
     // Indicado
-    public string EndorsedId { get; set; } 
+    [MaxLength(450)] public required string EndorsedId { get; set; } 
     public UserEntity? Endorsed { get; set; }
     
     public string Content { get; set; } = string.Empty; 

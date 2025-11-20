@@ -13,8 +13,7 @@ public class UserEvaluationEntity: ReviewBase
     
     public EmploymentTypeEnum EmploymentStatus { get; set; } 
     
-    [MaxLength(450)]
-    public required string EnterpriseId { get; set; }
+    [MaxLength(450)] public required string EnterpriseId { get; set; }
     public EnterpriseEntity? Enterprise { get; set; } 
     
     [MaxLength(450)]
@@ -25,8 +24,7 @@ public class UserEvaluationEntity: ReviewBase
     public string? ReviewerUserId { get; set; }
     public UserEntity? ReviewerUser { get; set; } 
     
-    [MaxLength(450)]
-    public string PositionId {get; set;} = string.Empty;
+    [MaxLength(450)] public required string PositionId {get; set;}
     public PositionEntity? Position { get; set; }
 
 }
