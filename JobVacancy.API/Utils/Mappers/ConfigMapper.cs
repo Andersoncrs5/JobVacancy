@@ -27,6 +27,7 @@ using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
+using JobVacancy.API.models.dtos.UserContentReaction;
 using JobVacancy.API.models.dtos.UserEvaluation;
 using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.dtos.Vacancy;
@@ -179,5 +180,6 @@ public class ConfigMapper: Profile
         CreateMap<UserEvaluationEntity, UserEvaluationDto>();
         CreateMap<CreateUserEvaluationDto, UserEvaluationEntity>();
         
+        CreateMap<UserContentReactionEntity, UserContentReactionDto>();
     }
 }
