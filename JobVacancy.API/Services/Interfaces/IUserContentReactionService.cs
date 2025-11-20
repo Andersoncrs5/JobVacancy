@@ -5,6 +5,7 @@ namespace JobVacancy.API.Services.Interfaces;
 
 public interface IUserContentReactionService
 {
+    IQueryable<UserContentReactionEntity> Query();
     Task<UserContentReactionEntity> Create(
         string userId, string contentId,
         ReactionTypeEnum reactionType, ReactionTargetEnum targetType
@@ -18,14 +19,12 @@ public interface IUserContentReactionService
     Task<bool> ExistsByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     );
 
     Task<UserContentReactionEntity?> GetByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     );
 }
