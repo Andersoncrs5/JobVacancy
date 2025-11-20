@@ -1,4 +1,6 @@
 using System.Text;
+using Confluent.Kafka;
+using JobVacancy.API.Configs.kafka.Classes;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
@@ -20,6 +22,7 @@ using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// POSTGRES
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("JWT is not configured");
@@ -52,6 +55,18 @@ builder.Services.AddScoped<IDatabase>(sp =>
     return multiplexer.GetDatabase();
 });
 
+// KAFKA
+builder.Services.Configure<KafkaConfig>(
+    builder.Configuration.GetSection("KafkaConfig"));
+
+var kafkaConfigSection = builder.Configuration.GetSection("KafkaConfig");
+
+var producerConfig = new ProducerConfig();
+kafkaConfigSection.Bind(producerConfig);
+producerConfig.BrokerAddressFamily = BrokerAddressFamily.V4;
+builder.Services.AddSingleton(producerConfig);
+
+// JWT
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
 string? secretKey = jwtSettings.GetSection("SecretKey").Value;
 
