@@ -3,8 +3,11 @@ using IdGen;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Services.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using StackExchange.Redis;
 
 namespace JobVacancy.API.Repositories.Provider;
 
@@ -12,11 +15,28 @@ public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
 {
     protected readonly AppDbContext Context;
     private readonly DbSet<T> _dbSet;
+    private readonly IRedisService _redisService;
     
-    protected GenericRepository(AppDbContext ctx)
+    protected GenericRepository(AppDbContext ctx, IRedisService redisService)
     {
         Context = ctx;
         _dbSet = Context.Set<T>();
+        _redisService = redisService;
+    }
+
+    public async Task<T?> GetByIdInCache(string id, TimeSpan? cacheExpiry = null)
+    {
+        T? inCache = await _redisService.GetAsync<T>(id);
+        
+        if (inCache != null)
+            return inCache;
+        
+        T? fromDb = await GetByIdAsync(id);
+        
+        if (fromDb != null)
+            await _redisService.CreateAsync(id, fromDb, cacheExpiry);
+        
+        return fromDb;
     }
 
     public async Task<bool> ExistsById(string Id)
