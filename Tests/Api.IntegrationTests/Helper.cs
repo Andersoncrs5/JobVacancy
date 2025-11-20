@@ -26,6 +26,7 @@ using JobVacancy.API.models.dtos.PostUser;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
+using JobVacancy.API.models.dtos.UserEvaluation;
 using JobVacancy.API.models.dtos.Users;
 using JobVacancy.API.models.dtos.UserSkill;
 using JobVacancy.API.models.dtos.Vacancy;
@@ -41,6 +42,57 @@ public class Helper(
     )
 {
 
+    public async Task<UserEvaluationDto> CreateUserEvaluation(UserResultTest userGuest, PositionDto positionDto)
+    {
+        CreateUserEvaluationDto dto = new CreateUserEvaluationDto()
+        {
+            TargetUserId = userGuest.User!.Id,
+            Content = string.Concat(Enumerable.Repeat("Any", 30)),
+            EmploymentStatus = EmploymentTypeEnum.Freelance,
+            PositionId = positionDto.Id,
+            IsAnonymous = false,
+            RatingCompensation = 5,
+            RatingCulture = 5,
+            RatingManagement = 5,
+            RatingOverall = 5,
+            RatingProfessionalism = 5,
+            RatingSkillMatch = 5,
+            RatingTeamwork = 5,
+            RatingWorkLifeBalance = 5,
+            RecommendationTone = 5,
+            Title = string.Concat(Enumerable.Repeat("Any", 30)),
+        };
+
+        HttpResponseMessage message = await client.PostAsJsonAsync("/api/v1/UserEvaluation", dto);
+        
+        message.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<UserEvaluationDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserEvaluationDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.Created);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        
+        http.Data.Should().NotBeNull();
+        http.Data.Id.Should().NotBeNullOrWhiteSpace();
+        http.Data.TargetUserId.Should().Be(dto.TargetUserId);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus);
+        http.Data.PositionId.Should().Be(dto.PositionId);
+        http.Data.IsAnonymous.Should().Be(dto.IsAnonymous);
+        http.Data.RatingCompensation.Should().Be(dto.RatingCompensation);
+        http.Data.RatingCulture.Should().Be(dto.RatingCulture);
+        http.Data.RatingManagement.Should().Be(dto.RatingManagement);
+        http.Data.RatingOverall.Should().Be(dto.RatingOverall);
+        http.Data.RatingProfessionalism.Should().Be(dto.RatingProfessionalism);
+        http.Data.RatingSkillMatch.Should().Be(dto.RatingSkillMatch);
+        http.Data.RatingWorkLifeBalance.Should().Be(dto.RatingWorkLifeBalance);
+        http.Data.RecommendationTone.Should().Be(dto.RecommendationTone);
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.TargetUserId.Should().Be(dto.TargetUserId);
+        
+        return http.Data;
+    }
+    
     public async Task<ReviewUserDto> CreateReviewToUser(UserResultTest target, UserResultTest actor)
     {
         
