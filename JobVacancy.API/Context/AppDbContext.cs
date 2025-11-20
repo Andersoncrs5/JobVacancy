@@ -40,6 +40,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<EnterpriseFollowsUserEntity> EnterpriseFollowsUserEntities { get; set; }
     public new DbSet<ReviewUserEntity> ReviewUsers { get; set; }
     public new DbSet<UserEvaluationEntity> UserEvaluationEntities { get; set; }
+    public new DbSet<UserContentReactionEntity> UserContentReactionEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -78,6 +79,53 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<UserContentReactionEntity>(options =>
+        {
+            options.ToTable("UserContentReaction");
+            options.HasKey(x => x.Id);
+            
+            options.Property(x => x.ReactionType)
+                   .HasConversion<string>()
+                   .HasMaxLength(50)
+                   .IsRequired();
+                   
+            options.Property(x => x.TargetType)
+                   .HasConversion<string>()
+                   .HasMaxLength(50)
+                   .IsRequired();
+            
+            options.HasOne(x => x.User)
+                   .WithMany(x => x.Reactions)
+                   .HasForeignKey(x => x.UserId)
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Cascade);
+            options.HasOne(x => x.PostUser)
+                .WithMany(x => x.Reactions)
+                .HasForeignKey(x => x.PostUserId)
+                .IsRequired(false) 
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            options.HasOne(x => x.PostEnterprise)
+                .WithMany(x => x.Reactions)
+                .HasForeignKey(x => x.PostEnterpriseId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            options.HasOne(x => x.CommentUser) 
+                .WithMany(x => x.Reactions)
+                .HasForeignKey(x => x.CommentUserId)
+                .IsRequired(false) 
+                .OnDelete(DeleteBehavior.Cascade);
+
+            options.HasOne(x => x.CommentEnterprise)
+                .WithMany(x => x.Reactions)
+                .HasForeignKey(x => x.CommentEnterpriseId)
+                .IsRequired(false) 
+                .OnDelete(DeleteBehavior.SetNull);
+
+            options.HasIndex(x => new { x.UserId, x.TargetType });
+        });
+        
         modelBuilder.Entity<UserEvaluationEntity>(options =>
         {
             options.ToTable("UserEvaluations"); 

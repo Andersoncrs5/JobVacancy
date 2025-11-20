@@ -252,11 +252,13 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("InviteSenderId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(600)
@@ -267,6 +269,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("PositionId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("SalaryRange")
@@ -289,7 +292,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.HasKey("Id");
 
@@ -321,6 +325,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("ExpiresAt")
@@ -331,7 +336,8 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("character varying(1500)");
 
                     b.Property<string>("InviteSenderId")
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("Message")
                         .HasMaxLength(1500)
@@ -339,6 +345,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("PositionId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("ProposedEndDate")
@@ -371,7 +378,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.HasKey("Id");
 
@@ -416,7 +424,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("WebSiteUrl")
                         .HasColumnType("TEXT");
@@ -443,6 +452,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -450,7 +460,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<bool>("WishReceiveNotifyByNewEndorsement")
                         .HasColumnType("boolean");
@@ -487,10 +498,12 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("IndustryId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<bool>("IsPrimary")
@@ -521,6 +534,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("CommentId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -531,7 +545,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.HasKey("Id");
 
@@ -556,6 +571,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("PostEnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -563,7 +579,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.HasKey("Id");
 
@@ -588,6 +605,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("PostUserId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -595,7 +613,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("UserNotes")
                         .HasMaxLength(600)
@@ -627,11 +646,13 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("FollowedId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("FollowerId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -666,6 +687,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -673,7 +695,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<bool>("WishReceiveNotifyByNewComment")
                         .HasColumnType("boolean");
@@ -717,11 +740,13 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EndorsedId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("EndorserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<int?>("SkillRating")
                         .HasColumnType("integer");
@@ -828,6 +853,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<bool>("IsAnonymous")
@@ -835,6 +861,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("PositionId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<short?>("RatingCompensation")
@@ -862,7 +889,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.HasKey("Id");
 
@@ -884,7 +912,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("ActorId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -917,7 +946,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("TargetUserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -1001,6 +1031,64 @@ namespace JobVacancy.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Skills", (string)null);
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserContentReactionEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("CommentEnterpriseId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("CommentUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PostEnterpriseId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("PostUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("ReactionType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentEnterpriseId");
+
+                    b.HasIndex("CommentUserId");
+
+                    b.HasIndex("PostEnterpriseId");
+
+                    b.HasIndex("PostUserId");
+
+                    b.HasIndex("UserId", "TargetType");
+
+                    b.ToTable("UserContentReaction", (string)null);
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEntity", b =>
@@ -1188,6 +1276,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("SkillId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -1195,7 +1284,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
                     b.Property<int?>("YearsOfExperience")
                         .HasColumnType("integer");
@@ -1223,6 +1313,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("AreaId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Benefits")
@@ -1248,6 +1339,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("EnterpriseId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<int?>("ExperienceLevel")
@@ -1323,6 +1415,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("SkillId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -1330,6 +1423,7 @@ namespace JobVacancy.API.Migrations
 
                     b.Property<string>("VacancyId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
                     b.Property<short>("Weight")
@@ -1838,6 +1932,45 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("TargetUser");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.UserContentReactionEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.CommentPostEnterpriseEntity", "CommentEnterprise")
+                        .WithMany("Reactions")
+                        .HasForeignKey("CommentEnterpriseId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("JobVacancy.API.models.entities.CommentPostUserEntity", "CommentUser")
+                        .WithMany("Reactions")
+                        .HasForeignKey("CommentUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("JobVacancy.API.models.entities.PostEnterpriseEntity", "PostEnterprise")
+                        .WithMany("Reactions")
+                        .HasForeignKey("PostEnterpriseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("JobVacancy.API.models.entities.PostUserEntity", "PostUser")
+                        .WithMany("Reactions")
+                        .HasForeignKey("PostUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommentEnterprise");
+
+                    b.Navigation("CommentUser");
+
+                    b.Navigation("PostEnterprise");
+
+                    b.Navigation("PostUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.UserEvaluationEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -2160,6 +2293,8 @@ namespace JobVacancy.API.Migrations
 
                     b.Navigation("Posts");
 
+                    b.Navigation("Reactions");
+
                     b.Navigation("ReceivedEndors");
 
                     b.Navigation("Reviews");
@@ -2180,11 +2315,23 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("VacancySkills");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostEnterpriseEntity", b =>
+                {
+                    b.Navigation("Reactions");
+                });
+
+            modelBuilder.Entity("JobVacancy.API.models.entities.CommentPostUserEntity", b =>
+                {
+                    b.Navigation("Reactions");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.PostEnterpriseEntity", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("FavoritePostsEnterprise");
+
+                    b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("JobVacancy.API.models.entities.PostUserEntity", b =>
@@ -2192,6 +2339,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("CommentPostUser");
 
                     b.Navigation("FavoritePosts");
+
+                    b.Navigation("Reactions");
                 });
 #pragma warning restore 612, 618
         }
