@@ -10,7 +10,9 @@ using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.UserEvaluation;
 using JobVacancy.API.models.entities.Enums;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
 
@@ -343,6 +345,213 @@ public class UserEvaluationControllerTest: IClassFixture<CustomWebApplicationFac
         http.Data.Should().BeNull();
     }
     
+    [Fact]
+    public async Task Patch()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        PositionDto positionDtoB = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        await _helper.CreateEmployeeEnterprise(invitationUpdated);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+
+        UserEvaluationDto evaluationDto = await _helper.CreateUserEvaluation(userGuest, positionDto);
+
+        UpdateUserEvaluationDto dto = new UpdateUserEvaluationDto()
+        {
+            Title = string.Concat(Enumerable.Repeat("Test", 10)),
+            Content = string.Concat(Enumerable.Repeat("Test", 10)),
+            RatingOverall = 1,
+            RatingCulture = 1,
+            RatingCompensation = 1,
+            RatingManagement = 1,
+            RatingWorkLifeBalance = 1,
+            IsAnonymous = !evaluationDto.IsAnonymous,
+            PositionId = positionDtoB.Id,
+            RatingProfessionalism = 1,
+            RatingSkillMatch = 1,
+            RecommendationTone = 1,
+            RatingTeamwork = 1,
+            EmploymentStatus = EmploymentTypeEnum.FullTime
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{evaluationDto.Id}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        ResponseHttp<UserEvaluationDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserEvaluationDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.OK);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Data.Should().NotBeNull();
+        
+        http.Data.Id.Should().Be(evaluationDto.Id);
+        http.Data.Title.Should().Be(dto.Title);
+        http.Data.Content.Should().Be(dto.Content);
+        http.Data.RatingOverall.Should().Be(dto.RatingOverall);
+        http.Data.RatingCulture.Should().Be(dto.RatingCulture);
+        http.Data.RatingCompensation.Should().Be(dto.RatingCompensation);
+        http.Data.RatingManagement.Should().Be(dto.RatingManagement);
+        http.Data.RatingWorkLifeBalance.Should().Be(dto.RatingWorkLifeBalance);
+        http.Data.IsAnonymous.Should().Be(dto.IsAnonymous.Value);
+        http.Data.PositionId.Should().Be(positionDtoB.Id);
+        http.Data.RatingProfessionalism.Should().Be(dto.RatingProfessionalism);
+        http.Data.RatingSkillMatch.Should().Be(dto.RatingSkillMatch);
+        http.Data.RecommendationTone.Should().Be(dto.RecommendationTone);
+        http.Data.RatingTeamwork.Should().Be(dto.RatingTeamwork);
+        http.Data.EmploymentStatus.Should().Be(dto.EmploymentStatus.Value);
+        
+    }
     
+    [Fact]
+    public async Task PatchNotFound()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+        PositionDto positionDtoB = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        await _helper.CreateEmployeeEnterprise(invitationUpdated);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+
+        UserEvaluationDto evaluationDto = await _helper.CreateUserEvaluation(userGuest, positionDto);
+
+        UpdateUserEvaluationDto dto = new UpdateUserEvaluationDto()
+        {
+            Title = string.Concat(Enumerable.Repeat("Test", 10)),
+            Content = string.Concat(Enumerable.Repeat("Test", 10)),
+            RatingOverall = 1,
+            RatingCulture = 1,
+            RatingCompensation = 1,
+            RatingManagement = 1,
+            RatingWorkLifeBalance = 1,
+            IsAnonymous = !evaluationDto.IsAnonymous,
+            PositionId = positionDtoB.Id,
+            RatingProfessionalism = 1,
+            RatingSkillMatch = 1,
+            RecommendationTone = 1,
+            RatingTeamwork = 1,
+            EmploymentStatus = EmploymentTypeEnum.FullTime
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{Guid.NewGuid()}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        ResponseHttp<object>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<object>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int) HttpStatusCode.NotFound);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+        http.Data.Should().BeNull();
+        
+    }
+    
+    [Fact]
+    public async Task PatchNotFoundPositionId()
+    {
+        ResponseTokens master = await _helper.LoginMaster(_configuration);
+        IndustryDto industryDto = await _helper.CreateIndustry(master);
+        PositionDto positionDto = await _helper.CreatePositionAsync();
+
+        UserResultTest userGuest = await _helper.CreateAndGetUser();
+        UserResultTest user = await _helper.CreateAndGetUser();
+        await _helper.CreateEnterprise(user, industryDto);
+
+        ResponseTokens loginUserWithNewRole = await _helper.LoginUser(user!.User!.Email!, user.CreateUser!.PasswordHash);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token!);
+
+        EmployeeInvitationDto invitation = await _helper.CreateEmployeeInvitation(userGuest, positionDto);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userGuest.Tokens!.Token);
+
+        EmployeeInvitationDto invitationUpdated = await _helper.UpdateInvitationByUser(StatusEnum.Accepted, invitation);
+
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+        
+        await _helper.CreateEmployeeEnterprise(invitationUpdated);
+        
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginUserWithNewRole.Token);
+
+        UserEvaluationDto evaluationDto = await _helper.CreateUserEvaluation(userGuest, positionDto);
+
+        UpdateUserEvaluationDto dto = new UpdateUserEvaluationDto()
+        {
+            Title = string.Concat(Enumerable.Repeat("Test", 10)),
+            Content = string.Concat(Enumerable.Repeat("Test", 10)),
+            RatingOverall = 1,
+            RatingCulture = 1,
+            RatingCompensation = 1,
+            RatingManagement = 1,
+            RatingWorkLifeBalance = 1,
+            IsAnonymous = !evaluationDto.IsAnonymous,
+            PositionId = Guid.NewGuid().ToString(),
+            RatingProfessionalism = 1,
+            RatingSkillMatch = 1,
+            RecommendationTone = 1,
+            RatingTeamwork = 1,
+            EmploymentStatus = EmploymentTypeEnum.FullTime
+        };
+        
+        HttpResponseMessage message = await _client.PatchAsJsonAsync($"{_url}/{evaluationDto.Id}", dto);
+        message.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        ResponseHttp<UserEvaluationDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserEvaluationDto>>();
+        http.Should().NotBeNull();
+        http.Code.Should().Be((int)HttpStatusCode.NotFound);
+        http.Message.Should().NotBeNullOrWhiteSpace();
+        http.Status.Should().BeFalse();
+        
+        http.Data.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetAll() 
+    {
+        UserResultTest user = await _helper.CreateAndGetUser();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", user.Tokens!.Token!);
+
+        HttpResponseMessage message = await _client.GetAsync($"{_url}");
+        message.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Page<UserEvaluationDto>? page = await message.Content.ReadFromJsonAsync<Page<UserEvaluationDto>>();
+        page.Should().NotBeNull();
+        page.PageIndex.Should().Be(1);
+        page.PageSize.Should().Be(10);
+    }
     
 }
