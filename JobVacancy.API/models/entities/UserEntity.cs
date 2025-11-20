@@ -36,4 +36,6 @@ public class UserEntity: IdentityUser
     public ICollection<UserEvaluationEntity>? EvaluationsReceived { get; init; }
     public ICollection<UserEvaluationEntity>? EvaluationsSent { get; init; }
     
+    public ICollection<UserContentReactionEntity>? Reactions { get; set; }
+    
 }

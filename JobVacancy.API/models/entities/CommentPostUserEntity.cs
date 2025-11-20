@@ -7,4 +7,5 @@ public class CommentPostUserEntity: CommentBaseEntity
 {
     [MaxLength(450)] public required string PostId { get; set; }
     public PostUserEntity? Post { get; set; }
+    public ICollection<UserContentReactionEntity>? Reactions { get; set; }
 }

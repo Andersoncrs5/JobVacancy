@@ -9,4 +9,5 @@ public class PostEnterpriseEntity: BasePostTable
     public ICollection<FavoritePostEnterpriseEntity>? FavoritePostsEnterprise { get; set; }
     public ICollection<CommentPostEnterpriseEntity>? Comments { get; set; }
     
+    public ICollection<UserContentReactionEntity>? Reactions { get; set; }
 }

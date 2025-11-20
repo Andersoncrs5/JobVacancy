@@ -8,4 +8,5 @@ public class PostUserEntity: BasePostTable
     public CategoryEntity? Category { get; set; }
     public ICollection<FavoritePostUserEntity>? FavoritePosts { get; set; }
     public ICollection<CommentPostUserEntity>? CommentPostUser { get; set; }
+    public ICollection<UserContentReactionEntity>? Reactions { get; set; }
 }
