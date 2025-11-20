@@ -1,11 +1,12 @@
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class EmployeeEnterpriseRepository(AppDbContext context): GenericRepository<EmployeeEnterpriseEntity>(context), IEmployeeEnterpriseRepository
+public class EmployeeEnterpriseRepository(AppDbContext context, IRedisService redisService): GenericRepository<EmployeeEnterpriseEntity>(context, redisService), IEmployeeEnterpriseRepository
 {
     public async Task<bool> ExistsByUserIdAndEnterpriseId(string userId, string enterpriseId)
     {

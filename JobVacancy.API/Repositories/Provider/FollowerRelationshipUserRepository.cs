@@ -1,12 +1,13 @@
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using JobVacancy.API.Utils.Uow.Provider;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class FollowerRelationshipUserRepository(AppDbContext context): GenericRepository<FollowerRelationshipUserEntity>(context), IFollowerRelationshipUserRepository
+public class FollowerRelationshipUserRepository(AppDbContext context, IRedisService redisService): GenericRepository<FollowerRelationshipUserEntity>(context, redisService), IFollowerRelationshipUserRepository
 {
     public async Task<bool> ExistsByFollowerIdAndFollowedId(string followerId, string followedId)
         => await context.FollowerRelationshipUsers.AnyAsync(x => x.FollowerId == followerId && x.FollowedId == followedId);

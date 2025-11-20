@@ -1,11 +1,12 @@
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class FavoritePostEnterpriseRepository(AppDbContext context): GenericRepository<FavoritePostEnterpriseEntity>(context), IFavoritePostEnterpriseRepository
+public class FavoritePostEnterpriseRepository(AppDbContext context, IRedisService redisService): GenericRepository<FavoritePostEnterpriseEntity>(context, redisService), IFavoritePostEnterpriseRepository
 {
     
     public async Task<FavoritePostEnterpriseEntity?> GetByUserIdAndPostId(string userId, string postId)

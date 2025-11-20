@@ -1,11 +1,12 @@
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class IndicationUserRepository(AppDbContext context): GenericRepository<IndicationUserEntity>(context), IIndicationUserRepository
+public class IndicationUserRepository(AppDbContext context, IRedisService redisService): GenericRepository<IndicationUserEntity>(context, redisService), IIndicationUserRepository
 {
     public async Task<bool> ExistsByEndorserIdAndEndorsedId(string endorserId, string endorsedId)
     {

@@ -1,11 +1,12 @@
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class FavoriteCommentPostEnterpriseRepository(AppDbContext db): GenericRepository<FavoriteCommentEntity>(db),  IFavoriteCommentPostEnterpriseRepository
+public class FavoriteCommentPostEnterpriseRepository(AppDbContext db, IRedisService redisService): GenericRepository<FavoriteCommentEntity>(db, redisService),  IFavoriteCommentPostEnterpriseRepository
 {
     public IQueryable<FavoriteCommentEntity> GetAllQuery()
     {

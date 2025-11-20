@@ -2,21 +2,20 @@ using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Repositories.Interfaces;
+using JobVacancy.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobVacancy.API.Repositories.Provider;
 
-public class UserContentReactionRepository(AppDbContext context): GenericRepository<UserContentReactionEntity>(context), IUserContentReactionRepository
+public class UserContentReactionRepository(AppDbContext context, IRedisService redisService): GenericRepository<UserContentReactionEntity>(context, redisService), IUserContentReactionRepository
 {
     private IQueryable<UserContentReactionEntity> _BuildReactionQuery(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType)
     {
         var query = context.UserContentReactionEntities
             .Where(x => x.UserId == userId && 
-                        x.ReactionType == reactionType && 
                         x.TargetType == targetType);
         
         switch (targetType)
@@ -43,11 +42,10 @@ public class UserContentReactionRepository(AppDbContext context): GenericReposit
     public async Task<bool> ExistsByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     )
     {
-        var query = _BuildReactionQuery(userId, contentId, reactionType, targetType);
+        var query = _BuildReactionQuery(userId, contentId, targetType);
         
         return await query.AnyAsync();
     }
@@ -55,11 +53,10 @@ public class UserContentReactionRepository(AppDbContext context): GenericReposit
     public async Task<UserContentReactionEntity?> GetByUserIdAndContentIdAndReaction(
         string userId,
         string contentId,
-        ReactionTypeEnum reactionType,
         ReactionTargetEnum targetType
     )
     {
-        IQueryable<UserContentReactionEntity> query = _BuildReactionQuery(userId, contentId, reactionType, targetType);
+        IQueryable<UserContentReactionEntity> query = _BuildReactionQuery(userId, contentId, targetType);
 
         return await query.FirstOrDefaultAsync();
     }  
