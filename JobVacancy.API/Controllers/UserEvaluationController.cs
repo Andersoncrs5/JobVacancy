@@ -104,7 +104,6 @@ public class UserEvaluationController(
     }
 
     [HttpGet("{id:required}")]
-    [Authorize(Roles = "ENTERPRISE_ROLE")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseHttp<UserEvaluationDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseHttp<object>))]
     public async Task<IActionResult> Get(string id)
