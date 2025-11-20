@@ -4,6 +4,8 @@ using JobVacancy.API.models.dtos.UserContentReaction;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
 using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Utils.Filters.UserContentReaction;
+using JobVacancy.API.Utils.Page;
 using JobVacancy.API.Utils.Res;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -103,6 +105,22 @@ public class UserContentReactionController(
         });
     }
     
-    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Page<UserContentReactionDto>))]
+    public async Task<IActionResult> GetAll([FromQuery] UserContentReactionFilterParams filter)
+    {
+        IQueryable<UserContentReactionEntity> iQueryable = reactionService.Query();
+        IQueryable<UserContentReactionEntity> appliedFilter = UserContentReactionFilterQuery.ApplyFilter(iQueryable, filter);
+        PaginatedList<UserContentReactionEntity> paginatedList = await PaginatedList<UserContentReactionEntity>.CreateAsync(
+            source: appliedFilter,
+            pageSize: filter.PageSize,
+            pageIndex: filter.PageNumber
+        );
+        
+        Page<UserContentReactionDto> dtos = mapper.Map<Page<UserContentReactionDto>>(paginatedList);
+        
+        return Ok(dtos);
+    }
+
     
 }
