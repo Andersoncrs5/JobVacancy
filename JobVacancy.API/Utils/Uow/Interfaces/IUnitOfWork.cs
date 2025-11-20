@@ -38,7 +38,7 @@ public interface IUnitOfWork: IDisposable
     IReviewUserRepository ReviewUserRepository { get; }
     IUserEvaluationRepository UserEvaluationRepository { get; }
     IUserContentReactionRepository UserContentReactionRepository { get; }
-
+    IRedisService RedisService { get; }
     IMapper Mapper { get; }
     
     Task Commit();

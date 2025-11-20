@@ -3,6 +3,8 @@ using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
 using JobVacancy.API.Repositories.Provider;
+using JobVacancy.API.Services.Interfaces;
+using JobVacancy.API.Services.Providers;
 using JobVacancy.API.Utils.Uow.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,8 @@ public class UnitOfWork(
     AppDbContext context, 
     UserManager<UserEntity> userManager, 
     RoleManager<RoleEntity> roleManager,
+    StackExchange.Redis.IDatabase db,
+    IRedisService redisService,
     IMapper mapper
     ) : IUnitOfWork, IDisposable
 {
@@ -48,6 +52,7 @@ public class UnitOfWork(
     private ReviewUserRepository? _reviewUserRepository;
     private UserEvaluationRepository? _userEvaluationRepository;
     private UserContentReactionRepository? _userContentReactionRepository;
+    private RedisService? _redisService;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -55,63 +60,65 @@ public class UnitOfWork(
     public IRoleRepository RoleRepository
         => _roleRepository ??= new RoleRepository(roleManager);
     public ICategoryRepository CategoryRepository
-        => _categoryRepository ??= new CategoryRepository(context);
+        => _categoryRepository ??= new CategoryRepository(context, redisService);
     public IIndustryRepository IndustryRepository
-        => _industryRepository ??= new IndustryRepository(context);
+        => _industryRepository ??= new IndustryRepository(context, redisService);
     public IEnterpriseRepository EnterpriseRepository
-        => _enterpriseRepository ??= new EnterpriseRepository(context);
+        => _enterpriseRepository ??= new EnterpriseRepository(context, redisService);
     public IEnterpriseIndustryRepository EnterpriseIndustryRepository
-        => _enterpriseIndustryRepository ??= new EnterpriseIndustryRepository(context);
+        => _enterpriseIndustryRepository ??= new EnterpriseIndustryRepository(context, redisService);
     public IPostUserRepository PostUserRepository
-        => _postUserRepository ??= new PostUserRepository(context);
+        => _postUserRepository ??= new PostUserRepository(context, redisService);
     public IPostEnterpriseRepository PostEnterpriseRepository
-        => _postEnterpriseRepository ??= new PostEnterpriseRepository(context);
+        => _postEnterpriseRepository ??= new PostEnterpriseRepository(context, redisService);
     public ISkillRepository SkillRepository
-        => _skillRepository ??= new SkillRepository(context);
+        => _skillRepository ??= new SkillRepository(context, redisService);
     public IUserSkillRepository UserSkillRepository
-        => _userSkillRepository ??= new UserSkillRepository(context);
+        => _userSkillRepository ??= new UserSkillRepository(context, redisService);
     public IFavoritePostUserRepository FavoritePostUserRepository
-        => _favoritePostUserRepository ??= new FavoritePostUserRepository(context);
+        => _favoritePostUserRepository ??= new FavoritePostUserRepository(context, redisService);
     public IFavoritePostEnterpriseRepository FavoritePostEnterpriseRepository
-        => _favoritePostEnterpriseRepository ??= new FavoritePostEnterpriseRepository(context);
+        => _favoritePostEnterpriseRepository ??= new FavoritePostEnterpriseRepository(context, redisService);
     public ICommentPostUserRepository CommentPostUserRepository
-        => _commentPostUserRepository ??= new CommentPostUserRepository(context);
+        => _commentPostUserRepository ??= new CommentPostUserRepository(context, redisService);
     public IFavoriteCommentPostUserRepository FavoriteCommentPostUserRepository
-        => _favoriteCommentPostUserRepository ??= new FavoriteCommentPostUserRepository(context);
+        => _favoriteCommentPostUserRepository ??= new FavoriteCommentPostUserRepository(context, redisService);
     public ICommentPostEnterpriseRepository CommentPostEnterpriseRepository
-        => _commentPostEnterpriseRepository ??= new CommentPostEnterpriseRepository(context);
+        => _commentPostEnterpriseRepository ??= new CommentPostEnterpriseRepository(context, redisService);
     public IFavoriteCommentPostEnterpriseRepository FavoriteCommentPostEnterpriseRepository
-        => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context);
+        => _favoriteCommentPostEnterpriseRepository ??= new FavoriteCommentPostEnterpriseRepository(context, redisService);
     public IEmployeeInvitationRepository EmployeeInvitationRepository
-        => _employeeInvitationRepository ??= new EmployeeInvitationRepository(context);
+        => _employeeInvitationRepository ??= new EmployeeInvitationRepository(context, redisService);
     public IPositionRepository PositionRepository
-        => _positionRepository ??= new PositionRepository(context);
+        => _positionRepository ??= new PositionRepository(context, redisService);
     public IEmployeeEnterpriseRepository EmployeeEnterpriseRepository
-        => _employeeEnterpriseRepository ??= new EmployeeEnterpriseRepository(context);
+        => _employeeEnterpriseRepository ??= new EmployeeEnterpriseRepository(context, redisService);
     public IReviewEnterpriseRepository ReviewEnterpriseRepository
-        => _reviewEnterpriseRepository ??= new ReviewEnterpriseRepository(context);
+        => _reviewEnterpriseRepository ??= new ReviewEnterpriseRepository(context, redisService);
     public IIndicationUserRepository IndicationUserRepository
-        => _indicationUserRepository ??= new IndicationUserRepository(context);
+        => _indicationUserRepository ??= new IndicationUserRepository(context, redisService);
     public IAreaRepository AreaRepository
-        => _areaRepository ??= new AreaRepository(context);
+        => _areaRepository ??= new AreaRepository(context, redisService);
     public IVacancyRepository VacancyRepository
-        => _vacancyRepository ??= new VacancyRepository(context);
+        => _vacancyRepository ??= new VacancyRepository(context, redisService);
     public IVacancySkillRepository VacancySkillRepository
-        =>  _vacancySkillRepository ??= new VacancySkillRepository(context);
+        =>  _vacancySkillRepository ??= new VacancySkillRepository(context, redisService);
     public IApplicationVacancyRepository ApplicationVacancyRepository
-        =>  _applicationVacancyRepository ??= new ApplicationVacancyRepository(context);
+        =>  _applicationVacancyRepository ??= new ApplicationVacancyRepository(context, redisService);
     public IFollowerRelationshipUserRepository FollowerRelationshipUserRepository
-        => _followerRelationshipUserRepository ??= new FollowerRelationshipUserRepository(context);
+        => _followerRelationshipUserRepository ??= new FollowerRelationshipUserRepository(context, redisService);
     public IFollowerUserRelationshipEnterpriseRepository FollowerUserRelationshipEnterpriseRepository
-        => _followerUserRelationshipEnterpriseRepository ??= new FollowerUserRelationshipEnterpriseRepository(context);
+        => _followerUserRelationshipEnterpriseRepository ??= new FollowerUserRelationshipEnterpriseRepository(context, redisService);
     public IEnterpriseFollowsUserRepository EnterpriseFollowsUserRepository
-        =>  _enterpriseFollowsUserRepository ??= new EnterpriseFollowsUserRepository(context); 
+        =>  _enterpriseFollowsUserRepository ??= new EnterpriseFollowsUserRepository(context, redisService); 
     public IReviewUserRepository ReviewUserRepository
-        =>  _reviewUserRepository ??= new ReviewUserRepository(context);
+        =>  _reviewUserRepository ??= new ReviewUserRepository(context, redisService);
     public IUserEvaluationRepository UserEvaluationRepository
-        => _userEvaluationRepository ??= new UserEvaluationRepository(context);
+        => _userEvaluationRepository ??= new UserEvaluationRepository(context, redisService);
     public IUserContentReactionRepository UserContentReactionRepository
-        => _userContentReactionRepository ??= new UserContentReactionRepository(context);
+        => _userContentReactionRepository ??= new UserContentReactionRepository(context, redisService);
+    public IRedisService RedisService
+        => _redisService ??= new RedisService(db);
     
     public async Task Commit() 
     {
