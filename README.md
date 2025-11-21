@@ -9,6 +9,7 @@ start date 23/10/2025
 - jwt
 - roles control
 - upload files and images
+- microservice 
 
 # technologies
 
@@ -17,3 +18,4 @@ start date 23/10/2025
 - asp net 9
 - kafka
 - redis
+- postgres
