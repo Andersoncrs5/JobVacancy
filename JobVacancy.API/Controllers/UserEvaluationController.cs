@@ -22,6 +22,7 @@ public class UserEvaluationController(
     IEnterpriseService enterpriseService,
     IEmployeeEnterpriseService employeeEnterpriseService,
     IPositionService positionService,
+    IKafkaProducerService kafkaProducerService,
     IMapper mapper
     ): Controller
 {
@@ -72,6 +73,8 @@ public class UserEvaluationController(
         }
         
         UserEvaluationEntity created = await userEvaluationService.Create(dto, enterprise.Id, userId);
+        
+        
         
         return StatusCode(StatusCodes.Status201Created, new ResponseHttp<UserEvaluationDto>
         {
