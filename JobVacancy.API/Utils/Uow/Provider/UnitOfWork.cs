@@ -53,6 +53,7 @@ public class UnitOfWork(
     private UserEvaluationRepository? _userEvaluationRepository;
     private UserContentReactionRepository? _userContentReactionRepository;
     private RedisService? _redisService;
+    private PostUserMetricsRepository? _postUserMetricsRepository;
     public IMapper Mapper { get; } = mapper;
     
     public IUserRepository UserRepository
@@ -119,6 +120,8 @@ public class UnitOfWork(
         => _userContentReactionRepository ??= new UserContentReactionRepository(context, redisService);
     public IRedisService RedisService
         => _redisService ??= new RedisService(db);
+    public IPostUserMetricsRepository PostUserMetricsRepository 
+        => _postUserMetricsRepository ??= new PostUserMetricsRepository(context, redisService);
     
     public async Task Commit() 
     {

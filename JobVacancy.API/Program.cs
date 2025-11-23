@@ -49,22 +49,13 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     return ConnectionMultiplexer.Connect(config);
 });
 
+builder.Services.AddSingleton<KafkaProducerService>();
+
 builder.Services.AddScoped<IDatabase>(sp =>
 {
     var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
     return multiplexer.GetDatabase();
 });
-
-// KAFKA
-builder.Services.Configure<KafkaConfig>(
-    builder.Configuration.GetSection("KafkaConfig"));
-
-var kafkaConfigSection = builder.Configuration.GetSection("KafkaConfig");
-
-var producerConfig = new ProducerConfig();
-kafkaConfigSection.Bind(producerConfig);
-producerConfig.BrokerAddressFamily = BrokerAddressFamily.V4;
-builder.Services.AddSingleton(producerConfig);
 
 // JWT
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
@@ -268,6 +259,7 @@ builder.Services.AddScoped<IEnterpriseFollowsUserRepository, EnterpriseFollowsUs
 builder.Services.AddScoped<IReviewUserRepository, ReviewUserRepository>();
 builder.Services.AddScoped<IUserEvaluationRepository, UserEvaluationRepository>();
 builder.Services.AddScoped<IUserContentReactionRepository, UserContentReactionRepository>();
+builder.Services.AddScoped<IPostUserMetricsRepository, PostUserMetricsRepository>();
 
 // JUST SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
@@ -303,6 +295,7 @@ builder.Services.AddScoped<IRedisService, RedisService>();
 builder.Services.AddScoped<IUserEvaluationService, UserEvaluationService>();
 builder.Services.AddScoped<IUserContentReactionService, UserContentReactionService>();
 builder.Services.AddScoped<IKafkaProducerService, KafkaProducerService>();
+builder.Services.AddScoped<IPostUserMetricsService, PostUserMetricsService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
@@ -419,7 +412,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-
 
 if (app.Environment.IsDevelopment())
 {

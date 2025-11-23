@@ -14,31 +14,45 @@ public class KafkaProducerService: IKafkaProducerService
     private readonly ILogger<KafkaProducerService> _logger;
     private readonly IConfiguration _configuration;
 
-    public KafkaProducerService(ProducerConfig config, ILogger<KafkaProducerService> logger, IConfiguration configuration)
+    public KafkaProducerService(ILogger<KafkaProducerService> logger, IConfiguration configuration)
     {
+        _configuration = configuration;
+        var settings = configuration.GetSection("KafkaSettings");
         _logger = logger;
+        
+        var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
         _producer = new ProducerBuilder<Null, string>(config).Build();
         _logger.LogInformation("Kafka Producer Initialized successfully.");
-        _configuration = configuration;
+    }
+    
+    public async Task ProduceAsyncw(string message)
+    {
+        string topic = "calculation-metric-topic";
+
+        var dr = await _producer.ProduceAsync(topic, new Message<Null, string> { Value = message });
+        _logger.LogInformation($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
     }
 
     public async Task MetricSend(string entityId, ActionEnum action, ReactionTargetEnum entity, object columns, object? data = null)
     {
-        string topic = _configuration["KafkaConfig:Topics:CalculationMetricTopic"] ?? throw new NullReferenceException();
+        var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
 
-        MetricEvent message = new MetricEvent()
+        using (var producer = new ProducerBuilder<Null, string>(config).Build())
         {
-            Action = action,
-            Entity = entity,
-            EntityId = entityId,
-            Data = data,
-            Column = (int) columns
-        };
-        
-        await ProduceAsync(topic, message);
-        Console.WriteLine("=======================================Dentro=====================================");
-        //FireAndForgetProduce(topic, message);
-        
+            try
+            {
+                var sendResult = producer
+                    .ProduceAsync("calculation-metric-topic", new Message<Null, string> { Value = entityId })
+                    .GetAwaiter()
+                    .GetResult();
+
+                _logger.LogInformation($"Mensagem '{sendResult.Value}' de '{sendResult.TopicPartitionOffset}'");
+            }
+            catch (ProduceException<Null, string> e)
+            {
+                Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+            }
+        }
     }
     
     private async Task ProduceAsync<T>(string topic, T message)

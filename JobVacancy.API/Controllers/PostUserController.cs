@@ -17,12 +17,11 @@ namespace JobVacancy.API.Controllers;
 [ApiVersion("1.0")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class PostUserController(
-        ITokenService tokenService,
         IUserService userService,
         IPostUserService postUserService,
-        IConfiguration configuration,
         ICategoryService categoryService,
-        IMapper mapper
+        IMapper mapper,
+        IPostUserMetricsService postUserMetricsService
     ) : Controller
 {
     [HttpPost]
@@ -87,6 +86,8 @@ public class PostUserController(
 
             PostUserDto postMapped = mapper.Map<PostUserDto>(newPost);
 
+            await postUserMetricsService.Create(newPost.Id);
+            
             return StatusCode(StatusCodes.Status201Created,new ResponseHttp<PostUserDto>
             {
                 Data = postMapped,

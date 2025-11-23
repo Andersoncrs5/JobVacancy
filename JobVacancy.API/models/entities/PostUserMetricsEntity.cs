@@ -1,5 +1,15 @@
 namespace JobVacancy.API.models.entities;
 
+public enum PostUserMetricsColumns
+{
+    LikeCount = 0,
+    DislikeCount = 1,
+    CommentCount = 2,
+    FavoriteCount = 3,
+    RepublishedCount = 4,
+    SharedCount = 5
+}
+
 public class PostUserMetricsEntity: BaseEntity
 {
     public long LikeCount { get; set; }

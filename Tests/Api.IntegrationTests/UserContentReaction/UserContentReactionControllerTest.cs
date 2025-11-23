@@ -53,6 +53,7 @@ public class UserContentReactionControllerTest: IClassFixture<CustomWebApplicati
         };
 
         HttpResponseMessage message = await _client.PostAsJsonAsync($"{_url}", dto);
+        _output.WriteLine(message.Content.ReadAsStringAsync().Result);
         message.StatusCode.Should().Be(HttpStatusCode.Created);
 
         ResponseHttp<UserContentReactionDto>? http = await message.Content.ReadFromJsonAsync<ResponseHttp<UserContentReactionDto>>();

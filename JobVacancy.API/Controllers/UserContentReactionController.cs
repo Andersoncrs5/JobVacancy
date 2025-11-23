@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using JobVacancy.API.Configs.kafka.Enums;
 using JobVacancy.API.models.dtos.UserContentReaction;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.models.entities.Enums;
@@ -20,6 +21,7 @@ namespace JobVacancy.API.Controllers;
 public class UserContentReactionController(
     IUserService userService,
     IUserContentReactionService reactionService,
+    IKafkaProducerService kafkaProducerService,
     IMapper mapper
     ):Controller
 {
@@ -50,6 +52,13 @@ public class UserContentReactionController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Post([FromBody] CreateUserContentReactionDto dto)
     {
+        await kafkaProducerService.MetricSend(
+            dto.ContentId,
+            ActionEnum.Sum,
+            dto.TargetType,
+            dto.ReactionType
+        );
+
         string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId == null) return Unauthorized();
 
@@ -92,7 +101,15 @@ public class UserContentReactionController(
         }
         
         UserContentReactionEntity saved = await reactionService.Create(userId, dto.ContentId, dto.ReactionType, dto.TargetType);
-
+        
+        await kafkaProducerService.MetricSend(
+            dto.ContentId,
+            ActionEnum.Sum,
+            dto.TargetType,
+            dto.ReactionType
+        );
+        
+        
         return StatusCode(StatusCodes.Status201Created, new ResponseHttp<UserContentReactionDto>
         {
             Code = StatusCodes.Status201Created,
