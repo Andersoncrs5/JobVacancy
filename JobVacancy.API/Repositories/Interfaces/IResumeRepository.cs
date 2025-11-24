@@ -8,4 +8,6 @@ public interface IResumeRepository: IGenericRepository<ResumeEntity>
     Task<ResumeEntity?> GetByName(string name);
     Task<bool> ExistsByObjectKey(string key);
     Task<ResumeEntity?> GetByObjectKey(string key);
+    Task<bool> ExistsByUrl(string url);
+    Task<ResumeEntity?> GetByUrl(string url);
 }
