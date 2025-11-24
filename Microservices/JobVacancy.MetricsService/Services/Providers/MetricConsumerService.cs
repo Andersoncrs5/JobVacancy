@@ -18,6 +18,7 @@ public class MetricConsumerService: BackgroundService
         IConfiguration configuration
         )
     {
+        /*
         _logger = logger;
         _configuration = configuration;
         var config = kafkaConfig.Value.ConsumerConfig;
@@ -31,6 +32,7 @@ public class MetricConsumerService: BackgroundService
             .SetErrorHandler((_, e) => _logger.LogError($"Kafka Error: {e.Reason}"))
             .SetLogHandler((_, l) => _logger.LogInformation($"Kafka Log: {l.Message}"))
             .Build();
+            */
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
