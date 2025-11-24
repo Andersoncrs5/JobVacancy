@@ -6,6 +6,5 @@ namespace JobVacancy.API.Services.Interfaces;
 
 public interface IKafkaProducerService
 {
-    Task MetricSend(string entityId, ActionEnum action, ReactionTargetEnum entity, object columns, object? data = null);
-    void Dispose();
+   
 }
