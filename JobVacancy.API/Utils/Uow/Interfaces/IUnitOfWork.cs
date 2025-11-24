@@ -40,6 +40,7 @@ public interface IUnitOfWork: IDisposable
     IUserContentReactionRepository UserContentReactionRepository { get; }
     IRedisService RedisService { get; }
     IPostUserMetricsRepository PostUserMetricsRepository { get; }
+    IResumeRepository ResumeRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
