@@ -1,6 +1,4 @@
 using System.Text;
-using Confluent.Kafka;
-using JobVacancy.API.Configs.kafka.Classes;
 using JobVacancy.API.Context;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Repositories.Interfaces;
@@ -19,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.Runtime;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -49,13 +50,26 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     return ConnectionMultiplexer.Connect(config);
 });
 
-builder.Services.AddSingleton<KafkaProducerService>();
 
 builder.Services.AddScoped<IDatabase>(sp =>
 {
     var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
     return multiplexer.GetDatabase();
 });
+
+
+// S3
+var awsCredentials = new BasicAWSCredentials("minioadmin", "minioadminpassword");
+
+var s3Config = new AmazonS3Config
+{
+    ServiceURL = "http://localhost:9000",
+    ForcePathStyle = true,
+    UseHttp = true, 
+    RegionEndpoint = Amazon.RegionEndpoint.USEast1 
+};
+
+builder.Services.AddSingleton<IAmazonS3>(new AmazonS3Client(awsCredentials, s3Config));
 
 // JWT
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
