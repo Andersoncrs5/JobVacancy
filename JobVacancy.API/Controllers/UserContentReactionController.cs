@@ -52,13 +52,6 @@ public class UserContentReactionController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Post([FromBody] CreateUserContentReactionDto dto)
     {
-        await kafkaProducerService.MetricSend(
-            dto.ContentId,
-            ActionEnum.Sum,
-            dto.TargetType,
-            dto.ReactionType
-        );
-
         string? userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId == null) return Unauthorized();
 
@@ -101,13 +94,6 @@ public class UserContentReactionController(
         }
         
         UserContentReactionEntity saved = await reactionService.Create(userId, dto.ContentId, dto.ReactionType, dto.TargetType);
-        
-        await kafkaProducerService.MetricSend(
-            dto.ContentId,
-            ActionEnum.Sum,
-            dto.TargetType,
-            dto.ReactionType
-        );
         
         
         return StatusCode(StatusCodes.Status201Created, new ResponseHttp<UserContentReactionDto>
