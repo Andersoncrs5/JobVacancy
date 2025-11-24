@@ -42,6 +42,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<UserEvaluationEntity> UserEvaluationEntities { get; set; }
     public new DbSet<UserContentReactionEntity> UserContentReactionEntities { get; set; }
     public new DbSet<PostUserMetricsEntity> PostUserMetricsEntities { get; set; }
+    public new DbSet<ResumeEntity> ResumeEntities { get; set; }
     
     public override int SaveChanges()
     {
@@ -80,6 +81,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<ResumeEntity>(options =>
+        {
+            options.ToTable("Resumes");
+            options.HasKey(e => e.Id);
+            
+            options.Property(x => x.Name).HasMaxLength(400).IsRequired();
+            options.Property(x => x.Url).HasMaxLength(1000).IsRequired();
+            options.Property(x => x.Version).HasDefaultValue(0).IsRequired(false);
+            options.Property(x => x.BucketName).HasMaxLength(100).IsRequired();
+            options.Property(x => x.ObjectKey).HasMaxLength(1000).IsRequired();
+
+            options.HasOne(x => x.User)
+                .WithMany(x => x.Resumes)
+                .HasForeignKey(x => x.userId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<PostUserMetricsEntity>(options =>
         {
             options.ToTable("PostUserMetrics");

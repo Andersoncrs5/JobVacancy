@@ -891,6 +891,54 @@ namespace JobVacancy.API.Migrations
                     b.ToTable("PostUserMetrics", (string)null);
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ResumeEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("BucketName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<string>("ObjectKey")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("userId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("Resumes", (string)null);
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1951,6 +1999,17 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("JobVacancy.API.models.entities.ResumeEntity", b =>
+                {
+                    b.HasOne("JobVacancy.API.models.entities.UserEntity", "User")
+                        .WithMany("Resumes")
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobVacancy.API.models.entities.ReviewEnterpriseEntity", b =>
                 {
                     b.HasOne("JobVacancy.API.models.entities.EnterpriseEntity", "Enterprise")
@@ -2361,6 +2420,8 @@ namespace JobVacancy.API.Migrations
                     b.Navigation("Reactions");
 
                     b.Navigation("ReceivedEndors");
+
+                    b.Navigation("Resumes");
 
                     b.Navigation("Reviews");
 
