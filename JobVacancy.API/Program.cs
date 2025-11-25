@@ -16,10 +16,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Minio;
 using StackExchange.Redis;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.Runtime;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -58,20 +56,24 @@ builder.Services.AddScoped<IDatabase>(sp =>
 });
 
 
-// S3
-var awsCredentials = new BasicAWSCredentials("minioadmin", "minioadminpassword");
+// S3 ===================================================================================================================
 
-var s3Config = new AmazonS3Config
-{
-    ServiceURL = "http://localhost:9000",
-    ForcePathStyle = true,
-    UseHttp = true, 
-    RegionEndpoint = Amazon.RegionEndpoint.USEast1 
-};
+builder.Services.AddMinio(builder.Configuration["MinIO:AccessKey"], builder.Configuration["MinIO:SecretKey"]);
 
-builder.Services.AddSingleton<IAmazonS3>(new AmazonS3Client(awsCredentials, s3Config));
+builder.Services.AddMinio(configureClient => configureClient
+    // 1. Endpoint: MinIO SDK espera apenas host:port (sem http/https)
+    .WithEndpoint(builder.Configuration["MinIO:Endpoint"]) 
+    
+    // 2. Credenciais
+    .WithCredentials(
+        builder.Configuration["MinIO:AccessKey"], 
+        builder.Configuration["MinIO:SecretKey"]
+    )
 
-// JWT
+    .WithSSL(false) 
+    .Build());
+
+// JWT ==================================================================================================================
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("jwt");
 string? secretKey = jwtSettings.GetSection("SecretKey").Value;
 
@@ -312,6 +314,7 @@ builder.Services.AddScoped<IUserContentReactionService, UserContentReactionServi
 builder.Services.AddScoped<IKafkaProducerService, KafkaProducerService>();
 builder.Services.AddScoped<IPostUserMetricsService, PostUserMetricsService>();
 builder.Services.AddScoped<IResumeService, ResumeService>();
+builder.Services.AddScoped<IMiniOService, MiniOService>();
 
 builder.Services.AddScoped<IMapperFacades, MapperFacades>();
 
