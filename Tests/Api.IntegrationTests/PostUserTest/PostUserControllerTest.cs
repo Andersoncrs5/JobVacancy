@@ -26,7 +26,6 @@ public class PostUserControllerTest: IClassFixture<CustomWebApplicationFactory>
         _configuration = factory.Configuration;
         _output = output;
     }
-
     [Fact]
     public async Task Create()
     {
