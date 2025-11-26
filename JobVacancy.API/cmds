@@ -2,6 +2,8 @@ dotnet ef migrations add InitMigration --project Api/Api.csproj --startup-projec
 
 dotnet ef database update --project Api/Api.csproj --startup-project Api/Api.csproj
 
+dotnet ef database drop
+
 docker compose up -d
 
 k port-forward service/postgres-headless 5432:5432
