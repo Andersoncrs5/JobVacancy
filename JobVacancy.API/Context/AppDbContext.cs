@@ -43,6 +43,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
     public new DbSet<UserContentReactionEntity> UserContentReactionEntities { get; set; }
     public new DbSet<PostUserMetricsEntity> PostUserMetricsEntities { get; set; }
     public new DbSet<ResumeEntity> ResumeEntities { get; set; }
+    public new DbSet<MediaBaseEntity> MediaBaseEntities { get; set; }
+    public new DbSet<PostUserMediaEntity> PostUserMediaEntities { get; set; }  
     
     public override int SaveChanges()
     {
@@ -554,6 +556,29 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.HasOne(e => e.User)
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity<MediaBaseEntity>(options =>
+        {
+            options.ToTable("Medias");
+            options.UseTptMappingStrategy();
+            options.HasKey(x => x.Id);
+            
+            options.Property(x => x.ObjectName).HasMaxLength(450).IsRequired();
+            options.Property(x => x.BucketName).HasMaxLength(100).IsRequired();
+            options.Property(x => x.VersionImage).HasMaxLength(3).IsRequired();
+            options.Property(x => x.FileSizeBytes).IsRequired(false);
+        });
+
+        modelBuilder.Entity<PostUserMediaEntity>(options =>
+        {
+            options.ToTable("PostUserMedias");
+            options.HasBaseType<MediaBaseEntity>();
+            
+            options.HasOne(x => x.Post)
+                .WithMany(x => x.Medias)
+                .HasForeignKey(x => x.PostId)
                 .IsRequired();
         });
         
