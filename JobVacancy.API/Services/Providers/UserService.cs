@@ -90,6 +90,15 @@ public class UserService(
         return ReturnResult(result, userCreated);
     }
 
+    public async Task<UserResult> UpdateAsync(UserEntity user)
+    {
+        IdentityResult result = await uow.UserRepository.Update(user);
+        
+        var userChanged = await GetUserByEmail(user.Email!);
+
+        return ReturnResult(result,userChanged);
+    }
+    
     public async Task<UserResult> UpdateAsync(UserEntity user, UpdateUserDto dto)
     {
         if (dto.FullName != null)
