@@ -23,6 +23,7 @@ using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
+using JobVacancy.API.models.dtos.Resume;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.ReviewUser;
 using JobVacancy.API.models.dtos.Skill;
@@ -43,6 +44,39 @@ public class Helper(
     )
 {
 
+    public async Task<ResumeDto> CreateResume()
+    {
+        using var form = new MultipartFormDataContent();
+
+        form.Add(new StringContent("Meu Currículo Teste"), "Name");
+
+        form.Add(new StringContent("1"), "Version");
+
+        var fakeFileBytes = new byte[] { 1, 2, 3, 4, 5 };
+        var fileContent = new ByteArrayContent(fakeFileBytes);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+        form.Add(fileContent, "File", "resume.pdf");
+
+        var response = await client.PostAsync("/api/v1/Resume", form);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        ResponseHttp<ResumeDto>? body = await response.Content.ReadFromJsonAsync<ResponseHttp<ResumeDto>>();
+        
+        body.Should().NotBeNull();
+        body.Status.Should().BeTrue();
+        body.Message.Should().NotBeNullOrWhiteSpace();
+        body.Code.Should().Be((int)HttpStatusCode.Created);
+        
+        body.Data.Should().NotBeNull();
+        body.Data.Name.Should().Be("Meu Currículo Teste");
+        body.Data.Url.Should().BeNullOrEmpty();
+        body.Data.BucketName.Should().Be("resumes");
+        body.Data.ObjectKey.Should().NotBeNullOrWhiteSpace();
+        
+        return body.Data;
+    }
+    
     public async Task<UserContentReactionDto> ReactionTo(string contentId, ReactionTypeEnum type, ReactionTargetEnum target, HttpStatusCode code)
     {
         CreateUserContentReactionDto dto = new CreateUserContentReactionDto
@@ -71,7 +105,6 @@ public class Helper(
         return http.Data;
     }
     
-
     public async Task<UserEvaluationDto> CreateUserEvaluation(UserResultTest userGuest, PositionDto positionDto)
     {
         CreateUserEvaluationDto dto = new CreateUserEvaluationDto()
