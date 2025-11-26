@@ -285,7 +285,7 @@ public class MiniOService(IMinioClient client,ILogger<MiniOService> logger) : IM
         await client.CopyObjectAsync(args).ConfigureAwait(false);
     }
     
-    private async Task CreateNewBucketIfNotExists(string bucketName)
+    public async Task CreateNewBucketIfNotExists(string bucketName)
     {
         BucketExistsArgs existsArgs = new BucketExistsArgs().WithBucket(bucketName);
         bool found = await client.BucketExistsAsync(existsArgs).ConfigureAwait(false);
@@ -295,6 +295,40 @@ public class MiniOService(IMinioClient client,ILogger<MiniOService> logger) : IM
             var mbArgs = new MakeBucketArgs()
                 .WithBucket(bucketName);
             await client.MakeBucketAsync(mbArgs).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task SetBucketPolicyToPublicRead(string bucketName)
+    {
+        string policyJson = $@"{{
+            ""Version"": ""2012-10-17"",
+            ""Statement"": [
+                {{
+                    ""Sid"": ""AddPublicReadAcl"",
+                    ""Effect"": ""Allow"",
+                    ""Principal"": ""*"",
+                    ""Action"": [""s3:GetObject""],
+                    ""Resource"": [""arn:aws:s3:::{bucketName}/*""]
+                }}
+            ]
+        }}";
+
+        
+        var policyArgs = new SetPolicyArgs()
+            .WithBucket(bucketName)
+            .WithPolicy(policyJson);
+
+        try
+        {
+            await client.SetPolicyAsync(policyArgs).ConfigureAwait(false);
+        }
+        catch (Minio.Exceptions.BucketNotFoundException)
+        {
+            throw new BucketNotFoundException($"Bucket '{bucketName}' not found.");
+        }
+        catch (MinioException ex)
+        {
+            throw new MinioException(ex.Message, ex);
         }
     }
     

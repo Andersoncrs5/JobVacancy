@@ -8,6 +8,8 @@ namespace JobVacancy.API.Services.Interfaces;
 
 public interface IMiniOService
 {
+    Task SetBucketPolicyToPublicRead(string bucketName);
+    Task CreateNewBucketIfNotExists(string bucketName);
     Task<MemoryStream> GetPartialObject(
         string bucket,
         string objectName,
