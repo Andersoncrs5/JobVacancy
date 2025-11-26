@@ -685,6 +685,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
         
         modelBuilder.Entity<UserEntity>(entity =>
         {
+            entity.Property(x => x.ImageProfileUrl).HasMaxLength(800).IsRequired(false);
             entity.HasOne(e => e.Enterprise)
                 .WithOne(e => e.User);
         });

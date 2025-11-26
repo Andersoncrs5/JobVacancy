@@ -1218,6 +1218,10 @@ namespace JobVacancy.API.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageProfileUrl")
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
