@@ -10,4 +10,6 @@ public class PostUserEntity: BasePostTable
     public ICollection<CommentPostUserEntity>? CommentPostUser { get; set; }
     public ICollection<UserContentReactionEntity>? Reactions { get; set; }
     public PostUserMetricsEntity? PostUser { get; set; }
+    public ICollection<PostUserMediaEntity>? Medias { get; set; }
+    
 }
