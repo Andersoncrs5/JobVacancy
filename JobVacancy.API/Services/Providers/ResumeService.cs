@@ -2,6 +2,7 @@ using JobVacancy.API.models.dtos.Resume;
 using JobVacancy.API.models.entities;
 using JobVacancy.API.Services.Interfaces;
 using JobVacancy.API.Utils.Uow.Interfaces;
+using Minio.DataModel.Response;
 
 namespace JobVacancy.API.Services.Providers;
 
@@ -13,6 +14,13 @@ public class ResumeService(IUnitOfWork uow): IResumeService
     public async Task<ResumeEntity?> GetByName(string name)
         => await uow.ResumeRepository.GetByName(name);
 
+    public async Task<bool> ExistsById(string id)
+        => await uow.ResumeRepository.ExistsById(id);
+    
+    public async Task<ResumeEntity?> GetById(string id)
+        => await uow.ResumeRepository.GetByIdAsync(id);
+
+    
     public async Task<bool> ExistsByObjectKey(string key)
         => await uow.ResumeRepository.ExistsByObjectKey(key);
 
@@ -34,11 +42,13 @@ public class ResumeService(IUnitOfWork uow): IResumeService
         await uow.Commit();
     }
 
-    public async Task<ResumeEntity> Create(CreateResumeDto dto, string userId)
+    public async Task<ResumeEntity> Create(CreateResumeDto dto, string userId, PutObjectResponse response)
     {
         ResumeEntity map = uow.Mapper.Map<ResumeEntity>(dto);
         map.userId = userId;
-
+        map.BucketName = "resumes";
+        map.ObjectKey = response.ObjectName;
+        
         ResumeEntity async = await uow.ResumeRepository.AddAsync(map);
         await uow.Commit();
         return async;
