@@ -12,4 +12,6 @@ public class UpdateUserDto
     
     [StringLength(50, ErrorMessage = "Max size of 50", MinimumLength = 6)] 
     public string? Password { get; set; }
+    
+    public IFormFile? File { get; set; }
 }
