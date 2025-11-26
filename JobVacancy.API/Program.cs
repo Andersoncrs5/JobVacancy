@@ -326,6 +326,24 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 WebApplication? app = builder.Build();
 
+using (var scope =  app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+    IMiniOService? miniOService = services.GetService<IMiniOService>();
+    if (miniOService == null)
+        throw new ArgumentNullException(nameof(miniOService));
+
+    IConfigurationSection section = configuration.GetSection("Buckets");
+    string image = section["ImageBucketName"] ?? throw new ArgumentNullException(nameof(image));
+    string resumes = section["ResumeBucketName"] ?? throw new ArgumentNullException(nameof(resumes));
+
+    await miniOService.CreateNewBucketIfNotExists(image);
+    await miniOService.CreateNewBucketIfNotExists(resumes);
+    await miniOService.SetBucketPolicyToPublicRead(image);
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
