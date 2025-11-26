@@ -13,7 +13,7 @@ start date 23/10/2025
 
 # technologies
 
-- s3
+- minio
 - k8s
 - asp net 9
 - kafka
