@@ -87,11 +87,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             options.HasKey(e => e.Id);
             
             options.Property(x => x.Name).HasMaxLength(400).IsRequired();
-            options.Property(x => x.Url).HasMaxLength(1000).IsRequired();
-            options.Property(x => x.Version).HasDefaultValue(0).IsRequired(false);
+            options.Property(x => x.Url).HasMaxLength(1000).IsRequired(false);
+            options.Property(x => x.Version).HasColumnType("SMALLINT").IsRequired(false);
             options.Property(x => x.BucketName).HasMaxLength(100).IsRequired();
             options.Property(x => x.ObjectKey).HasMaxLength(1000).IsRequired();
 
+            options.HasIndex(x => x.ObjectKey).IsUnique();
+            
             options.HasOne(x => x.User)
                 .WithMany(x => x.Resumes)
                 .HasForeignKey(x => x.userId)

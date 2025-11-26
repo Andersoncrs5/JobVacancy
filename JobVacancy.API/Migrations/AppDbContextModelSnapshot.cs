@@ -919,20 +919,20 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<int?>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                    b.Property<short?>("Version")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("userId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ObjectKey")
+                        .IsUnique();
 
                     b.HasIndex("userId");
 
