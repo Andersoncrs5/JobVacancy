@@ -567,7 +567,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): IdentityDbCon
             
             options.Property(x => x.ObjectName).HasMaxLength(450).IsRequired();
             options.Property(x => x.BucketName).HasMaxLength(100).IsRequired();
-            options.Property(x => x.VersionImage).HasMaxLength(3).IsRequired();
+            options.Property(x => x.VersionImage).HasMaxLength(3).IsRequired(false);
             options.Property(x => x.FileSizeBytes).IsRequired(false);
         });
 
