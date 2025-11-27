@@ -24,6 +24,7 @@ using JobVacancy.API.models.dtos.Industry;
 using JobVacancy.API.models.dtos.Position;
 using JobVacancy.API.models.dtos.PostEnterprise;
 using JobVacancy.API.models.dtos.PostUser;
+using JobVacancy.API.models.dtos.PostUserMedia;
 using JobVacancy.API.models.dtos.Resume;
 using JobVacancy.API.models.dtos.ReviewEnterprise;
 using JobVacancy.API.models.dtos.ReviewUser;
@@ -186,5 +187,8 @@ public class ConfigMapper: Profile
         CreateMap<ResumeEntity, ResumeDto>();
         CreateMap<ResumeDto, ResumeEntity>();
         CreateMap<CreateResumeDto, ResumeEntity>();
+        
+        CreateMap<PostUserMediaDto, PostUserMediaEntity>();
+        CreateMap<PostUserMediaEntity, PostUserMediaDto>();
     }
 }
