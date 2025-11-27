@@ -276,6 +276,7 @@ builder.Services.AddScoped<IReviewUserRepository, ReviewUserRepository>();
 builder.Services.AddScoped<IUserEvaluationRepository, UserEvaluationRepository>();
 builder.Services.AddScoped<IUserContentReactionRepository, UserContentReactionRepository>();
 builder.Services.AddScoped<IPostUserMetricsRepository, PostUserMetricsRepository>();
+builder.Services.AddScoped<IPostUserMediaRepository, PostUserMediaRepository>();
 builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
 
 // JUST SERVICES
@@ -313,6 +314,7 @@ builder.Services.AddScoped<IUserEvaluationService, UserEvaluationService>();
 builder.Services.AddScoped<IUserContentReactionService, UserContentReactionService>();
 builder.Services.AddScoped<IKafkaProducerService, KafkaProducerService>();
 builder.Services.AddScoped<IPostUserMetricsService, PostUserMetricsService>();
+builder.Services.AddScoped<IPostUserMediaService, PostUserMediaService>();
 builder.Services.AddScoped<IResumeService, ResumeService>();
 builder.Services.AddScoped<IMiniOService, MiniOService>();
 
