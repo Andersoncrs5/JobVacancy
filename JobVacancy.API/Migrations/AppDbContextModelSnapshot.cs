@@ -178,7 +178,6 @@ namespace JobVacancy.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("VersionImage")
-                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)");
 
