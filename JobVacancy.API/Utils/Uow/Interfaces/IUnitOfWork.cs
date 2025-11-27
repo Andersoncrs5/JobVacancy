@@ -41,6 +41,7 @@ public interface IUnitOfWork: IDisposable
     IRedisService RedisService { get; }
     IPostUserMetricsRepository PostUserMetricsRepository { get; }
     IResumeRepository ResumeRepository { get; }
+    IPostUserMediaRepository PostUserMediaRepository { get; }
     IMapper Mapper { get; }
     
     Task Commit();
