@@ -11,6 +11,5 @@ public interface IPostUserMediaService
     IQueryable<PostUserMediaEntity> Query();
     Task<int> TotalMediaByPost(string postId);
     Task Delete(PostUserMediaEntity entity);
-    Task<PostUserMediaEntity> Create(CreatePostUserMediaDto media, PutObjectResponse response, string postId,
-        string bucketName);
+    Task<PostUserMediaEntity> Create(CreatePostUserMediaDto media, PutObjectResponse response, string bucketName);
 }

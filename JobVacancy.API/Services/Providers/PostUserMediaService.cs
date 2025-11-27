@@ -28,12 +28,12 @@ public class PostUserMediaService(IUnitOfWork uow): IPostUserMediaService
         await uow.Commit();
     }
 
-    public async Task<PostUserMediaEntity> Create(CreatePostUserMediaDto media, PutObjectResponse response, string postId, string bucketName)
+    public async Task<PostUserMediaEntity> Create(CreatePostUserMediaDto media, PutObjectResponse response, string bucketName)
     {
         PostUserMediaEntity entity = new PostUserMediaEntity()
         {
             ObjectName = response.ObjectName,
-            PostId = postId,
+            PostId = media.PostId,
             FileSizeBytes = response.Size,
             Order = media.Order,
             BucketName = bucketName,
