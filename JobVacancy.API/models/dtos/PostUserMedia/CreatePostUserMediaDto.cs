@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JobVacancy.API.Utils.Annotations.Validations.Global;
+using JobVacancy.API.Utils.Annotations.Validations.PostUser;
 
 namespace JobVacancy.API.models.dtos.PostUserMedia;
 
@@ -22,4 +23,6 @@ public class CreatePostUserMediaDto
     [Range(0, 15)]
     public int? Order { get; set; }
     
+    [Required]
+    public required string PostId { get; set; }
 }
