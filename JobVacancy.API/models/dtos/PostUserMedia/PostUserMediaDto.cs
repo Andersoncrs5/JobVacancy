@@ -5,6 +5,6 @@ namespace JobVacancy.API.models.dtos.PostUserMedia;
 
 public class PostUserMediaDto: MediaBase
 {
-    public required string PostId { get; set; }
-    public PostUserDto? PostUser { get; set; }
+    public required string PostId { get; init; }
+    public PostUserDto? Post { get; init; }
 }
