@@ -61,15 +61,11 @@ builder.Services.AddScoped<IDatabase>(sp =>
 builder.Services.AddMinio(builder.Configuration["MinIO:AccessKey"], builder.Configuration["MinIO:SecretKey"]);
 
 builder.Services.AddMinio(configureClient => configureClient
-    // 1. Endpoint: MinIO SDK espera apenas host:port (sem http/https)
     .WithEndpoint(builder.Configuration["MinIO:Endpoint"]) 
-    
-    // 2. Credenciais
     .WithCredentials(
         builder.Configuration["MinIO:AccessKey"], 
         builder.Configuration["MinIO:SecretKey"]
     )
-
     .WithSSL(false) 
     .Build());
 
