@@ -148,7 +148,8 @@ public class MiniOService(IMinioClient client,ILogger<MiniOService> logger) : IM
             throw new ArgumentNullException(nameof(file));
 
         var fileId = Guid.NewGuid().ToString();
-        var objectName = $"{fileId}";
+        var extension = Path.GetExtension(file.FileName);
+        var objectName = $"{fileId}{extension}";
 
         try
         {
@@ -158,7 +159,7 @@ public class MiniOService(IMinioClient client,ILogger<MiniOService> logger) : IM
                 .WithBucket(bucketName)
                 .WithObject(objectName)
                 .WithStreamData(uploadStream)
-                .WithObjectSize(uploadStream.Length) // Use file.Length ou uploadStream.Length
+                .WithObjectSize(uploadStream.Length)
                 .WithContentType(file.ContentType);
 
             if (!string.IsNullOrWhiteSpace(versionId))
